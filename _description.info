@@ -1,0 +1,205 @@
+##############################
+## VANILLA INTERACTION FEATURES:
+##############################
+
+  scopes:
+    - recipient
+    - actor
+
+  imprison_interaction:
+    - Cost:
+        - prestige (certain diarchy situations)
+    - ai_potential:
+        - NOT = has_realm_law_flag = cannot_imprison
+        - is_imprisoned = no
+    send_option:
+        - has_usable_hook
+    on_accept:
+      - Stress Modifiers:
+          - actor:
+              - has_imprisonment_reason:
+                  - compassionate = minor_stress_impact_gain
+                  - forgiving = minor_stress_impact_gain
+              - just = medium_stress_impact_gain
+              - compassionate = medium_stress_impact_gain
+    on_decline:
+      - if vassal:
+          - is_landed
+          - is_a_faction_member:
+              - start war
+              - join retaliation_faction faction
+      - if baron or unlanded:
+          - flags:
+              - escaped_imprisonment_from
+              - is_landed:
+                  - deposed
+              - is_hostage
+    Clan Unity:
+      - major_unity_loss
+
+  move_to_dungeon_interaction:
+    flags:
+      - is_imprisoned_by
+      - is_in_prison_type = house_arrest
+      - is_busy_in_events
+      - is_being_tortured
+    Opinion Modifiers:
+      - every_close_or_extended_family_member:
+          - family_moved_to_dungeon_opinion
+    Clan Unity:
+      - medium_unity_loss
+    auto_accept: yes
+    on_accept:
+      - add_character_modifier = allowed_to_go_outside
+      - add_character_modifier = moldy_gruel_diet
+
+  move_to_house_arrest_interaction:
+    flags:
+      - has_character_modifier = allowed_to_go_outside
+      - has_character_modifier = moldy_gruel_diet
+      - is_in_prison_type = dungeon
+    Stress Modifiers:
+      - actor:
+          - sadistic = medium_stress_impact_gain
+          - vengeful = medium_stress_impact_gain
+    Opinion Modifiers:
+      - every_close_or_extended_family_member:
+          - move_to_house_arrest_opinion
+    on_accept:
+      - remove_character_modifier = allowed_to_go_outside
+      - remove_character_modifier = moldy_gruel_diet
+
+  ransom_interaction:
+    flags:
+      - use_diplomatic_range = no
+      - is_busy_in_events_localised = yes #Payer
+      - is_busy_in_events_localised = yes #Prisoner
+      - is_being_tortured
+      - is_imprisoned_by_diarch
+      - charcter_ransom_refused_by_player
+      - has_dynasty_perk = fp1_pillage_legacy_3
+      - is_lowborn
+      - mass_action
+    send_option:
+      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_OPTION"
+      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
+      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_GOLD_OPTION"
+      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
+      - can_add_hook "RANSOM_FAVOR_OPTION"
+    on_accept:
+      - remove_character_modifier = allowed_to_go_outside
+      - remove_character_modifier = moldy_gruel_diet
+    on_decline:
+      - add_character_flag = character_ransom_refused_by_player
+
+  pay_ransom_interaction:
+    flags:
+      - liege
+      - is_close_family_of
+      - dynasty
+      - any_spouse
+      - has_relation_lover
+      - has_relation_friend
+    send_option:
+      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
+      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
+      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_GOLD_PAY_OPTION"
+      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_CURRENT_PAY_GOLD_OPTION"
+      - can_add_hook "RANSOM_OWE_FAVOR_OPTION"
+      - has_usable_hook SCHEME_HOOK
+    on_accept (mostly stress modifiers):
+      - random courtiers:
+          - Stress Modifiers:
+              - compassionate = minor_stress_impact_loss
+              - generous = medium_stress_impact_loss
+      - vassal, consort, close family, dynasty, spouse, lover, or friend:
+          - Stress modifiers:
+              - compassionate = medium_stress_impact_loss
+              - generous = minor_stress_impact_loss
+              - just = minor_stress_impact_loss
+      - lover:
+          - Stress modifiers:
+              - lustful = major_stress_impact_loss
+      - family:
+          - Stress modifiers:
+              - family_first = miniscule_stress_impact_loss
+      Clan Unity:
+        - medium_unity_gain
+      on_decline:
+        - add_character_flag = character_ransom_refused_by_player
+
+##############################
+## MOD FEATURES:
+##############################
+
+  Concepts:
+    - Struggle
+    - Clan Unity
+
+  Flags to take into account:
+    - flag_hostile_actions_disabled_delay
+    - is_imprisoned_by
+    - is_in_prison_type
+    - is_busy_in_events
+    - is_being_tortured
+    - imprison_court_chaplain_consequences_effect
+    - imprison_HoF_consequences_effect (head of faith)
+    - has_imprisonment_reason
+    - use_diplomatic_range
+    - is_imprisoned_by_diarch
+    - has_relation_lover
+    - has_relation_soulmate
+    - has_secret_relation_lover
+    - has_dread_level_towards
+    - is_vassal_of
+    - is_consort_of
+    - is_close_family_of
+
+  Effects to take into account:
+    - imprison_character_effect
+
+  Trade prisoner to:
+    - another player
+    - other ai
+
+  - Buy prisoner for:
+    - gold (similar to ransom)
+    - recipient gets weak hook
+    - has_usable_hook
+    - other possibilities:
+        - renounce claim?
+        - another prisoner?
+
+  - Sell prisoner for:
+    - gold (similar to ransom)/huge gold (war leader)
+    - can_add_hook = weak_hook/strong_hook (war leader)
+    - other possibilities:
+        - renounce claim?
+        - another prisoner?
+
+  Opinion Modifiers:
+    - Prisoner to the Captor:
+        - Traded to someone
+        - Traded to someone lower than me:
+            - Mayor
+            - County
+            - Duchy
+            - Kingdom
+        - Traded to an enemy
+        - Traded to a friend
+        - Traded to a best friend
+        - Traded to a rival
+        - Traded to a nemesis
+        - Traded to lover
+        - Traded to soulmate
+        - Traded to dynasty member
+    - Prisoner Vassals (Prisoner is their Liege):
+        - Traded liege to enemy
+    - Prisoner Family Members:
+        - every_close_or_extended_family_member
+
+  Why use this feature?
+    - As a liege, more control over your vassals
+    - Take a prisoner for some other reason like getting a hook or renouncing a claim
+    - Execute prisoner
+    - Affect war score  points (capture combatant leaders)
