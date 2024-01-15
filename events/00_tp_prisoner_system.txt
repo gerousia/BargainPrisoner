@@ -1,0 +1,62 @@
+namespace = tp_prisoner_system
+
+##############################
+## PRISONER TRAVEL
+##############################
+
+# Prisoners arrives at destination
+tp_prisoner_system.0100 = {
+	type = character_event
+	title = tp_prisoner_system.0100.t
+	desc = {
+		desc = "pwet"
+	}
+	theme = prison
+	#content_source = mod_tp
+	left_portrait = {
+		character = root
+		animation = war_over_tie
+		trigger =  { location = root.capital_province }
+	}
+	right_portrait = {
+		character = scope:prisoner_from_sender
+		animation = grief
+	}
+	lower_right_portrait = scope:prisoner_sender
+	#lower_left_portrait = scope:prisoner_from_recipient
+
+	immediate = {
+		#root = { save_temporary_scope_as = prisoner_recipient }
+		## For recipient's prisoner
+		#
+		#
+
+		scope:prisoner_sender = {
+			trigger_event = { id = tp_prisoner_system.0101 }
+		}
+	}
+
+	option = {
+		name = {
+			text = tp_prisoner_system.0100.a
+		}
+	}
+}
+
+# prisoner_from_sender arrives at recipient - prisoner_sender
+tp_prisoner_system.0101 = {
+	type = letter_event
+	opening = tp_prisoner_system.0101.opening
+	desc = "andito na siya broski"
+	sender = scope:prisoner_recipient
+
+	immediate = {
+		scope:prisoner_recipient = { take_prisoner = { PRISONER = scope:prisoner_from_sender } }
+	}
+
+	option = {
+		name = {
+			text = "pwet"
+		}
+	}
+}

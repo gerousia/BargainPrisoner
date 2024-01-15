@@ -1,0 +1,26 @@
+take_prisoner = {
+	first = I_TAKE_PRISONER
+	third = THEY_TAKE_PRISONER
+	global = THEY_TAKE_PRISONER
+	first_past = I_TOOK_PRISONER
+	third_past = THEY_TOOK_PRISONER
+	global_past = THEY_TOOK_PRISONER
+}
+
+return_prisoner = {
+	first = I_RETURN_FROM_PRISONER
+	third = THEY_RETURN_FROM_PRISONER
+	global = THEY_RETURN_FROM_PRISONER
+	first_past = I_RETURNED_FROM_PRISONER
+	third_past = THEY_RETURNED_FROM_PRISONER
+	global_past = THEY_RETURNED_FROM_PRISONER
+}
+
+prisoner_leaves_imprisoner_tt = {
+	first = I_LEAVE_FROM_PRISONER
+	third = THEY_LEAVE_FROM_PRISONER
+	global = THEY_LEAVE_FROM_PRISONER
+	first_past = I_LEFT_FROM_PRISONER
+	third_past = THEY_LEFT_FROM_PRISONER
+	global_past = THEY_LEFT_FROM_PRISONER
+}

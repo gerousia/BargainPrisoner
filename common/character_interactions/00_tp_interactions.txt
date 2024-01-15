@@ -1,0 +1,156 @@
+##############################
+## TP Prisoner character_interactions
+##############################
+
+### offer_prisoner_interaction
+# scope:actor = offerer
+# scope:recipient = reciever
+# scope:secondary_actor = prisoner
+# scope:secondary_recipient = n/a
+offer_prisoner_interaction = {
+	category = interaction_category_diplomacy
+	common_interaction = no
+	ai_min_reply_days = 1
+	ai_max_reply_days = 1
+	popup_on_recieve = yes
+	pause_on_receive = yes
+	icon = prison
+
+	populate_actor_list = {
+		scope:actor = {
+			every_prisoner = {
+				add_to_list = characters
+			}
+		}
+	}
+
+	desc = offer_prisoner_interaction_desc # TODO- Localization
+
+	prompt = OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER # TODO- Localization
+
+	notification_text = OFFER_PRISONER_PROPOSAL # TODO- Localization
+
+	cooldown_against_recipient = { days = 0 }
+
+	is_shown = {
+		# Cannot interact with self
+		NOT = { scope:recipient = scope:actor }
+		# Actor and Recipient significance?
+		scope:actor.highest_held_title_tier > tier_barony
+		scope:recipient.highest_held_title_tier > tier_barony
+	}
+
+	is_valid_showing_failures_only = { # WIP
+		# Must be available
+		scope:recipient = { is_busy_in_events_localised = yes }
+		# Must have any prisoners to offer
+		scope:actor = { has_prisoners = yes } # TODO: Localization
+		# Must be at peace
+		NOT = { scope:recipient = { is_at_war_with = scope:actor } }
+
+		custom_description = {
+			text = prisoner_already_travelling_tt
+			subject = scope:actor
+			object = scope:recipient
+			scope:actor = {
+				every_prisoner = {
+					exists = var:prisoner_travelling_to_recipient
+					var:prisoner_travelling_to_recipient = scope:recipient
+				}
+			}
+		}
+	}
+
+	can_be_picked = {
+		00_tp_valid_to_offer_prisoner_trigger = { SENDER = scope:actor }
+		# Under offer
+		custom_tooltip = {
+			text = prisoner_already_offered_awaiting_response_tt
+			NOT = { has_character_flag = under_offer_as_prisoner_flag }
+		}
+		# Already offered
+		custom_tooltip = {
+			text = prisoner_already_offered_awaiting_response_tt
+			NOT = { exists = var:prisoner_travelling_to_recipient }
+		}
+	}
+
+	can_send = { # WIP
+		scope:actor = {
+			trigger_if = {
+				limit = { is_ai = yes }
+				00_tp_valid_to_offer_prisoner_ai_trigger = yes
+			}
+		}
+		scope:secondary_actor = {
+			custom_tooltip = {
+				text = prisoner_already_offered_awaiting_response_tt
+				NOT = { has_character_flag = under_offer_as_prisoner_flag }
+			}
+		}
+	}
+
+	cost = {}
+
+	on_send = {
+		scope:secondary_actor = {
+			add_character_flag = {
+				flag = under_offer_as_prisoner_flag
+				months = 1
+			}
+		}
+	}
+
+	on_accept = {		
+		custom_description_no_bullet = { text = hostage_pacts_on_arrival_tt }
+		custom_description_no_bullet = { text = hostage_execution_warning_tt }
+		custom_description_no_bullet = { text = hostage_attack_warning_tt }
+		prisoner_depart_effect = {
+			PRISONER = scope:secondary_actor
+			RECIPIENT = scope:recipient
+			SENDER = scope:actor
+		}
+	}
+
+	on_decline = {
+		
+	}
+
+	on_auto_accept = {
+		
+	}
+
+	can_be_blocked = {
+		
+	}
+
+	on_blocked_effect = {
+		
+	}
+
+	send_option = {
+		
+	}
+
+	ai_accept = {
+		base = 100 # Temporary
+	}
+
+	ai_targets = {
+		ai_recipients = neighboring_rulers
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+
+	ai_frequency = 0
+
+	ai_potential = {
+		
+	}
+
+	ai_will_do = {
+		base = 0
+	}
+	
+}

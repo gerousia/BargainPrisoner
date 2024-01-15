@@ -1,0 +1,92 @@
+##############################
+## TP Prisoner scripted_effects
+##############################
+
+#take_prisoner = {
+#	$PRISONER$ = {
+#		if = {
+#			limit = {
+#				is_imprisoned = yes 
+#				has_character_flag = prisoner_being_transferred_flag
+#			} 
+#			release_from_prison = yes
+#			remove_character_flag = prisoner_being_transferred_flag
+#		}
+#		imprison = {
+#			target = $PRISONER$
+#			type = house_arrest
+#		}
+#	}
+#}
+
+prisoner_depart_effect = {
+	$PRISONER$ = { save_scope_as = prisoner_from_sender }
+	$RECIPIENT$ = { save_scope_as = prisoner_recipient }
+	$SENDER$ = { save_scope_as = prisoner_sender }
+
+	scope:prisoner_from_sender = {
+		hidden_effect = {
+			# TOAST for Sender
+			scope:prisoner_sender = {
+				send_interface_toast = {
+					title = prisoner_departs_title
+					left_icon = scope:prisoner_from_sender
+					right_icon = scope:prisoner_recipient
+					# Departure info
+					scope:prisoner_from_sender = {
+						custom_description = {
+							text = prisoner_leaves_recipient_tt
+							subject = scope:prisoner_from_sender
+							object = scope:prisoner_recipient
+						}
+					}
+				}
+			}
+			# TOAST for Recipient
+			scope:prisoner_recipient = {
+				send_interface_toast = {
+					title = prisoner_departs_title
+					left_icon = scope:prisoner_from_sender
+					right_icon = scope:prisoner_sender
+					# Departure info
+					scope:prisoner_from_sender = {
+						custom_description = {
+							text = prisoner_leaves_recipient_tt
+							subject = scope:prisoner_from_sender
+							object = scope:prisoner_recipient
+						}
+					}
+				}
+			}
+		}
+		show_as_tooltip = {
+			scope:prisoner_recipient = { take_prisoner = scope:prisoner_from_sender }
+		}
+		# TRIGGERS FOR POTENTIALLY MANIPULATING PRESTIGE/REKNOWN/PIETY BELOW
+		#
+		#
+		#
+
+		# Replace under_offer_flag for being_transferred_flag used in on_release_from_prison
+		if = {
+			limit = { has_character_flag = under_offer_as_prisoner_flag }
+			remove_character_flag = under_offer_as_prisoner_flag
+			add_character_flag = prisoner_being_transferred_flag
+		}
+
+		set_variable = {
+			name = prisoner_travelling_to_recipient
+			value = scope:prisoner_recipient
+			years = 2 # Arbritrary value for now
+		}
+
+		start_travel_plan = { # ??? Can't find within the code
+			destination = scope:prisoner_recipient.capital_province
+			on_start_on_action = on_prisoner_depart_for_recipient # WIP
+			on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit # Travel Invalidated
+			on_arrival_on_action = on_prisoner_arrive_at_recipient # Prisoner exchange happens here
+			on_arrival_destinations = last
+			return_trip = no # One way
+		}
+	}
+}

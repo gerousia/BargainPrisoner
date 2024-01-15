@@ -1,0 +1,45 @@
+##################################################
+# Triggers related to the transfer prisoner system
+
+00_tp_valid_to_offer_prisoner_trigger = {
+	$SENDER$ = { save_temporary_scope_as = imprisoner_sender }
+	#$RECIPIENT$ = { save_temporary_scope_as = imprisoner_temp }
+
+	# Must already be imprisoned
+	is_imprisoned = yes
+	# Must be imprisoned by sender
+	trigger_if = {
+		limit = { is_imprisoned = yes }
+		imprisoner = scope:imprisoner_sender
+	}
+	# Must have relation to the SENDER
+	#OR = {
+	#	is_child_of = $SENDER$
+	#	is_grandchild_of = $SENDER$
+	#	is_sibling_of = $SENDER$
+	#	is_nibling_of = $SENDER$
+	#}
+	# Must not be traveling or already offered
+	NOR = {
+		exists = var:prisoner_travelling_to_recipient
+	}
+	# TODO: War Interactions
+	#trigger_if = {
+	#	limit = { exists = scope:war }
+	#}
+}
+
+00_tp_valid_to_offer_prisoner_ai_trigger = {
+	# Don't send hostages to those you seriously hate, or vice versa
+	NOR = {
+		scope:recipient = {
+			has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:actor }
+		}
+		scope:actor.house.house_head ?= {
+			any_owned_story = {
+				story_type = story_cycle_house_feud
+				var:house_feud_house ?= scope:recipient.house
+			}
+		}	
+	}
+}

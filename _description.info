@@ -286,7 +286,7 @@
     - another player
     - other ai
 
-  - Offer prisoner for:
+  - offer_prisoner_interaction: (Offer prisoner for)
     - gold (similar to ransom)
     - recipient gets weak hook
     - has_usable_hook
@@ -294,14 +294,17 @@
         - renounce claim?
         - another prisoner?
 
-  - Demand prisoner for:
+  - demand_prisoner_interaction: (Demand prisoner for)
     - gold (similar to ransom)/huge gold (war leader)
     - can_add_hook = weak_hook/strong_hook (war leader)
     - other possibilities:
         - renounce claim?
         - another prisoner?
 
-  - Exchange prisoner for:
+  - exchange_prisoner_interaction: (Exchange prisoner for)
+
+  NEW EFFECT:
+    - prisoner_depart_effect
 
   Opinion Modifiers:
     - Prisoner to the Captor:
@@ -323,6 +326,14 @@
         - Traded liege to enemy
     - Prisoner Family Members:
         - every_close_or_extended_family_member
+
+  ADDITIONAL FEATURES:
+    - Prisoner_notification
+    - Travel Bodyguard System
+      - Events related to travelling
+        - prisoner possibility of escaping
+      - Player potentially be the bodyguard during travel?
+        - Travel system similar to activity travels
 
   Why use this feature?
     - As a liege, more control over your vassals

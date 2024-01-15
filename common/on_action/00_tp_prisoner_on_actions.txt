@@ -1,0 +1,71 @@
+##############################
+## Modified Vanilla on_actions
+##############################
+
+# Code on-action: character released from prison in root scope. Does not fire when "released" due to dying
+# imprisoning character set as scope:imprisoner
+
+##############################
+## TP Prisoner on_actions
+##############################
+
+### 
+# root = prisoner
+# scope:actor = sender
+# scope:recipient = reciever
+# scope:reason is the reason for invalidation
+## scope:reason = flag:recipient - receipient became unlanded
+## scope:reason = flag:actor - sender became unlanded
+## scope:reason = flag:escaped - prisoner escaped during travel
+
+on_prisoner_invalidated = {
+	
+}
+
+on_prisoner_depart_for_recipient = {
+	
+}
+
+on_prisoner_depart_for_sender = {
+
+}
+
+on_prisoner_depart_travel_planner_exit = { # If prisoner travel got invalidated for some reason
+	effect = {
+		if = {
+			limit = { has_variable = prisoner_travelling_to_recipient }
+			remove_variable = prisoner_travelling_to_recipient
+		}
+	}
+}
+
+on_prisoner_arrive_at_recipient = {
+	effect = {
+		save_scope_as = prisoner_from_sender
+		var:prisoner_travelling_to_recipient = { save_scope_as = prisoner_recipient }
+		root.imprisoner = { save_scope_as = prisoner_sender }
+
+		# Invalidated travelling prisoner
+		#
+		#
+		if = {
+			limit = {
+				scope:prisoner_recipient ?= {
+					is_alive = yes
+					is_landed = yes
+				}
+			}
+			if = {
+				limit = { location != scope:prisoner_recipient.capital_province }
+				set_location = scope:prisoner_recipient.capital_province
+			}
+			scope:prisoner_recipient = { trigger_event = tp_prisoner_system.0100 }
+		}
+
+		remove_variable = prisoner_travelling_to_recipient
+		debug_log = "Prisoner arrived after travel"
+		debug_log_scopes = yes
+		
+		# opinion/event modifiers related to prisoner below
+	}
+}
