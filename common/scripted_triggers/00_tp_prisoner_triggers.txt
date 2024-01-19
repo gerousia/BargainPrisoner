@@ -2,31 +2,16 @@
 # Triggers related to the transfer prisoner system
 
 00_tp_valid_to_offer_prisoner_trigger = {
-	$SENDER$ = { save_temporary_scope_as = imprisoner_sender }
-	#$RECIPIENT$ = { save_temporary_scope_as = imprisoner_temp }
+	$SENDER$ = { save_temporary_scope_as = sender }
 
 	# Must already be imprisoned
 	is_imprisoned = yes
 	# Must be imprisoned by sender
-	trigger_if = {
-		limit = { is_imprisoned = yes }
-		imprisoner = scope:imprisoner_sender
-	}
-	# Must have relation to the SENDER
-	#OR = {
-	#	is_child_of = $SENDER$
-	#	is_grandchild_of = $SENDER$
-	#	is_sibling_of = $SENDER$
-	#	is_nibling_of = $SENDER$
-	#}
-	# Must not be traveling or already offered
-	NOR = {
-		exists = var:prisoner_travelling_to_recipient
-	}
-	# TODO: War Interactions
-	#trigger_if = {
-	#	limit = { exists = scope:war }
-	#}
+	imprisoner = scope:sender
+	# Must not be dying
+	health > dying_health
+	# Must be at the sender's prison
+	#location = this.imprisoner.province_capital
 }
 
 00_tp_valid_to_offer_prisoner_ai_trigger = {
@@ -42,4 +27,9 @@
 			}
 		}	
 	}
+}
+
+00_tp_prisoner_already_offered_trigger = {
+	has_character_flag = under_offer_as_prisoner_flag 
+	has_variable = prison_guard_travelling_with_prisoner 
 }

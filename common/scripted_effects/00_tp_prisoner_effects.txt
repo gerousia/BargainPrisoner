@@ -2,91 +2,146 @@
 ## TP Prisoner scripted_effects
 ##############################
 
-#take_prisoner = {
-#	$PRISONER$ = {
-#		if = {
-#			limit = {
-#				is_imprisoned = yes 
-#				has_character_flag = prisoner_being_transferred_flag
-#			} 
-#			release_from_prison = yes
-#			remove_character_flag = prisoner_being_transferred_flag
-#		}
-#		imprison = {
-#			target = $PRISONER$
-#			type = house_arrest
-#		}
-#	}
-#}
+take_prisoner = {
+	$PRISONER$ = {
+	#if = {
+	#	limit = { has_character_flag = under_offer_as_prisoner_flag	} 
+	#	## MEMORY HERE
+	#	#
+	#	#
+	#
+	#	}
+	release_from_prison = yes
+	}
+	imprison = {
+		target = $PRISONER$
+		type = house_arrest
+	}
+}
+
+travel_back_home = {
+	if = {
+		limit = { 
+			is_imprisoned = no
+			NOT = { location = liege.capital_province } 
+		}
+		start_travel_plan = {
+			players_use_planner = no
+			destination = liege.capital_province
+			return_trip = no
+		}
+	}
+}
 
 prisoner_depart_effect = {
 	$PRISONER$ = { save_scope_as = prisoner_from_sender }
-	$RECIPIENT$ = { save_scope_as = prisoner_recipient }
-	$SENDER$ = { save_scope_as = prisoner_sender }
+	$RECIEVER$ = { save_scope_as = reciever }
+	$SENDER$ = { save_scope_as = sender }
 
+	#scope:sender = { save_scope_as = bodyguard_from_sender }
+
+	scope:sender = {
+		if = {
+			limit = { employs_court_position = bodyguard_court_position }
+			every_court_position_holder = {
+				type = bodyguard_court_position
+				limit = { 
+					NOT = { exists = bodyguard_from_sender }
+					is_available = yes
+					#location = liege.capital_province 
+				}
+				set_variable = {
+					name = prisoner_company_travelling_to_recipient
+					value = scope:prisoner_from_sender
+					years = 2 # Arbritrary Value
+				}
+				save_scope_as = bodyguard_from_sender
+			}
+		}
+	}
 	scope:prisoner_from_sender = {
 		hidden_effect = {
-			# TOAST for Sender
-			scope:prisoner_sender = {
+			# interface_toast for Sender
+			scope:sender = {
 				send_interface_toast = {
 					title = prisoner_departs_title
 					left_icon = scope:prisoner_from_sender
-					right_icon = scope:prisoner_recipient
+					right_icon = scope:reciever
 					# Departure info
 					scope:prisoner_from_sender = {
 						custom_description = {
-							text = prisoner_leaves_recipient_tt
+							text = prisoner_leaves_for_recipient_tt
 							subject = scope:prisoner_from_sender
-							object = scope:prisoner_recipient
+							object = scope:reciever
 						}
 					}
 				}
 			}
-			# TOAST for Recipient
-			scope:prisoner_recipient = {
+			# interface_toast for Recipient
+			scope:reciever = {
 				send_interface_toast = {
 					title = prisoner_departs_title
 					left_icon = scope:prisoner_from_sender
-					right_icon = scope:prisoner_sender
+					right_icon = scope:sender
 					# Departure info
 					scope:prisoner_from_sender = {
 						custom_description = {
-							text = prisoner_leaves_recipient_tt
+							text = prisoner_leaves_for_recipient_tt
 							subject = scope:prisoner_from_sender
-							object = scope:prisoner_recipient
+							object = scope:reciever
 						}
 					}
 				}
 			}
-		}
-		show_as_tooltip = {
-			scope:prisoner_recipient = { take_prisoner = scope:prisoner_from_sender }
-		}
-		# TRIGGERS FOR POTENTIALLY MANIPULATING PRESTIGE/REKNOWN/PIETY BELOW
-		#
-		#
-		#
-
-		# Replace under_offer_flag for being_transferred_flag used in on_release_from_prison
-		if = {
-			limit = { has_character_flag = under_offer_as_prisoner_flag }
-			remove_character_flag = under_offer_as_prisoner_flag
-			add_character_flag = prisoner_being_transferred_flag
 		}
 
 		set_variable = {
-			name = prisoner_travelling_to_recipient
-			value = scope:prisoner_recipient
-			years = 2 # Arbritrary value for now
+			name = prison_guard_travelling_with_prisoner
+			value = scope:bodyguard_from_sender
+			years = 2 # Arbritrary Value
 		}
 
-		start_travel_plan = { # ??? Can't find within the code
-			destination = scope:prisoner_recipient.capital_province
-			on_start_on_action = on_prisoner_depart_for_recipient # WIP
-			on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit # Travel Invalidated
-			on_arrival_on_action = on_prisoner_arrive_at_recipient # Prisoner exchange happens here
+		# Prisoner travels to recipient
+		start_travel_plan = { # ??? Can't find info within the code
+			players_use_planner = no
+			destination = scope:reciever.capital_province
+			companion = scope:bodyguard_from_sender
+			on_start_on_action = on_prisoner_company_depart_for_recipient
+			on_travel_planner_cancel_on_action = on_prisoner_company_depart_travel_planner_exit
+			on_arrival_on_action = on_prisoner_company_arrive_at_recipient
 			on_arrival_destinations = last
-			return_trip = no # One way
+			return_trip = no
 		}
+
+		# TRIGGERS FOR POTENTIALLY MANIPULATING PRESTIGE/REKNOWN/PIETY HERE
+		#
+		#
+		#
+	}
+}
+
+prisoner_travel_company_remove_effect = {
+	# Removes the prisoner under offer to the recipient
+	if = {
+		limit = { has_character_flag = under_offer_as_prisoner_flag }
+		remove_character_flag = under_offer_as_prisoner_flag
+	}
+
+	# Removes the bodyguard from the prisoner
+	var:prison_guard_travelling_with_prisoner ?= {
+		if = {
+			limit = { exists = prisoner_company_travelling_to_recipient }
+			remove_variable = prisoner_company_travelling_to_recipient
+		}
+	}
+	if = {
+		limit = { exists = prison_guard_travelling_with_prisoner }
+		remove_variable = prison_guard_travelling_with_prisoner
+	}
+
+	# Removes the invalidation reason
+	if = {
+		limit = { exists = invalidation_reason }
+		remove_variable = invalidation_reason
 	}
 }

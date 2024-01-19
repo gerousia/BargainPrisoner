@@ -1,11 +1,11 @@
 namespace = tp_prisoner_system
 
 ##############################
-## PRISONER TRAVEL
+## TP Prisoner system
 ##############################
 
 # Prisoners arrives at destination
-tp_prisoner_system.0100 = {
+tp_prisoner_system.0001 = {
 	type = character_event
 	title = tp_prisoner_system.0100.t
 	desc = {
@@ -14,7 +14,7 @@ tp_prisoner_system.0100 = {
 	theme = prison
 	#content_source = mod_tp
 	left_portrait = {
-		character = root
+		character = scope:recipient
 		animation = war_over_tie
 		trigger =  { location = root.capital_province }
 	}
@@ -22,7 +22,7 @@ tp_prisoner_system.0100 = {
 		character = scope:prisoner_from_sender
 		animation = grief
 	}
-	lower_right_portrait = scope:prisoner_sender
+	lower_right_portrait = scope:sender
 	#lower_left_portrait = scope:prisoner_from_recipient
 
 	immediate = {
@@ -31,27 +31,28 @@ tp_prisoner_system.0100 = {
 		#
 		#
 
-		scope:prisoner_sender = {
-			trigger_event = { id = tp_prisoner_system.0101 }
+		scope:prisoner_from_sender.imprisoner = {
+			trigger_event = { id = tp_prisoner_system.0002 }
 		}
 	}
 
 	option = {
 		name = {
-			text = tp_prisoner_system.0100.a
+			text = tp_prisoner_system.0001.a
 		}
 	}
 }
 
-# prisoner_from_sender arrives at recipient - prisoner_sender
-tp_prisoner_system.0101 = {
+tp_prisoner_system.0002 = {
 	type = letter_event
-	opening = tp_prisoner_system.0101.opening
+	opening = tp_prisoner_system.0002.opening
 	desc = "andito na siya broski"
-	sender = scope:prisoner_recipient
+	sender = scope:recipient
 
 	immediate = {
-		scope:prisoner_recipient = { take_prisoner = { PRISONER = scope:prisoner_from_sender } }
+		scope:recipient = { 
+			take_prisoner = { PRISONER = scope:prisoner_from_sender } 
+		}
 	}
 
 	option = {
