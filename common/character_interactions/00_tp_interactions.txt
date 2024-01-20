@@ -63,7 +63,7 @@ offer_prisoner_interaction = {
 						type = bodyguard_court_position
 						is_available = yes
 						#location = liege.capital_province
-						NOT = { exists = prisoner_company_travelling_to_recipient }
+						NOT = { exists = prisoner_travelling_to_recipient }
 					}
 				}
 			}
@@ -89,7 +89,7 @@ offer_prisoner_interaction = {
 			NOT = { 00_tp_prisoner_already_offered_trigger = yes }
 		}
 		#NOT = { has_character_flag = under_offer_as_prisoner_flag }
-		#NOT = { has_variable = prison_guard_travelling_with_prisoner }
+		#NOT = { has_variable = prisoner_bodyguard_travelling_to_recipient }
 	}
 
 	can_send = {
@@ -106,7 +106,6 @@ offer_prisoner_interaction = {
 		scope:secondary_actor = {
 			add_character_flag = {
 				flag = under_offer_as_prisoner_flag
-				months = 1
 			}
 		}
 	}

@@ -19,7 +19,7 @@ take_prisoner = {
 	}
 }
 
-travel_back_home = {
+home_court_depart_effect = {
 	if = {
 		limit = { 
 			is_imprisoned = no
@@ -33,12 +33,16 @@ travel_back_home = {
 	}
 }
 
+# Defining new scope variables under $SENDER$
+## prisoner_bodyguard_travelling_to_recipient = prisoner_from_sender
+# Defining new scope variables for $PRISONER$ 
+## prisoner_travelling_to_recipient = bodyguard_from_sender
+## prisoner_old_imprisoner = $SENDER$
+## prisoner_new_imprisoner = $RECIEVER$
 prisoner_depart_effect = {
 	$PRISONER$ = { save_scope_as = prisoner_from_sender }
 	$RECIEVER$ = { save_scope_as = reciever }
 	$SENDER$ = { save_scope_as = sender }
-
-	#scope:sender = { save_scope_as = bodyguard_from_sender }
 
 	scope:sender = {
 		if = {
@@ -48,67 +52,53 @@ prisoner_depart_effect = {
 				limit = { 
 					NOT = { exists = bodyguard_from_sender }
 					is_available = yes
-					#location = liege.capital_province 
-				}
-				set_variable = {
-					name = prisoner_company_travelling_to_recipient
-					value = scope:prisoner_from_sender
-					years = 2 # Arbritrary Value
 				}
 				save_scope_as = bodyguard_from_sender
 			}
 		}
 	}
+
+	scope:bodyguard_from_sender ?= {
+		set_variable = {
+			name = prisoner_travelling_to_recipient
+			value = scope:prisoner_from_sender
+		}
+	}
+
 	scope:prisoner_from_sender = {
 		hidden_effect = {
-			# interface_toast for Sender
-			scope:sender = {
-				send_interface_toast = {
-					title = prisoner_departs_title
-					left_icon = scope:prisoner_from_sender
-					right_icon = scope:reciever
-					# Departure info
-					scope:prisoner_from_sender = {
-						custom_description = {
-							text = prisoner_leaves_for_recipient_tt
-							subject = scope:prisoner_from_sender
-							object = scope:reciever
-						}
-					}
-				}
-			}
-			# interface_toast for Recipient
-			scope:reciever = {
-				send_interface_toast = {
-					title = prisoner_departs_title
-					left_icon = scope:prisoner_from_sender
-					right_icon = scope:sender
-					# Departure info
-					scope:prisoner_from_sender = {
-						custom_description = {
-							text = prisoner_leaves_for_recipient_tt
-							subject = scope:prisoner_from_sender
-							object = scope:reciever
-						}
-					}
-				}
-			}
+
+		}
+
+		show_as_tooltip = {
+			
+		}
+
+		# notification toast
+
+		set_variable = {
+			name = prisoner_old_imprisoner
+			value = scope:sender
 		}
 
 		set_variable = {
-			name = prison_guard_travelling_with_prisoner
-			value = scope:bodyguard_from_sender
-			years = 2 # Arbritrary Value
+			name = prisoner_new_imprisoner
+			value = scope:reciever
 		}
 
-		# Prisoner travels to recipient
-		start_travel_plan = { # ??? Can't find info within the code
+		set_variable = {
+			name = prisoner_bodyguard_travelling_to_recipient
+			value = scope:bodyguard_from_sender
+		}
+
+		# After every variables are set, the prisoner then travels to their recipient
+		start_travel_plan = {
 			players_use_planner = no
 			destination = scope:reciever.capital_province
 			companion = scope:bodyguard_from_sender
-			on_start_on_action = on_prisoner_company_depart_for_recipient
-			on_travel_planner_cancel_on_action = on_prisoner_company_depart_travel_planner_exit
-			on_arrival_on_action = on_prisoner_company_arrive_at_recipient
+			on_start_on_action = on_prisoner_depart_for_recipient
+			on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit
+			on_arrival_on_action = on_prisoner_arrive_at_recipient
 			on_arrival_destinations = last
 			return_trip = no
 		}
@@ -120,26 +110,41 @@ prisoner_depart_effect = {
 	}
 }
 
-prisoner_travel_company_remove_effect = {
-	# Removes the prisoner under offer to the recipient
+prisoner_travel_invalidation_effect = {
+	prisoner_remove_variables_effect = yes
+}
+
+prisoner_remove_variables_effect = {
 	if = {
 		limit = { has_character_flag = under_offer_as_prisoner_flag }
 		remove_character_flag = under_offer_as_prisoner_flag
 	}
 
-	# Removes the bodyguard from the prisoner
-	var:prison_guard_travelling_with_prisoner ?= {
+	# Remove the assigned travel bodyguard_from_sender
+	var:prisoner_bodyguard_travelling_to_recipient ?= {
 		if = {
-			limit = { exists = prisoner_company_travelling_to_recipient }
-			remove_variable = prisoner_company_travelling_to_recipient
+			limit = { exists = prisoner_travelling_to_recipient }
+			remove_variable = prisoner_travelling_to_recipient
 		}
 	}
+
 	if = {
-		limit = { exists = prison_guard_travelling_with_prisoner }
-		remove_variable = prison_guard_travelling_with_prisoner
+		limit = { exists = prisoner_bodyguard_travelling_to_recipient }
+		remove_variable = prisoner_bodyguard_travelling_to_recipient
 	}
 
-	# Removes the invalidation reason
+	# Remove other variables assigned during prisoner_depart_effect
+	if = {
+		limit = { exists = prisoner_old_imprisoner }
+		remove_variable = prisoner_old_imprisoner
+	}
+
+	if = {
+		limit = { exists = prisoner_new_imprisoner }
+		remove_variable = prisoner_new_imprisoner
+	}
+
+	# Removes any invalidation reason
 	if = {
 		limit = { exists = invalidation_reason }
 		remove_variable = invalidation_reason

@@ -31,5 +31,5 @@
 
 00_tp_prisoner_already_offered_trigger = {
 	has_character_flag = under_offer_as_prisoner_flag 
-	has_variable = prison_guard_travelling_with_prisoner 
+	has_variable = prisoner_bodyguard_travelling_to_recipient 
 }

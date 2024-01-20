@@ -1,0 +1,397 @@
+##############################
+## TP Prisoner Travel on_actions
+##############################
+
+## Called on_start_on_action
+# root = secondary_actor
+on_prisoner_depart_for_recipient = {
+	# memory depart from sender
+	# negative opinions for being traded as a prisoner
+	effect = {
+		var:prisoner_bodyguard_travelling_to_recipient ?= { 
+			save_temporary_scope_as = travel_bodyguard 
+		}
+		# Only the prisoner and their assigned bodyguard is allowed in this travel plan.
+		current_travel_plan ?= {
+			every_entourage_character = { remove_character = this }
+			set_travel_leader = scope:travel_bodyguard
+		}
+	}
+}
+
+## Called on_travel_planner_cancel_on_action
+# root = secondary_actor
+on_prisoner_depart_travel_planner_exit = {
+	effect = {
+		# Invalidate travelling prisoner
+		prisoner_travel_invalidation_effect = yes
+	}
+}
+
+# Called on_arrival_on_action
+# root = secondary_actor
+on_prisoner_arrive_at_recipient = {
+	effect = {
+		save_temporary_scope_as = prisoner
+		var:prisoner_old_imprisoner = {
+			save_scope_as = old_imprisoner
+		}
+		var:prisoner_new_imprisoner = {
+			save_scope_as = new_imprisoner
+		}
+		var:prisoner_bodyguard_travelling_to_recipient ?= { 
+			save_temporary_scope_as = travel_bodyguard 
+		}
+
+		# Invalidation Check.
+		## Prisoner.
+		if = {
+			limit = { 
+				scope:prisoner = {
+					is_alive = no 
+				}
+			}
+			scope:prisoner = {
+				set_variable = { 
+					name = invalidation_reason 
+					value = flag:death 
+				}
+			}
+		}
+		## Bodyguard.
+		else_if = {
+			limit = { 
+				scope:travel_bodyguard = {
+					OR = {
+						is_alive = no
+						is_landed = yes
+						is_imprisoned = yes
+						NOT = { has_court_position = bodyguard_court_position } 
+					}
+				}
+			}
+			scope:prisoner = {
+				set_variable = { 
+					name = invalidation_reason 
+					value = flag:bodyguard 
+				}
+			}
+		}
+		## Sender.
+		else_if = {
+			limit = {
+				scope:old_imprisoner = {
+					OR = {
+						is_alive = no 
+						is_landed = no 
+						#is_imprisoned = no
+					}
+				}
+			}
+			scope:prisoner = {
+				set_variable = {
+					name = invalidation_reason
+					value = flag:sender
+				}
+			}
+		}
+		## Reciever.
+		else_if = {
+			limit = {
+				scope:new_imprisoner = {
+					OR = {
+						is_alive = no 
+						is_landed = no 
+						is_imprisoned = no
+					}
+				}
+			}
+			scope:prisoner = {
+				set_variable = {
+					name = invalidation_reason
+					value = flag:receiver
+				}
+			}
+		}
+
+		# Invalidate travelling prisoner.
+		if = {
+			limit = { has_variable = invalidation_reason }
+			trigger_event = { on_action = on_prisoner_invalidated }
+		}
+		# But If everything goes well...
+		else = {
+			scope:new_imprisoner = { 
+				trigger_event = { 
+					id = tp_prisoner_system.0001
+					days = 1 
+				}
+			}
+			## If the prisoner's bodyguard is still around, let them travel back to their liege.
+			scope:travel_bodyguard ?= { home_court_depart_effect = yes }
+			## Remove flags/variables related to the prisoners and bodyguards.
+			prisoner_travel_invalidation_effect = yes
+		}
+
+		## Opinion Modifiers/Events related to prisoner transfer below
+		# - - - - -
+	}
+}
+
+# Called when the prisoner travel gets invalidated
+# root = prisoner_from_sender
+# var:invalidation_reason is the reason for invalidation
+## var:invalidation_reason = flag:death 		- The prisoner died.
+## var:invalidation_reason = flag:bodyguard		- The bodyguard is either dead, landed, imprisoned or deposed.
+## var:invalidation_reason = flag:reciever 		- The recipient is either dead, unlanded, imprisoned or deposed.
+## var:invalidation_reason = flag:invalid 		- The fallback invalidation
+on_prisoner_invalidated = {
+	effect = {
+		debug_log = "Prisoner Invalidated."
+		debug_log_scopes = yes
+		add_character_flag = { # Might use
+			flag = recently_invalidated_prisoner
+			days = 1
+		}
+
+		save_scope_as = prisoner
+		var:prisoner_bodyguard_travelling_to_recipient ?= { 
+			save_temporary_scope_as = travel_bodyguard 
+		}
+
+		# Invalidate travelling prisoner
+		if = {
+			limit = { scope:prisoner = { has_variable = invalidation_reason } }
+			## Death.
+			if = {
+				limit = { scope:prisoner.var:invalidation_reason = flag:death }
+				### Notify the actor.
+				scope:sender = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:receiver
+						custom_tooltip = prisoner_invalidated_during_travel_notification.actor.death.tt
+					}
+				}
+				### Notify the recipient.
+				scope:reciever = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:sender
+						custom_tooltip = prisoner_invalidated_during_travel_notification.recipient.death.tt
+					}
+				}
+			}
+			## Bodyguard.
+			else_if = {
+				limit = { scope:prisoner.var:invalidation_reason = flag:bodyguard }
+				### Notify the recipient.
+				scope:reciever = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:sender
+						custom_tooltip = prisoner_invalidated_during_travel_notification.recipient.bodyguard.tt
+					}
+				}
+			}
+			## Sender.
+			else_if = {
+				limit = { scope:prisoner.var:invalidation_reason = flag:sender }
+				### Notify the recipient.
+				scope:reciever = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:sender
+						custom_tooltip = prisoner_invalidated_during_travel_notification.recipient.sender.tt
+					}
+				}
+				### Because the inital actor died, they are replaced by their primary heir. 
+				scope:sender.primary_heir ?= { save_scope_as = sender }
+			}
+			## Reciever.
+			else_if = {
+				limit = { scope:prisoner.var:invalidation_reason = flag:reciever }
+				### Notify the actor.
+				scope:sender = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:reciever
+						custom_tooltip = prisoner_invalidated_during_travel_notification.actor.reciever.tt
+					}
+				}
+				### Because the inital recipient died, they are replaced by their primary heir. 
+				scope:recipient.primary_heir ?= { save_scope_as = recipient }
+				### Notify the new recipient.
+				scope:reciever = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:sender
+						custom_tooltip = prisoner_invalidated_during_travel_notification.recipient.reciever.tt
+					}
+				}
+			}
+			## Default Invalidation.
+			else_if = {
+				limit = { scope:prisoner.var:invalidation_reason = flag:invalid }
+				### Notify the actor.
+				scope:sender = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:receiver
+						custom_tooltip = prisoner_invalidated_during_travel_notification.actor.invalid.tt
+					}
+				}
+				### Notify the recipient.
+				scope:reciever = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:sender
+						custom_tooltip = prisoner_invalidated_during_travel_notification.recipient.invalid.tt
+					}
+				}
+			}
+			## Prisoner will attempt to escape on any invalidation reason.
+			scope:prisoner = { 
+				if = {
+					limit = { is_alive = yes }
+					trigger_event = {
+						id = tp_prison.9000
+						days = 1
+					}
+				} 
+			}
+		}
+		# Provide a destination location.
+		## If the prisoner managed to escape...
+		if = {
+			limit = { scope:prisoner = { is_imprisoned = no } }
+			### If prisoner is landed.
+			if = {
+				limit = { 
+					scope:prisoner = { 
+						is_landed = yes
+						exists = capital_province
+					} 
+				}
+				scope:prisoner.capital_province = { save_temporary_scope_as = destination_province }
+			}
+			### Else to prisoner's liege capital.
+			else_if = {
+				limit = { 
+					scope:prisoner.liege = {
+						is_alive = yes
+						is_landed = yes
+						exists = capital_province
+					}
+				}
+				scope:prisoner.liege.capital_province = { save_temporary_scope_as = destination_province }
+			}
+			### Else to prisoner's liege location.
+			else_if = {
+				limit = {
+					scope:prisoner.liege = {
+						is_alive = yes
+						exists = location
+					}
+				}
+				scope:prisoner.liege.location = { save_temporary_scope_as = destination_province }
+			}
+			### Else to any family member's capital that is still alive.
+			else_if = {
+				limit = {
+					scope:prisoner = {
+						any_close_family_member = {
+							is_alive = yes
+							is_landed = yes
+						}
+					}
+					random_close_family_member = {
+						limit = {
+							is_alive = yes
+							is_landed = yes
+						}
+						this.capital_province = { save_temporary_scope_as = destination_province }
+					}
+				}
+			}
+			### Else tell them goodluck and stay put.
+			else = {
+				scope:prisoner.location = { save_temporary_scope_as = destination_province }
+			}
+		}
+		## But if the prisoner didn't escape...
+		else = {
+			### Then prisoner travels back to their inital imprisoner.
+			if = {
+				limit = { 
+					scope:prisoner = { 
+						NOT = { location = imprisoner.capital_province }
+					}
+				}
+				scope:prisoner.imprisoner.capital_province = { save_temporary_scope_as = destination_province }
+			}
+		}
+		# Prisoner start travel.
+		## If the prisoner managed to escape...
+		if = {
+			limit = { scope:prisoner = { is_imprisoned = yes } }
+			start_travel_plan = {
+				players_use_planner = no
+				destination = scope:destination_province
+				return_trip = no
+			}
+			### If the prisoner's bodyguard is still around, let them travel back to their liege.
+			scope:travel_bodyguard ?= { home_court_depart_effect = yes }
+			### Remove flags/variables related to the prisoners and bodyguards.
+			prisoner_travel_invalidation_effect = yes
+		}
+		## But if the prisoner didn't escape...
+		else_if = {
+			limit = { exists = scope:destination_province }
+			start_travel_plan = {
+				players_use_planner = no
+				destination = scope:destination_province
+				companion = scope:travel_bodyguard
+				on_start_on_action = on_prisoner_depart_for_actor
+				on_arrival_on_action = on_prisoner_arrive_at_actor
+				on_arrival_destinations = last
+				return_trip = no
+			}
+		}
+	}
+}
+
+# Called on_prisoner_invalidated on_start_on_action
+# root = prisoner_from_sender
+on_prisoner_depart_for_actor = {
+	effect = {
+		var:prisoner_bodyguard_travelling_to_recipient ?= { 
+			save_temporary_scope_as = travel_bodyguard 
+		}
+		# Only the prisoner and their assigned bodyguard is allowed in this travel plan.
+		current_travel_plan ?= {
+			every_entourage_character = { remove_character = this }
+			set_travel_leader = scope:travel_bodyguard
+		}
+	}
+}
+
+on_prisoner_arrive_at_actor = {
+	effect = {
+		## Prisoner will attempt to escape.
+		trigger_event = {
+			id = tp_prison.9000
+			days = 1
+		}
+		## Remove flags/variables related to the prisoners and bodyguards.
+		prisoner_travel_invalidation_effect = yes
+	}
+}
