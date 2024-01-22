@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## TP Prisoner character_interactions
 ##############################
 
@@ -14,6 +14,7 @@ offer_prisoner_interaction = {
 	ai_max_reply_days = 1
 	popup_on_recieve = yes
 	pause_on_receive = yes
+	#icon = "gfx/interface/icons/portraits/punishment.dds"
 	icon = prison
 
 	populate_actor_list = {
@@ -25,11 +26,11 @@ offer_prisoner_interaction = {
 		}
 	}
 
-	desc = offer_prisoner_interaction_desc # TODO- Localization
+	desc = offer_prisoner_interaction_desc
 
-	prompt = OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER # TODO- Localization
+	prompt = OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER
 
-	notification_text = OFFER_PRISONER_PROPOSAL # TODO- Localization
+	notification_text = OFFER_PRISONER_PROPOSAL
 
 	cooldown_against_recipient = { days = 0 }
 
@@ -41,62 +42,114 @@ offer_prisoner_interaction = {
 		scope:recipient.highest_held_title_tier > tier_barony
 	}
 
-	is_valid_showing_failures_only = { # WIP
-		scope:actor = { 
-			# Must be available
-			is_busy_in_events_localised = yes 
+	is_valid_showing_failures_only = {
+		# Actor
+		## Must be available.
+		scope:actor = { is_busy_in_events_localised = yes }
+		OR = {
+			## Must have any prisoners to offer
+			custom_description = {
+				text = "basic_valid_prisoner_to_offer"
+				subject = scope:actor
+				object = scope:recipient
+				scope:actor = { has_prisoners = yes }
+			}
+			## Must employ a bodyguard.
+			scope:actor = { employs_court_position = bodyguard_court_position }
+			## Must have an available bodyguard at court.
+			custom_description = {
+				text = "available_bodyguard_at_court"
+				subject = scope:actor
+				object = scope:recipient
+				any_court_position_holder = {
+					type = bodyguard_court_position
+					is_available = yes
+					NOT = { exists = prisoner_travelling_to_recipient}
+				}
+			}
+		}
 
-			# Must not be imprisoned
-			is_imprisoned = no
-			
-			# Must have any prisoners to offer
-			has_prisoners = yes # TODO: Localization
-			
-			# Must have an available bodyguard
-			employs_court_position = bodyguard_court_position
-
-			trigger_if = {
-				limit = { employs_court_position = bodyguard_court_position }
-				custom_tooltip = {
-					text = no_bodyguard_available_in_capital
-					any_court_position_holder = {
-						type = bodyguard_court_position
-						is_available = yes
-						#location = liege.capital_province
-						NOT = { exists = prisoner_travelling_to_recipient }
+		# Recipient
+		## Must be available.
+		scope:recipient = { is_busy_in_events_localised = yes }
+		OR = {
+			## Must be at peace with the sender.
+			scope:recipient = { is_at_war_with = scope:actor }
+			## Must not already have any prisoner travelling to the recipient.
+			custom_description = {
+				text = prisoner_already_travelling_tt
+				subject = scope:actor
+				object = scope:recipient
+				scope:actor = {
+					every_prisoner = {
+						if = {
+							limit = { exists = var:prisoner_travelling }
+							var:prisoner_travelling = scope:recipient
+						}
 					}
 				}
 			}
 		}
 
-		scope:recipient = { 
-			# Must be available
-			is_busy_in_events_localised = yes 
+		# Theocratic governments are not allowed.
+		NOR = {
+			scope:actor = { government_has_flag = government_is_theocracy }
+			scope:recipient = { government_has_flag = government_is_theocracy }
+		}
 
-			# Must not be imprisoned
-			is_imprisoned = no
+		# AI
+		## Stop spamming offers.
+		trigger_if = {
+			limit = { 
+				scope:actor = { is_ai = yes }
+				exists = scope:secondary_actor
+			}
+			NOT = { scope:secondary_actor = { has_character_flag = ai_should_not_offer_prisoner } }
+		}
 
-			# Must be at peace with the sender
-			NOT = { is_at_war_with = scope:actor }
+		# Prisoners are valid.
+		trigger_if = {
+			limit = {
+				exists = scope:actor
+				exists = scope:secondary_actor
+			}
+			scope:secondary_actor = { 00_tp_valid_to_offer_prisoner_trigger = { SENDER = scope:actor } }
 		}
 	}
 
 	can_be_picked = {
-		00_tp_valid_to_offer_prisoner_trigger = { SENDER = scope:actor }
-
+		00_tp_valid_to_offer_prisoner_trigger = { SENDER = scope:actor } 
+		# Prisoner already under offer.
 		custom_tooltip = {
-			text = already_under_offered_as_prisoner.tt
+			text = prisoner_already_offered_awaiting_response_tt
 			NOT = { 00_tp_prisoner_already_offered_trigger = yes }
 		}
-		#NOT = { has_character_flag = under_offer_as_prisoner_flag }
-		#NOT = { has_variable = prisoner_bodyguard_travelling_to_recipient }
+		# Prisoner was detained by the Regent.
+		cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
+			PRISONER = this
+			REGENT = this.var:imprisoned_by_diarch
+		}
 	}
 
 	can_send = {
-		trigger_if = {
-			limit = { is_ai = yes }
-			00_tp_valid_to_offer_prisoner_ai_trigger = yes
-			00_tp_prisoner_already_offered_trigger = no
+		# AI
+		scope:actor = {
+			trigger_if = {
+				limit = { is_ai = yes }
+				00_tp_valid_to_offer_prisoner_ai_trigger = yes
+			}	
+		}
+		## Stop spamming offers.
+		scope:recipient = {
+			trigger_if = {
+				limit = { is_ai = no }
+				scope:secondary_actor = { has_character_flag = ai_should_not_offer_prisoner	}
+			}
+		}
+		## Prisoner already under offer.
+		custom_tooltip = {
+			text = prisoner_already_offered_awaiting_response_tt
+			NOT = { 00_tp_prisoner_already_offered_trigger = yes }
 		}
 	}
 
@@ -106,43 +159,267 @@ offer_prisoner_interaction = {
 		scope:secondary_actor = {
 			add_character_flag = {
 				flag = under_offer_as_prisoner_flag
+				months = 1 # Arbritrary Duration.
+			}
+		}
+		# AI
+		## Stop spamming offers.
+		if = {
+			limit = { scope:recipient = { is_ai = no } }
+			hidden_effect = {
+				scope:secondary_actor = {
+					add_character_flag = {
+						flag = ai_should_not_offer_prisoner
+						years = 3
+					}
+				}
 			}
 		}
 	}
 
-	on_accept = {		
-		custom_description_no_bullet = { text = hostage_pacts_on_arrival_tt }
-		custom_description_no_bullet = { text = hostage_execution_warning_tt }
-		custom_description_no_bullet = { text = hostage_attack_warning_tt }
+	on_accept = {
+		custom_description_no_bullet = { text = prisoner_pacts_on_arrival_tt }
 		prisoner_depart_effect = {
 			PRISONER = scope:secondary_actor
 			RECIEVER = scope:recipient
 			SENDER = scope:actor
 		}
+		scope:actor = { trigger_event = tp_char_interaction.0330 }
+
+		# Clan Unity. 
+		## If we're of the same clan this interaction affects unity.
+		if = {
+			limit = {
+				scope:actor = { government_has_flag = government_is_clan }
+				scope:actor.house = scope:secondary_actor.house
+			}
+			add_clan_unity_interaction_effect = {
+				CHARACTER = scope:actor
+				TARGET = scope:secondary_actor
+				VALUE = medium_unity_loss
+				DESC = clan_unity_hostage.desc
+				REVERSE_NON_HOUSE_TARGET = no
+			}
+		}
 	}
 
 	on_decline = {
-		
+		# Trigger Notification Event.
+		scope:actor = { trigger_event = tp_char_interaction.0300 }
+		scope:secondary_actor = { remove_character_flag = under_offer_as_prisoner_flag }
 	}
 
-	on_auto_accept = {
-		
+	auto_accept = {
+		trigger_if = {
+			limit = {
+				scope:hook ?= yes
+				scope:actor = { has_strong_hook = scope:recipient }
+			}
+			custom_description = {
+				text = "spending_hook"
+				subject = scope:actor
+				object = scope:recipient
+				scope:hook ?= yes
+				scope:actor = { has_strong_hook = scope:recipient }
+			}
+		}
+		trigger_else = { always = no }
 	}
 
 	can_be_blocked = {
-		
+		# Hook from Prisoner can counteract, but only if Actor is not forcing the action via Strong Hook.
+		custom_description = { 
+			text = "spending_hook"
+			subject = scope:secondary_actor
+			object = scope:actor
+			scope:secondary_actor = { has_hook = scope:actor }
+			NAND = {
+				scope:hook = yes
+				scope:actor = { has_strong_hook = scope:secondary_actor }
+			}
+		}
 	}
 
 	on_blocked_effect = {
-		
+		scope:secondary_actor = {
+			remove_hook = { target = scope:actor }
+		}
 	}
 
+	# Pillage Legacy
+	## Pay me an extortionate amount!
 	send_option = {
-		
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:recipient ?= {
+				gold >= scope:secondary_recipient.increased_prisoner_cost_value
+			}
+		}
+		flag = extortionate_gold
+		localization = "PRISONER_EXTORTIONATE_GOLD_OPTION"
 	}
 
+	## At least pay me with what you have!
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:recipient ?= {
+				gold < scope:secondary_recipient.increased_prisoner_cost_value
+				gold >= 1
+			}
+		}
+		flag = extortionate_current_gold
+		localization = "PRISONER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+	}
+
+	# Without Pillage Legacy
+	## Pay me what they're worth!
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					NOT = {	dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+			scope:recipient ?= {
+				gold >= scope:secondary_recipient.prisoner_cost_value
+			}
+		}
+		flag = gold
+		localization = "PRISONER_GOLD_OPTION"
+	}
+
+	## At least pay me with what you have!
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					NOT = {	dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+			scope:recipient ?= {
+				gold < scope:secondary_recipient.prisoner_cost_value
+				gold >= 1
+			}
+		}
+		flag = current_gold
+		localization = "PRISONER_CURRENT_GOLD_OPTION"
+	}
+
+	# For a favor.
+	send_option = {
+		is_shown = {
+			NOT = { scope:recipient = { is_at_war_with = scope:secondary_actor } }
+		}
+		is_valid = {
+			scope:actor = {
+				can_add_hook = {
+					target = scope:recipient
+					type = favor_hook
+				}
+			}
+		}
+		flag = favor
+		localization = "PRISONER_FAVOR_OPTION"
+	}
+
+	# For a strong hook.
+	## * I don't know what the right hook here should be.
+	## * There's too many different kinds of hook in-game.
+	send_option = {
+		is_shown = {
+			scope:recipient = { is_at_war_with = scope:secondary_actor }
+		}
+		is_valid = {
+			scope:actor = {
+				can_add_hook = { 
+					target = scope:recipient
+					type = indebted_hook # loyalty_hook?	
+				}
+			}
+		}
+		flag = favor
+		localization = "PRISONER_FAVOR_STRONG_HOOK_OPTION"
+	}
+
+	localization_values = {
+		EXTORTIONATE_PRISONER_COST = scope:secondary_actor.increased_prisoner_cost_value
+		PRISONER_COST = scope:secondary_actor.prisoner_cost_value
+		CURRENT_GOLD = scope:recipient.gold
+	}
+
+	# AI
 	ai_accept = {
-		base = 100 # Temporary
+		base = -50
+
+		# Personal Modifiers.
+		# Opinion Modifiers.
+		# Relation Modifier
+		# Dread Modifiers.
+
+		# Faith Modifier.
+		# Realm Modifier.
+		# Diplomacy Modifier.
+		# Power Modifier.
+		# Claimant Modifier.*
+
+		# Culture Modifier.
+		# Language Modifier.
+		# Age Modifier.
+		# Struggle Modifier.
+
+		## Personality.
+		tp_prisoner_offer_personality_modifier = yes
+		## Perk.
+		tp_prisoner_offer_perk_modifier = yes
+		## Trait.
+		tp_prisoner_offer_trait_modifier = yes
+		## Opinion.
+		tp_prisoner_offer_opinion_clan_modifier = yes
+		tp_prisoner_offer_opinion_modifier= yes
+		## Relation.
+		tp_prisoner_offer_relation_modifier = yes
+		## Dread.
+		tp_prisoner_offer_dread_modifier = yes
+
+		## Faith. - Only Zealous Characters - Less willing to take prisoners from different faith.
+		tp_prisoner_offer_faith_modifier = yes
+		## Realm.
+		#tp_prisoner_offer_realm_modifier = yes
+		## Diplomacy.
+		tp_prisoner_offer_diplomacy_modifier = yes
+		## Power.
+		tp_prisoner_offer_rank_modifier = yes
+		tp_prisoner_offer_military_strength_modifier = yes
+		## Claimant.
+		tp_prisoner_offer_claimant_modifier = yes	
+		## Bankrupt.
+		modifier = {
+			trigger = {	scope:actor.gold <= -1 }
+			add = -100
+			desc = bankrupt_reason
+		}
+		## Culture.
+		tp_prisoner_offer_culture_modifier = yes
+		## Age.
+		modifier = {
+			trigger = {
+				AND = {
+					scope:actor = {	age < 12 }
+					scope:recipient = {	age > 16 }
+				}
+			}
+			add = -5
+			desc = offer_prisoner_interaction_child_tt
+		}
+		## Struggle.
+		tp_prisoner_offer_struggle_modifier = yes
 	}
 
 	ai_targets = {
@@ -154,9 +431,7 @@ offer_prisoner_interaction = {
 
 	ai_frequency = 0
 
-	ai_potential = {
-		
-	}
+	ai_potential = { highest_held_title_tier >= tier_county }
 
 	ai_will_do = {
 		base = 0

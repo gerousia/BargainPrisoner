@@ -1,0 +1,23 @@
+debug_make_travel_bodyguard = {
+	category = interaction_debug_main
+	use_diplomatic_range = no
+	ignores_pending_interaction_block = yes
+	common_interaction = yes
+	icon = prison
+
+	#send_name = "pwet"
+
+	is_shown = {
+		debug_only = yes
+	}
+
+	on_accept = {
+		scope:recipient = {
+			save_scope_as = travel_bodyguard
+			save_scope_as = reciever
+			save_scope_as = sender
+		}
+	}
+
+	auto_accept = yes
+}

@@ -11,8 +11,10 @@ on_prisoner_depart_for_recipient = {
 		var:prisoner_bodyguard_travelling_to_recipient ?= { 
 			save_temporary_scope_as = travel_bodyguard 
 		}
+		debug_log_scopes = yes
 		# Only the prisoner and their assigned bodyguard is allowed in this travel plan.
 		current_travel_plan ?= {
+			debug_log = "TP Set Bodyguard as Travel Leader."
 			every_entourage_character = { remove_character = this }
 			set_travel_leader = scope:travel_bodyguard
 		}
@@ -23,6 +25,8 @@ on_prisoner_depart_for_recipient = {
 # root = secondary_actor
 on_prisoner_depart_travel_planner_exit = {
 	effect = {
+		debug_log = "TP Depart Travel Planner Cancelled."
+		debug_log_scopes = yes
 		# Invalidate travelling prisoner
 		prisoner_travel_invalidation_effect = yes
 	}
@@ -32,7 +36,7 @@ on_prisoner_depart_travel_planner_exit = {
 # root = secondary_actor
 on_prisoner_arrive_at_recipient = {
 	effect = {
-		save_temporary_scope_as = prisoner
+		save_scope_as = prisoner
 		var:prisoner_old_imprisoner = {
 			save_scope_as = old_imprisoner
 		}
@@ -43,9 +47,13 @@ on_prisoner_arrive_at_recipient = {
 			save_temporary_scope_as = travel_bodyguard 
 		}
 
+		debug_log = "TP Arrive at Recipient."
+		debug_log_scopes = yes
+
 		# Invalidation Check.
 		## Prisoner.
 		if = {
+			debug_log = "TP Death Invalidation Reason."
 			limit = { 
 				scope:prisoner = {
 					is_alive = no 
@@ -60,6 +68,7 @@ on_prisoner_arrive_at_recipient = {
 		}
 		## Bodyguard.
 		else_if = {
+			debug_log = "TP Bodyguard Invalidation Reason."
 			limit = { 
 				scope:travel_bodyguard = {
 					OR = {
@@ -79,6 +88,7 @@ on_prisoner_arrive_at_recipient = {
 		}
 		## Sender.
 		else_if = {
+			debug_log = "TP Sender Invalidation Reason."
 			limit = {
 				scope:old_imprisoner = {
 					OR = {
@@ -97,30 +107,33 @@ on_prisoner_arrive_at_recipient = {
 		}
 		## Reciever.
 		else_if = {
+			debug_log = "TP Reciever Invalidation Reason."
 			limit = {
 				scope:new_imprisoner = {
 					OR = {
 						is_alive = no 
 						is_landed = no 
-						is_imprisoned = no
+						#NOT = { is_imprisoned = yes } # Bugged?
 					}
 				}
 			}
 			scope:prisoner = {
 				set_variable = {
 					name = invalidation_reason
-					value = flag:receiver
+					value = reciever
 				}
-			}
+			}	
 		}
 
 		# Invalidate travelling prisoner.
 		if = {
+			debug_log = "TP Start Invalidation."
 			limit = { has_variable = invalidation_reason }
 			trigger_event = { on_action = on_prisoner_invalidated }
 		}
 		# But If everything goes well...
 		else = {
+			debug_log = "TP Transfer Success."
 			scope:new_imprisoner = { 
 				trigger_event = { 
 					id = tp_prisoner_system.0001
@@ -130,7 +143,7 @@ on_prisoner_arrive_at_recipient = {
 			## If the prisoner's bodyguard is still around, let them travel back to their liege.
 			scope:travel_bodyguard ?= { home_court_depart_effect = yes }
 			## Remove flags/variables related to the prisoners and bodyguards.
-			prisoner_travel_invalidation_effect = yes
+			prisoner_remove_variables_effect = yes
 		}
 
 		## Opinion Modifiers/Events related to prisoner transfer below
@@ -140,31 +153,38 @@ on_prisoner_arrive_at_recipient = {
 
 # Called when the prisoner travel gets invalidated
 # root = prisoner_from_sender
-# var:invalidation_reason is the reason for invalidation
-## var:invalidation_reason = flag:death 		- The prisoner died.
-## var:invalidation_reason = flag:bodyguard		- The bodyguard is either dead, landed, imprisoned or deposed.
-## var:invalidation_reason = flag:reciever 		- The recipient is either dead, unlanded, imprisoned or deposed.
-## var:invalidation_reason = flag:invalid 		- The fallback invalidation
+# scope:reason is the reason for invalidation
+## scope:reason = flag:death 		- The prisoner died.
+## scope:reason = flag:bodyguard	- The bodyguard is either dead, landed, imprisoned or deposed.
+## scope:reason = flag:reciever 	- The recipient is either dead, unlanded, imprisoned or deposed.
+## scope:reason = flag:invalid 		- The fallback invalidation
 on_prisoner_invalidated = {
 	effect = {
-		debug_log = "Prisoner Invalidated."
-		debug_log_scopes = yes
-		add_character_flag = { # Might use
-			flag = recently_invalidated_prisoner
-			days = 1
-		}
-
 		save_scope_as = prisoner
 		var:prisoner_bodyguard_travelling_to_recipient ?= { 
 			save_temporary_scope_as = travel_bodyguard 
 		}
+		var:invalidation_reason = {
+			save_temporary_scope_as = reason
+		}
+		debug_log = "TP Invalidated."
+		debug_log_scopes = yes
+
+		scope:prisoner = {
+			add_character_flag = { # Might use
+				flag = recently_invalidated_prisoner
+				days = 1
+			}
+		}
 
 		# Invalidate travelling prisoner
 		if = {
-			limit = { scope:prisoner = { has_variable = invalidation_reason } }
+			debug_log = "TP Start Invalidate Notification."
+			limit = { exists = scope:reason }
 			## Death.
 			if = {
-				limit = { scope:prisoner.var:invalidation_reason = flag:death }
+				debug_log = "TP Death Invalidation Notification."
+				limit = { scope:reason ?= flag:death }
 				### Notify the actor.
 				scope:sender = {
 					send_interface_toast = {
@@ -186,7 +206,17 @@ on_prisoner_invalidated = {
 			}
 			## Bodyguard.
 			else_if = {
-				limit = { scope:prisoner.var:invalidation_reason = flag:bodyguard }
+				debug_log = "TP Bodyguard Invalidation Notification."
+				limit = { scope:reason ?= flag:bodyguard }
+				### Notify the actor.
+				scope:sender = {
+					send_interface_toast = {
+						title = prisoner_invalidated_during_travel_notification
+						left_icon = scope:prisoner
+						right_icon = scope:reciever
+						custom_tooltip = prisoner_invalidated_during_travel_notification.actor.bodyguard.tt
+					}
+				}
 				### Notify the recipient.
 				scope:reciever = {
 					send_interface_toast = {
@@ -199,6 +229,7 @@ on_prisoner_invalidated = {
 			}
 			## Sender.
 			else_if = {
+				debug_log = "TP Sender Invalidation Notification."
 				limit = { scope:prisoner.var:invalidation_reason = flag:sender }
 				### Notify the recipient.
 				scope:reciever = {
@@ -214,7 +245,8 @@ on_prisoner_invalidated = {
 			}
 			## Reciever.
 			else_if = {
-				limit = { scope:prisoner.var:invalidation_reason = flag:reciever }
+				debug_log = "TP Receiver Invalidation Notification."
+				limit = { scope:reason ?= flag:reciever }
 				### Notify the actor.
 				scope:sender = {
 					send_interface_toast = {
@@ -238,7 +270,8 @@ on_prisoner_invalidated = {
 			}
 			## Default Invalidation.
 			else_if = {
-				limit = { scope:prisoner.var:invalidation_reason = flag:invalid }
+				debug_log = "TP Default Invalidation Notification."
+				limit = { scope:reason ?= flag:invalid }
 				### Notify the actor.
 				scope:sender = {
 					send_interface_toast = {
@@ -259,15 +292,15 @@ on_prisoner_invalidated = {
 				}
 			}
 			## Prisoner will attempt to escape on any invalidation reason.
-			scope:prisoner = { 
-				if = {
-					limit = { is_alive = yes }
-					trigger_event = {
-						id = tp_prison.9000
-						days = 1
-					}
-				} 
-			}
+			#scope:prisoner = { 
+			#	if = {
+			#		limit = { is_alive = yes }
+			#		trigger_event = {
+			#			id = tp_prison.9000
+			#			days = 1
+			#		}
+			#	} 
+			#}
 		}
 		# Provide a destination location.
 		## If the prisoner managed to escape...
@@ -342,7 +375,8 @@ on_prisoner_invalidated = {
 		# Prisoner start travel.
 		## If the prisoner managed to escape...
 		if = {
-			limit = { scope:prisoner = { is_imprisoned = yes } }
+			limit = { scope:prisoner = { is_imprisoned = no } }
+			debug_log = "TP Departs Back Home."
 			start_travel_plan = {
 				players_use_planner = no
 				destination = scope:destination_province
@@ -356,6 +390,7 @@ on_prisoner_invalidated = {
 		## But if the prisoner didn't escape...
 		else_if = {
 			limit = { exists = scope:destination_province }
+			debug_log = "TP Departs for Actor."
 			start_travel_plan = {
 				players_use_planner = no
 				destination = scope:destination_province
@@ -387,10 +422,10 @@ on_prisoner_depart_for_actor = {
 on_prisoner_arrive_at_actor = {
 	effect = {
 		## Prisoner will attempt to escape.
-		trigger_event = {
-			id = tp_prison.9000
-			days = 1
-		}
+		#trigger_event = {
+		#	id = tp_prison.9000
+		#	days = 1
+		#}
 		## Remove flags/variables related to the prisoners and bodyguards.
 		prisoner_travel_invalidation_effect = yes
 	}

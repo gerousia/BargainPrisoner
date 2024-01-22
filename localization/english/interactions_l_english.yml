@@ -1,0 +1,3 @@
+﻿l_english:
+ INTERACTION_FORGIVING:0 "[GetTrait('forgiving').GetName( recipient )]: $VALUE|=+0$"
+ INTERACTION_VENGEFUL:0 "[GetTrait('vengeful').GetName( recipient )]: $VALUE|=+0$"

@@ -1,0 +1,9 @@
+﻿l_english:
+ tp_prisoner_system.0001.t: "A New Home"
+ tp_prisoner_system.0001.desc: "At last! My prisoner, [prisoner.GetFirstName], has finally arrived from [prisoner.imprisoner.GetPrimaryTitle.GetNameNoTierNoTooltip]."
+ tp_prisoner_system.0001.desc.war: "[prisoner.GetLeader.GetTitledFirstNameNoTooltip] must surrender immediately!"
+tp_prisoner_system.0001.desc.rival: "Honestly, if #EMP anyone#! is likely guilty of anything, it is you, you [accuser.Custom('InsultAdjective')], [accuser.Custom('InsultAdjective')], [accuser.Custom('InsultAdjective')] [accuser.Custom('InsultNoun')]!"
+ tp_prisoner_system.0001.a: "All according to plan."
+
+
+ tp_prisoner_system.0002.a: "Very well..."

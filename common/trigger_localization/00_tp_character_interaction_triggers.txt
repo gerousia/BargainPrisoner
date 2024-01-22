@@ -1,0 +1,13 @@
+﻿
+# Based from ./common/trigger_localization/01_character_interaction_triggers.txt#basic_valid_hostage_to_offer
+basic_valid_prisoner_to_offer = {
+	first_not = NOT_I_HAVE_VALID_PRISONER_TO_OFFER
+	third_not = NOT_THEY_HAVE_VALID_PRISONER_TO_OFFER
+	global_not = NOT_HAVE_VALID_PRISONER_TO_OFFER
+}
+
+available_bodyguard_at_court = {
+	first_not = NOT_I_HAVE_AVAILABLE_BODYGUARD_AT_COURT
+	third_not = NOT_THEY_HAVE_AVAILABLE_BODYGUARD_AT_COURT
+	global_not = NOT_HAVE_AVAILABLE_BODYGUARD_AT_COURT
+}

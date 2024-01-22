@@ -10,22 +10,48 @@
 	imprisoner = scope:sender
 	# Must not be dying
 	health > dying_health
-	# Must be at the sender's prison
-	#location = this.imprisoner.province_capital
+	# Must be at the imprisoner's prison
+	#location = imprisoner.province_capital
 }
 
 00_tp_valid_to_offer_prisoner_ai_trigger = {
-	# Don't send hostages to those you seriously hate, or vice versa
+	# AI 
+	## Only cares about neighbors.
+	scope:recipient = { character_is_land_realm_neighbor = scope:actor }
+	## Only cares about actors that aren't-
 	NOR = {
+		### bad terms with them.
 		scope:recipient = {
-			has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:actor }
+			has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:actor } 
 		}
+		### feuding their house.
 		scope:actor.house.house_head ?= {
 			any_owned_story = {
 				story_type = story_cycle_house_feud
 				var:house_feud_house ?= scope:recipient.house
-			}
-		}	
+			}	
+		}
+	}
+	## Only cares about 
+
+	## They also should have a valid reason to pick.
+	OR = {
+		### Possibly if actor is at war with the prisoner.
+		scope:actor = { is_at_war_with = scope:secondary_actor }
+		## Possibly if actor is on good terms with the prisoner.
+		scope:actor = {
+			has_any_good_relationship_with_character_trigger = { CHARACTER = scope:secondary_actor }
+		}
+		## Possibly if actor is on bad terms with the prisoner.
+		should_avoid_hostile_action_against_due_to_personal_relations_trigger = {
+			ACTOR = scope:actor
+			RECIPIENT = scope:secondary_actor
+		}
+		scope:actor = {
+			has_any_bad_relationship_with_character_trigger = { CHARACTER = scope:secondary_actor }
+		}
+		## Possibly if actor's vassal.
+		scope:secondary_actor = { is_vassal_of = scope:actor }
 	}
 }
 

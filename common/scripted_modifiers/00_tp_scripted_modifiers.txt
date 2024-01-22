@@ -1,0 +1,798 @@
+
+# PLEASE READ FROM THE AUTHOR:
+## Adjustment values here are heavily influenced by existing in-game parameters.
+## Specifically, these values align with the game's intended existing mechanics, as per my observations.
+## It is crucial not to modify these values in favor of the player, as this mechanic holds significant power
+## and can swiftly turn the tide in a losing war.
+## If you think these values as unfair, kindly provide feedback in the comment section.
+## Let's engage in a discussion about potential changes that could be implemented.
+
+## Based from ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt#bp2_hostage_offer_personality_modifier
+# PERSONALITY
+tp_prisoner_offer_personality_modifier = {
+	## Cowardly characters more willing to accept prisoners
+	modifier = {
+		exists = scope:recipient
+		scope:recipient.ai_boldness < 0
+		add = {
+			value = scope:recipient.ai_boldness
+			multiply = -0.5
+		}
+		desc = HOSTAGE_AI_VALUE_MODIFIER_BOLDNESS
+	}
+	## Compassionate characters are less willing to trade prisoners
+	modifier = {
+		exists = scope:recipient
+		scope:recipient.ai_compassion > 0
+		add = {
+			value = scope:recipient.ai_compassion
+			multiply = -0.5
+		}
+		desc = HOSTAGE_AI_VALUE_MODIFIER_COMPASSION
+	}
+	## Greedy characters are more willing to sell but not buy prisoners.
+	modifier = {
+		exists = scope:recipient
+		scope:recipient.ai_greed != 0
+		add = {
+			value = scope:recipient.ai_greed
+			if = {
+				limit = { scope:recipient.ai_greed < 0 }
+				multiply = -0.5
+			}
+			else = { multiply = 0.5 }
+		}
+		desc = HOSTAGE_AI_VALUE_MODIFIER_GREED
+	}
+	## Honorable characters are less willing to trade prisoners, dishonorable only when to take them
+	modifier = {
+		exists = scope:recipient
+		scope:recipient.ai_honor != 0
+		add = {
+			value = scope:recipient.ai_honor
+			if = {
+				limit = { scope:recipient.ai_honor < 0 }
+				multiply = -0.5
+			}
+			else = {
+				multiply = 0.5
+				if = {
+					limit = {
+						exists = scope:actor
+						scope:recipient = { is_vassal_of = scope:actor }
+						scope:actor = { has_realm_law_flag = vassal_refusal_is_treason }
+					}
+					multiply = 2
+				}
+			}
+		}
+		desc = HOSTAGE_AI_VALUE_MODIFIER_HONOR
+	}
+	# Crown authority makes it even more dishonorable
+	modifier = {
+		exists = scope:recipient
+		scope:recipient.ai_honor > 0
+		exists = scope:actor
+		scope:recipient = { is_vassal_of = scope:actor }
+		scope:actor = { has_realm_law_flag = vassal_refusal_is_treason }
+		add = {
+			value = scope:recipient.ai_honor
+			multiply = 0.5
+		}
+		desc = HOSTAGE_REALM_LAW_REASON
+	}
+	# Rational characters are more willing to trade prisoners, dishonorable only when to take them
+	modifier = { 
+		exists = scope:recipient
+		scope:recipient.ai_rationality != 0
+		add = {
+			value = scope:recipient.ai_rationality
+			multiply = 0.5
+		}
+		desc = HOSTAGE_AI_VALUE_MODIFIER_RATIONALITY
+	}
+	# Cultural traditions
+	modifier = {
+		scope:recipient.culture = { has_cultural_parameter = more_hostage_acceptance }
+		add = 25
+		desc = HOSTAGE_CULTURAL_PARAMETER_REASON
+	}
+	modifier = {
+		scope:recipient = {
+			is_vassal_of = scope:actor
+			culture = { has_cultural_parameter = more_hostage_acceptance_for_vassals }
+		}
+		add = 25
+		desc = HOSTAGE_CULTURAL_PARAMETER_REASON
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#PERK
+# PERK
+tp_prisoner_offer_perk_modifier = {
+	## True Ruler.
+	modifier = {
+		trigger = {	
+			AND = {
+				scope:recipient = { target_is_liege_or_above = scope:actor }
+				scope:actor = { has_perk = true_ruler_perk } 
+			}
+		}
+		add = true_ruler_value
+		desc = offer_prisoner_interaction_true_ruler_perk_tt
+	}
+	## Education - Diplomacy 5.
+	modifier = {
+		trigger = { 
+			scope:actor = { has_trait = education_diplomacy_5 } 
+		}
+		add = 25
+		desc = offer_prisoner_interaction_education_diplomacy_5_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# TRAIT.
+tp_prisoner_offer_trait_modifier = {
+	## Paranoid.
+	modifier = {
+		trigger = {	scope:recipient = {	has_trait = paranoid } }
+		add = -20
+		desc = INTERACTION_PARANOID
+	}
+
+	## Trusting.
+	modifier = {
+		trigger = {	scope:recipient = { has_trait = trusting } }
+		add = 5
+		desc = TAKE_THE_VOWS_TRUSTING
+	}
+
+	## Content.
+	modifier = {
+		trigger = { scope:recipient = {	has_trait = content	} }
+		add = 5
+		desc = INTERACTION_CONTENT
+	}
+
+	## Arrogant.
+	modifier = {
+		trigger = { scope:recipient = {	has_trait = arrogant } }
+		add = -20
+		desc = INTERACTION_ARROGANT
+	}
+
+	## Fickle.
+	modifier = {
+		trigger = {	scope:recipient = {	has_trait = fickle } }
+		add = -10
+		desc = INTERACTION_FICKLE
+	}
+
+	## Forgiving.
+	modifier = {
+		trigger = { scope:recipient = {	has_trait = forgiving } }
+		add = -20
+		desc = INTERACTION_FORGIVING
+	}
+
+	## Vengeful.
+	modifier = {
+		trigger = { scope:recipient = {	has_trait = vengeful } }
+		add = 5
+		desc = INTERACTION_VENGEFUL
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# OPINION.
+tp_prisoner_offer_opinion_modifier = {
+	## Compare Opinion Modifier.
+	### Actor.
+	opinion_modifier = {
+		trigger = {
+			OR = {
+				scope:recipient = {	NOT = { government_has_flag = government_is_clan } }
+				scope:actor = {	NOT = { government_has_flag = government_is_clan } }
+			}
+		}
+		who = scope:recipient
+		opinion_target = scope:actor
+		multiplier = 0.35
+		desc = AI_OPINION_REASON
+	}
+	### Prisoner.
+	opinion_modifier = {
+		trigger = {
+			OR = {
+				scope:recipient = {	NOT = { government_has_flag = government_is_clan } }
+				scope:secondary_recipient = { NOT = { government_has_flag = government_is_clan } }
+			}
+		}
+		who = scope:recipient
+		opinion_target = scope:secondary_recipient
+		multiplier = 0.35
+		desc = AI_OPINION_REASON
+	}
+}
+
+tp_prisoner_offer_opinion_clan_modifier = {
+	## Compare Opinion Modifier.
+	## Clans care more about opinion.
+	### Actor.
+	opinion_modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = {	government_has_flag = government_is_clan }
+				scope:actor = { government_has_flag = government_is_clan }
+			}
+		}
+		who = scope:recipient
+		opinion_target = scope:actor
+		multiplier = 0.7
+		desc = AI_OPINION_REASON
+	}
+	### Prisoner.
+	opinion_modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = {	government_has_flag = government_is_clan }
+				scope:secondary_actor = { government_has_flag = government_is_clan }
+			}
+		}
+		who = scope:recipient
+		opinion_target = scope:secondary_actor
+		multiplier = 0.7
+		desc = AI_OPINION_REASON
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# RELATION.
+tp_prisoner_offer_relation_modifier = {
+	## Powerful Vassal.
+	modifier = {
+		trigger = {	scope:recipient = {	is_powerful_vassal_of = scope:actor } }
+		add = 0
+		desc = offer_prisoner_interaction_powerful_vassal_tt
+	}
+	## Friend.
+	tp_prisoner_offer_relation_friend_modifier = yes
+	## Best Friend.
+	tp_prisoner_offer_relation_bestfriend_modifier = yes
+	## Lover.
+	tp_prisoner_offer_relation_lover_modifier = yes
+	## Soulmate.
+	tp_prisoner_offer_relation_soulmate_modifier = yes
+	## Rival.
+	tp_prisoner_offer_relation_rival_modifier = yes
+	## Nemesis.
+	tp_prisoner_offer_relation_nemesis_modifier = yes
+	## Dynasty Member.
+	tp_prisoner_offer_relation_dynasty_modifier = yes
+}
+
+tp_prisoner_offer_relation_friend_modifier = {
+	## Actor.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = { has_relation_friend = scope:actor }
+				scope:recipient = { NOT = { has_relation_best_friend = scope:actor } }
+			}
+		}
+		add = 10
+		desc = offer_prisoner_interaction_friend_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = { has_relation_friend = scope:secondary_actor }
+				scope:recipient = { NOT = { has_relation_best_friend = scope:secondary_actor } }
+			}
+		}
+		add = 10
+		desc = offer_prisoner_interaction_friend_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_bestfriend_modifier = {
+	## Actor.
+	modifier = {
+		trigger = {	scope:recipient = { has_relation_best_friend = scope:actor } }
+		add = 20
+		desc = offer_prisoner_interaction_bestfriend_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = { scope:recipient = { NOT = { has_relation_best_friend = scope:secondary_actor } } }
+		add = 20
+		desc = offer_prisoner_interaction_bestfriend_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_lover_modifier = {
+	## Actor.
+	modifier = {
+		trigger = {	
+			AND = {
+				scope:recipient = { has_relation_lover = scope:actor }
+				scope:recipient = { NOT = { has_relation_soulmate = scope:actor } }
+			}
+		}
+		add = 10
+		desc = offer_prisoner_interaction_lover_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = { 
+			AND = {
+				scope:recipient = { has_relation_lover = scope:secondary_actor }
+				scope:recipient = { NOT = { has_relation_soulmate = scope:secondary_actor } }
+			}
+		}
+		add = 10
+		desc = offer_prisoner_interaction_lover_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_soulmate_modifier = {
+	## Actor.
+	modifier = {
+		trigger = { scope:recipient = { has_relation_soulmate = scope:actor } }
+		add = 20
+		desc = offer_prisoner_interaction_soulmate_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = { scope:recipient = { has_relation_soulmate = scope:secondary_actor } }
+		add = 20
+		desc = offer_prisoner_interaction_soulmate_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_rival_modifier = {
+	## Actor.
+	modifier = {
+		trigger = {	
+			AND = {
+				scope:recipient = { has_relation_rival = scope:actor }
+				scope:recipient = { NOT = { has_relation_nemesis = scope:actor } }
+			}
+		}
+		add = -100
+		desc = offer_prisoner_interaction_rival_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = { 
+			AND = {
+				scope:recipient = { has_relation_rival = scope:secondary_actor }
+				scope:recipient = { NOT = { has_relation_nemesis = scope:secondary_actor } }
+			}
+		}
+		add = -100
+		desc = offer_prisoner_interaction_rival_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_nemesis_modifier = {
+	## Actor.
+	modifier = {
+		trigger = { scope:recipient = { has_relation_nemesis = scope:actor } }
+		add = -1000
+		desc = offer_prisoner_interaction_nemesis_actor_tt
+	}
+	## Prisoner.
+	modifier = {
+		trigger = { scope:recipient = { has_relation_nemesis = scope:secondary_actor } }
+		add = -1000
+		desc = offer_prisoner_interaction_nemesis_prisoner_tt
+	}
+}
+
+tp_prisoner_offer_relation_dynasty_modifier = {
+	## Actor.
+	modifier = {
+		trigger = { scope:recipient = { dynasty = scope:actor.dynasty } }
+		add = 5
+		desc = offer_prisoner_interaction_dynasty_actor_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# DREAD.
+tp_prisoner_offer_dread_modifier = {
+	## Intimidated.
+	modifier = {
+		scope:recipient = {
+			has_dread_level_towards = {
+				target = scope:actor
+				level = 1
+			}
+		}
+		add = intimidated_external_reason_value
+		desc = INTIMIDATED_REASON
+	}
+	## Cowed.
+	modifier = {
+		scope:recipient = {
+			has_dread_level_towards = {
+				target = scope:actor
+				level = 2
+			}
+		}
+		desc = COWED_REASON
+		add = cowed_external_reason_value
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# FAITH.
+tp_prisoner_offer_faith_modifier = {
+	## Only for Zealous Characters.
+	## Different Faith.
+	modifier = {
+		trigger = {	
+			AND = {
+				scope:recipient = { ai_zeal >= very_high_positive_ai_value }
+				NOT = { scope:recipient = { faith = scope:actor.faith } }
+			}
+		}
+		add = {
+			### No Pluralism.
+			### Recipient Not Pluralism.
+			if = {
+				limit = {
+					OR = {
+						scope:recipient.faith = { NOT = { has_doctrine = doctrine_pluralism_pluralistic } }
+					}
+				}
+				value = -40 ### BASE.
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_hostile_level
+							}
+						}
+					}
+					add = -40
+				}
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_evil_level
+							}
+						}
+					}
+					add = -40
+				}
+			}
+			### Recipient Pluralism
+			if = {
+				limit = {
+					AND = {
+						scope:recipient.faith = { has_doctrine = doctrine_pluralism_pluralistic }
+						scope:actor.faith = { NOT = { has_doctrine = doctrine_pluralism_pluralistic } }
+					}
+				}
+				value = -20 ### BASE.
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_hostile_level
+							}
+						}
+					}
+					add = -20
+				}
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_evil_level
+							}
+						}
+					}
+					add = -20
+				}
+			}
+			### BOTH Pluralism
+			if = {
+				limit = {
+					AND = {
+						scope:recipient.faith = { has_doctrine = doctrine_pluralism_pluralistic }
+						scope:actor.faith = { has_doctrine = doctrine_pluralism_pluralistic }
+					}
+				}
+				value = -10 ### BASE.
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_hostile_level
+							}
+						}
+					}
+					add = -10
+				}
+				if = {
+					limit = {
+						scope:recipient.faith = {
+							faith_hostility_level = {
+								target = scope:actor.faith
+								value >= faith_evil_level
+							}
+						}
+					}
+					add = -10
+				}
+			}
+		}
+		desc = offer_prisoner_interaction_different_faith_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# REALM.
+tp_prisoner_offer_realm_modifier = {
+	## Distant Realm.
+	### Overseas Connection.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:actor = { character_is_realm_neighbor = scope:recipient }
+				scope:actor = { NOT = { character_is_land_realm_neighbor = scope:recipient } }
+			}
+		}
+		add = -100
+		desc = offer_prisoner_interaction_distant_realm
+	}
+	## Distant Realm.
+	### No Connection.
+	modifier = { #Distant Realm — No Connection
+		trigger = {
+			AND = {
+				scope:actor = { NOT = { character_is_realm_neighbor = scope:recipient } } 
+				scope:recipient.capital_province = {
+					squared_distance = {
+						target = scope:actor.capital_province
+						value < 200000
+					}
+				}
+			}
+		}
+		add = -250
+		desc = offer_prisoner_interaction_distant_realm
+	}
+	## Remote Realm.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:actor = { NOT = { character_is_realm_neighbor = scope:recipient } }
+				scope:recipient.capital_province = {
+					squared_distance = {
+						target = scope:actor.capital_province
+						value >= 200000
+					}
+				}
+			}
+		}
+		add = -500
+		desc = offer_prisoner_interaction_remote_realm
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# DIPLOMACY.
+tp_prisoner_offer_diplomacy_modifier = {
+	## Peace.
+	### You are my liege.
+	modifier = {
+		trigger = {
+			scope:recipient = { liege = scope:actor }
+		}
+		add = 20
+		desc = offer_prisoner_interaction_liege_tt
+	}
+	## Peace.
+	### Bonus to vassals.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = { target_is_liege_or_above = scope:actor }
+				scope:actor = { has_character_modifier = event_bonus_to_vassal_accept }
+			}
+		}
+		add = 20
+		desc = event_bonus_to_vassal_accept_tt
+	}
+	## Peace.
+	### We are allies.
+	modifier = {
+		trigger = {
+			scope:recipient = {	is_allied_to = scope:actor }
+		}
+		add = 20
+		desc = offer_prisoner_interaction_allied_tt
+	}
+	## War.
+	### We just fought against each other.
+	modifier = {
+		trigger = {
+			scope:recipient = { any_truce_holder = { this = scope:actor	} }
+		}
+		add = -50
+		desc = offer_prisoner_interaction_recent_war_tt
+	}
+	## War.
+	### I fought an independence war against you.
+	modifier = {
+		trigger = {
+			scope:recipient = {
+				exists = var:independence_war_former_liege
+				var:independence_war_former_liege = scope:actor
+			}
+		}
+		add = -200
+		desc = offer_prisoner_interaction_independence_war_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# RANK.
+tp_prisoner_offer_rank_modifier = {
+	## Recipient Tribal.
+	## Actor Not Tribal.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = { government_has_flag = government_is_tribal }
+				scope:actor = { NOT = { government_has_flag = government_is_tribal } }
+			}
+		}
+		add = -20
+		desc = interaction_tribal_vs_nontribal
+	}
+	## Recipient Not Tribal.
+	## Actor Tribal.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:recipient = { NOT = { government_has_flag = government_is_tribal } }
+				scope:actor = { government_has_flag = government_is_tribal }
+			}
+		}
+		add = -20
+		desc = interaction_tribal_vs_nontribal
+	}	
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# MILITARY STRENGTH.
+tp_prisoner_offer_military_strength_modifier = {
+	modifier = {
+		add = {
+		value = 1
+		subtract = {
+			value = scope:recipient.max_military_strength # Intended for recipient to use max, to avoid having vassalizations become too easy for weakened realms
+			divide = { value = scope:actor.current_military_strength min = 1 }
+		}
+		multiply = 20
+		ceiling = yes
+		}
+		desc = offer_vassalization_interaction_aibehavior_power_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# CLAIMANT.
+tp_prisoner_offer_claimant_modifier = {
+	modifier = {
+		trigger = { scope:recipient = { has_claim_on = scope:secondary_actor.primary_title } }
+		add = {
+			value = 50 ### BASE.
+			if = {
+				limit = { scope:recipient = { has_revoke_title_reason = scope:secondary_actor } }
+				add = 100 #! Flagged for Adjustment.
+			}
+			if = {
+				limit = {
+					OR = {
+						AND = {
+							scope:secondary_actor = { has_trait = bastard }
+							scope:recipient = {	faith = { NOT = { has_doctrine = doctrine_bastardry_none } } }
+						}
+						scope:recipient = { has_trait = denounced }
+						scope:recipient = { has_trait = disinherited }
+					}
+				}
+				add = 50 #! Flagged for Adjustment.
+			}
+		}
+		desc = offer_prisoner_interaction_claimant_tt
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MAIN
+# CULTURE.
+tp_prisoner_offer_culture_modifier = {
+	## Language
+	tp_prisoner_offer_same_language_modifier = yes
+	## Cultural Acceptance.
+	#tp_prisoner_offer_cultural_acceptance_modifier = yes
+	## Isolationist Tradition.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:actor = { NOT = { has_same_culture_as = scope:recipient } }
+				scope:recipient.culture = {	has_cultural_tradition = tradition_isolationist	}
+			}
+		}
+		add = -20
+		desc = isolationist_reason
+	}
+}
+
+tp_prisoner_offer_same_language_modifier = {
+	modifier = {
+		trigger = { scope:actor = { knows_language_of_culture = scope:recipient.culture } }
+		add = 5
+		desc = speaks_same_language_interaction_reason
+	}
+}
+
+tp_prisoner_offer_cultural_acceptance_modifier = {
+	modifier = {
+		trigger = {
+			AND = {
+				scope:actor = { NOT = { has_same_culture_as = scope:recipient } }
+				scope:actor.culture = {	
+					cultural_acceptance = { 
+						target = scope:recipient.culture 
+						value <= 90 
+					} 
+				}
+			}
+		}
+		add = offer_prisoner_acceptance_value
+		desc = cultural_acceptance_interaction_reason
+	}
+}
+
+# Based from ./common/character_interactions/00_character_interactions.txt#offer_vassalization_interaction#ai_accept#MINOR
+# STRUGGLE.
+tp_prisoner_offer_struggle_modifier = {
+	## Persian Struggle.
+	### Bonus gained by successful Sway Scheme.
+	modifier = {
+		trigger = {
+			AND = { 
+				scope:actor = { dynasty ?= { has_dynasty_modifier = fp3_rekindler_of_iran_modifier } }
+				scope:recipient = { culture = { has_cultural_pillar = heritage_iranian } }
+			}
+		}
+		add = 20
+		desc = fp3_rekindler_of_iran_modifier_reason
+	}
+	## Iberian Struggle.
+	modifier = {
+		trigger = {
+			AND = {
+				scope:actor = {	NOT = {	any_character_struggle = { is_struggle_type = iberian_struggle } } }
+				scope:recipient = { any_character_struggle = { is_struggle_type = iberian_struggle } } 
+			}
+		}
+		add = -35
+		desc = iberian_struggle_reason_reason
+	}
+}

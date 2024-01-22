@@ -2,37 +2,6 @@
 ## TP Prisoner scripted_effects
 ##############################
 
-take_prisoner = {
-	$PRISONER$ = {
-	#if = {
-	#	limit = { has_character_flag = under_offer_as_prisoner_flag	} 
-	#	## MEMORY HERE
-	#	#
-	#	#
-	#
-	#	}
-	release_from_prison = yes
-	}
-	imprison = {
-		target = $PRISONER$
-		type = house_arrest
-	}
-}
-
-home_court_depart_effect = {
-	if = {
-		limit = { 
-			is_imprisoned = no
-			NOT = { location = liege.capital_province } 
-		}
-		start_travel_plan = {
-			players_use_planner = no
-			destination = liege.capital_province
-			return_trip = no
-		}
-	}
-}
-
 # Defining new scope variables under $SENDER$
 ## prisoner_bodyguard_travelling_to_recipient = prisoner_from_sender
 # Defining new scope variables for $PRISONER$ 
@@ -40,6 +9,9 @@ home_court_depart_effect = {
 ## prisoner_old_imprisoner = $SENDER$
 ## prisoner_new_imprisoner = $RECIEVER$
 prisoner_depart_effect = {
+	debug_log = "TP Depart."
+	debug_log_scopes = yes
+	
 	$PRISONER$ = { save_scope_as = prisoner_from_sender }
 	$RECIEVER$ = { save_scope_as = reciever }
 	$SENDER$ = { save_scope_as = sender }
@@ -67,11 +39,18 @@ prisoner_depart_effect = {
 
 	scope:prisoner_from_sender = {
 		hidden_effect = {
-
+			if = {
+				limit = { this = { has_character_modifier = allowed_to_go_outside } }
+				this = { remove_character_modifier = allowed_to_go_outside }
+			}
+			if = {
+				limit = { this = { has_character_modifier = moldy_gruel_diet } }
+				this = { remove_character_modifier = moldy_gruel_diet }
+			}
 		}
 
 		show_as_tooltip = {
-			
+			scope:receiver = { take_hostage = scope:prisoner_from_sender }
 		}
 
 		# notification toast
@@ -91,11 +70,17 @@ prisoner_depart_effect = {
 			value = scope:bodyguard_from_sender
 		}
 
+		# Prisoner is travelling towards...
+		set_variable = {
+			name = prisoner_travelling
+			value = scope:recipient
+		}
+
 		# After every variables are set, the prisoner then travels to their recipient
 		start_travel_plan = {
 			players_use_planner = no
 			destination = scope:reciever.capital_province
-			companion = scope:bodyguard_from_sender
+			#companion = scope:bodyguard_from_sender
 			on_start_on_action = on_prisoner_depart_for_recipient
 			on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit
 			on_arrival_on_action = on_prisoner_arrive_at_recipient
@@ -111,10 +96,13 @@ prisoner_depart_effect = {
 }
 
 prisoner_travel_invalidation_effect = {
+	debug_log = "TP Travel Invalidation Effect."
 	prisoner_remove_variables_effect = yes
 }
 
 prisoner_remove_variables_effect = {
+	debug_log = "TP Remove Variables Effect."
+
 	if = {
 		limit = { has_character_flag = under_offer_as_prisoner_flag }
 		remove_character_flag = under_offer_as_prisoner_flag
@@ -148,5 +136,41 @@ prisoner_remove_variables_effect = {
 	if = {
 		limit = { exists = invalidation_reason }
 		remove_variable = invalidation_reason
+	}
+}
+
+##############################
+## Extra scripted_effects
+##############################
+
+# Placeholder for localization.
+#take_prisoner = {
+#	add_prisoner = $PRISONER$
+#}
+
+add_prisoner = {
+	$PRISONER$ = {
+		if = {
+			limit = { is_imprisoner = yes }
+			release_from_prison = yes
+		}
+	}
+	imprison = {
+		target = $PRISONER$
+		type = house_arrest
+	}
+}
+
+home_court_depart_effect = {
+	if = {
+		limit = { 
+			is_imprisoned = no
+			NOT = { location = liege.capital_province } 
+		}
+		start_travel_plan = {
+			players_use_planner = no
+			destination = liege.capital_province
+			return_trip = no
+		}
 	}
 }

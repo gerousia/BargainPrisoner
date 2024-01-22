@@ -4,15 +4,33 @@ namespace = tp_prisoner_system
 ## TP Prisoner system
 ##############################
 
-# Prisoners arrives at destination
-tp_prisoner_system.0001 = {
+###############
+# Travel
+###############
+
+## Based from ./events/dlc/bp2/bp2_hostage_system.txt#bp2_hostage_system.0500
+# Prisoners arrives at recipient
+# root = recipient
+tp_prisoner_system.0001 = { # Arbitrary ID
 	type = character_event
-	title = tp_prisoner_system.0100.t
+	title = tp_prisoner_system.0001.t
 	desc = {
-		desc = "pwet"
+		desc = tp_prisoner_system.0001.desc
+		triggered_desc = {
+			trigger = { is_at_war_with = scope:prisoner }
+			desc = tp_prisoner_system.0001.desc.war
+		}
+		triggered_desc = {
+			trigger = {
+				OR = {
+					has_relation_rival = scope:prisoner
+					has_relation_nemesis = scope:prisoner
+				}
+				desc = tp_prisoner_system.0001.desc.rival
+			}
+		}
 	}
 	theme = prison
-	#content_source = mod_tp
 	left_portrait = {
 		character = scope:recipient
 		animation = war_over_tie
@@ -23,41 +41,48 @@ tp_prisoner_system.0001 = {
 		animation = grief
 	}
 	lower_right_portrait = scope:sender
-	#lower_left_portrait = scope:prisoner_from_recipient
 
 	immediate = {
-		#root = { save_temporary_scope_as = prisoner_recipient }
-		## For recipient's prisoner
-		#
-		#
-
-		scope:prisoner_from_sender.imprisoner = {
-			trigger_event = { id = tp_prisoner_system.0002 }
+		#take_prisoner = { PRISONER = scope:prisoner }
+		scope:prisoner.imprisoner = {
+			#trigger_event = { id = tp_prisoner_system.0002 }
 		}
 	}
 
 	option = {
 		name = {
-			text = tp_prisoner_system.0001.a
+			trigger = {
+				limit = { is_at_war_with = scope:prisoner }
+				text = tp_prisoner_system.0001.a.war
+			}
 		}
+	}
+	option = {
+		name = tp_prisoner_system.0001.a 
 	}
 }
 
 tp_prisoner_system.0002 = {
 	type = letter_event
-	opening = tp_prisoner_system.0002.opening
-	desc = "andito na siya broski"
-	sender = scope:recipient
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = tp_char_interaction.0002.desc
+
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
 
 	immediate = {
-		scope:recipient = { 
-			take_prisoner = { PRISONER = scope:prisoner_from_sender } 
+		show_as_tooltip = {
+			scope:recipient = { 
+				#take_prisoner = { PRISONER = scope:prisoner_from_sender } 
+			}
 		}
 	}
 
 	option = {
-		name = {
-			text = "pwet"
-		}
+		name = tp_prisoner_system.0002.a
 	}
 }

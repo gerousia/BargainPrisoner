@@ -1,0 +1,164 @@
+﻿# Based from:
+## ./localization/english/interactions/hostage_interaction_l_english.yml
+## ./localization/english/interactions_l_english.yml
+
+
+l_english:
+ # OPTIONS
+ ransomed_by_someone: "Your [prisoner.Custom2('RelationToMeShort', SCOPE.sC('payer'))] [payer.GetShortUIName] Ransomed you!@prison_icon!"
+ ransomed_by_someone_third_party: "[prisoner_liege_scope.Custom2('RelationToMeShort', SCOPE.sC('prisoner'))|U] Ransomed!@prison_icon!"
+ ransomed_by_someone_third_party_desc: "[payer.GetShortUIName] Ransomed your [prisoner_liege_scope.Custom2('RelationToMeShort', SCOPE.sC('prisoner'))] [prisoner.GetShortUIName] from the dungeons of [imprisoner.GetShortUIName]!"
+
+ prisoner_cost_trigger: "Prisoner Cost is: $PRISONER_COST|0$"
+
+ PRISONER_GOLD_PAY_OPTION: "Pay [gold_i]$PRISONER_COST|0$"
+ PRISONER_CURRENT_PAY_GOLD_OPTION: "Pay [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full cost of [gold_i]$PRISONER_COST|0$)#!"
+
+ PRISONER_GOLD_OPTION: "For [gold_i]$PRISONER_COST|0$"
+ PRISONER_CURRENT_GOLD_OPTION: "For [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full cost of [gold_i]$PRISONER_COST|0$)#!"
+
+ PRISONER_EXTORTIONATE_GOLD_OPTION: "For [gold_i]$EXTORTIONATE_PRISONER_COST|0$ and [prestige_i]$EXTORTIONATE_PRISONER_COST|0$"
+ PRISONER_EXTORTIONATE_CURRENT_GOLD_OPTION: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$CURRENT_GOLD|0$ #weak (cannot afford full cost of [gold_i]$EXTORTIONATE_PRISONER_COST|0$)#!"
+ 
+ PRISONER_OWE_FAVOR_OPTION: "Owe a [hook_i][hook|E]"
+ PRISONER_FAVOR_OPTION: "For a [hook_i][hook|E]"
+ #PRISONER_FAVOR_WEAK_HOOK_OPTION: "For a [hook_i][weak_hook|E]"
+ PRISONER_FAVOR_STRONG_HOOK_OPTION: "For a [hook_i][strong_hook|E]"
+
+ # OFFER
+ offer_prisoner_interaction: "Offer Prisoner"
+ offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] a [prisoner|E] for a payment of [gold|E] or [favor|e]"
+ offer_prisoner_interaction_notification: "Offered Prisoner"
+ offer_prisoner_interaction_extra_icon: "$hook_extra_icon$"
+ actor_secondary_offer_prisoner_interaction: "[prisoner|E]"
+
+ OFFER_PRISONER_PROPOSAL: "For the sake of trade, I offer my [actor.Custom2('RelationToMeShort', SCOPE.sC('secondary_actor'))], [secondary_actor.GetTitledFirstName], to keep as your [prisoner|E]."
+ OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER: "Select [prisoner|E] to offer" 
+
+ NOT_I_HAVE_VALID_PRISONER_TO_OFFER: "You have no valid [prisoner|E] to offer to [TARGET_CHARACTER.GetShortUIName]"
+ NOT_THEY_HAVE_VALID_PRISONER_TO_OFFER: "[CHARACTER.GetShortUIName] has no valid [prisoner|E] to offer to [TARGET_CHARACTER.GetShortUIName]"
+ NOT_HAVE_VALID_PRISONER_TO_OFFER: "Has no valid [prisoner|E] to offer to [TARGET_CHARACTER.GetShortUIName]"
+
+ NOT_I_HAVE_AVAILABLE_BODYGUARD_AT_COURT: "You have no available [GetCourtPositionType('bodyguard_court_position').GetName()] at your [court|E]"
+ NOT_THEY_HAVE_AVAILABLE_BODYGUARD_AT_COURT: "[CHARACTER.GetShortUIName] has no available [GetCourtPositionType('bodyguard_court_position').GetName()] at their [court|E]"
+ NOT_HAVE_AVAILABLE_BODYGUARD_AT_COURT: "Has no available [GetCourtPositionType('bodyguard_court_position').GetName()] at their [court|E]"
+ # DEMAND
+ # EXCHANGE
+ # RETURN
+ # RECALL-
+ # TRUCES-
+ # TOOLTIPS
+ prisoner_already_offered_awaiting_response_tt: "Already under negotiation to become someone's [prisoner|E]"
+ prisoner_pacts_on_arrival_tt: "@alert_icon! #alert_trial [prisoner|E] must first [travel|E] to the [rulers_possessive|E] court#!"
+
+ prisoner_under_offer_at_war: "You will anger all war participants" 
+ prisoner_under_offer_at_war_warning_tt: "@warning_icon! #X [recipient.GetTitledFirstName|U] is at war with [secondary_actor.GetTitledFirstName|U]#!"
+
+ prisoner_under_offer_at_war_with_another_vassal_tt: "@warning_icon! #X [recipient_actor.GetTitledFirstName|U] is at war with one of your other vassals#!"
+ prisoner_under_offer_vassal_at_war_with_another_vassal_tt: "@warning_icon! #X [secondary_actor.GetTitledFirstName|U] is at war with one of your other vassals#!"
+
+ prisoner_under_offer_de_jure_vassal_tt: "@warning_icon! #X [secondary_actor.GetTitledFirstName|U] is a [de_jure|E] [vassal|E]#!"
+
+ prisoner_under_offer_vassal_recipient_tt: "@warning_icon! #X [recipient.GetTitledFirstName|U] is [secondary_actor.GetShortUINamePossessive|U] [vassal|E]#!"
+ prisoner_under_offer_vassal_actor_tt: "@warning_icon! #X [secondary_actor.GetTitledFirstName|U] is your [vassal|E]#!"
+
+ prisoner_under_offer_liege_recipient_tt: "@warning_icon! #X [recipient.GetTitledFirstName|U] is [secondary_actor.GetShortUINamePossessive|U] [liege|E]#!"
+ prisoner_under_offer_liege_actor_tt: "@warning_icon! #X [secondary_actor.GetTitledFirstName|U] is your [liege|E]#!"
+
+ prisoner_under_offer_religious_head_tt: "@warning_icon! #X [secondary_actor.GetTitledFirstName|U] is your [head_of_faith|E]#!"
+
+ prisoner_already_travelling_tt: "[CHARACTER.GetShortUINamePossessiveNoFormat|U] [prisoner|E] is already traveling to [TARGET_CHARACTER.GetShortUINamePossessiveNoFormat] court"
+ prisoner_travelling_tt: "[THIS.Char.GetShortUIName|U] is travelling to become [TARGET_CHARACTER.GetShortUINamePossessiveNoFormat] [prisoner|E]"
+ prisoner_invalidated_during_travel_title: "Prisoner Invalidated"
+ 
+
+ # OPINION
+ # MODIFIER
+
+ offer_prisoner_interaction_true_ruler_perk_tt: "You have [GetPerk( 'true_ruler_perk' ).GetName( GetPlayer )]: $VALUE|=+0$"
+ offer_prisoner_interaction_education_diplomacy_5_tt: "[GetTrait('education_diplomacy_5').GetName( GetNullCharacter )]: $VALUE|=+0$"
+ offer_prisoner_interaction_different_faith_tt: "You are of a different [faith|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_liege_tt: "You are [recipient.GetHerHis] [liege|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_allied_tt: "You are [allies|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_recent_war_tt: "You recently Waged War: $VALUE|=+0$"
+ offer_prisoner_interaction_independence_war_tt: "[recipient.GetSheHe|U] fought for Independence against me: $VALUE|=+0$"
+ offer_prisoner_interaction_distant_realm: "[recipient.GetHerHis|U] realm is distant from yours: $VALUE|=+0$"
+ offer_prisoner_interaction_remote_realm: "[recipient.GetHerHis|U] realm is remote from yours: $VALUE|=+0$"
+ offer_prisoner_interaction_rank_title_difference_tt: "Major difference in our [title_tiers|E]: $VALUE|=+0$" 
+ offer_prisoner_interaction_powerful_vassal_tt: "Your [powerful_vassals|E] [opinion|E] of you: $VALUE|=+0$ #weak (max +20)#!"
+ offer_prisoner_interaction_friend_actor_tt: "[recipient.GetSheHe|U] is your [friend|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_friend_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [friend|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_bestfriend_actor_tt: "[recipient.GetSheHe|U] is your [best_friend|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_bestfriend_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [best_friend|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_lover_actor_tt: "[recipient.GetSheHe|U] is your [lover|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_lover_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [lover|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_soulmate_actor_tt: "[recipient.GetSheHe|U] is your [soulmate|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_soulmate_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [soulmate|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_rival_actor_tt: "[recipient.GetSheHe|U] is your [rival|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_rival_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [rival|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_nemesis_actor_tt: "[recipient.GetSheHe|U] is your [nemesis|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_nemesis_prisoner_tt: "[recipient.GetSheHe|U] is [secondary_actor.GetHerHis|U] [nemesis|E]: $VALUE|=+0$"
+ offer_prisoner_interaction_child_tt: "You are just a child: $VALUE|=+0$"
+ offer_prisoner_interaction_claimant_tt: "[recipient.GetSheHe|U] is a [claimant|E] to [secondary_actor.GetPrimaryTitle.GetName]: $VALUE|=+0$"
+
+ # AI REASONS
+ 
+
+ # EVENTS
+ tp_char_interaction.0330.desc: "I see no benefit to be gained in taking your [actor.Custom2('RelationToMeShort', SCOPE.sC('secondary_actor'))], [secondary_actor.GetFirstName], as my [prisoner|E] at this time."
+ tp_char_interaction.0330.a: "It's like that, is it?"
+
+ tp_char_interaction.0330.desc: "I would be happy to take your [actor.Custom2('RelationToMeShort', SCOPE.sC('secondary_actor'))], [secondary_actor.GetFirstName], as my prisoner.\n\nI look forward to [secondary_actor.GetHerHis] arrival in [recipient.GetCapitalLocation.GetNameNoTooltip]."
+ tp_char_interaction.0330.a: "Very good."
+
+ tp_char_interaction.0331.desc: "I see no choice but to accept your demand to take my [hostage_sender.Custom2('RelationToMeShort', SCOPE.sC('hostage'))], [hostage.GetFirstName], as your hostage.\n\n[hostage.GetSheHe|U] will depart for [hostage_taker.GetCapitalLocation.GetNameNoTooltip] immediately."
+ tp_char_interaction.0331.a: "Excellent."
+ # CURRENT SITUATION
+ action_can_offer_prisoner: "@prisoner! You can Offer a Prisoner"
+ action_can_offer_prisoner_label: "@prisoner! You can Offer a Prisoner to [recipient.GetUINameNoTooltip]"
+ action_can_offer_prisoner_desc: "[recipient.GetUINameNoTooltip] would accept your Offer of a [prisoner|E].\n\n$prisoner_benefit_tt$"
+ action_can_offer_prisoner_click: "#I Click to find a suitable [prisoner|E]#!"
+ action_can_offer_prisoner_combined_group_name: "@prisoner! You can Offer a Prisoner"
+ action_can_offer_prisoner_combined_group_label: "@prisoner! You can Offer Prisoner"
+ action_can_offer_prisoner_combined_group_description: "Several neighboring [rulers|E], fellow [vassals|E], or [powerful_vassals|E] would accept your Offer of a [prisoner|E].\n\n$prisoner_benefit_tt$"
+ action_can_offer_prisoner_combined_label: "[recipient.GetUINameNoTooltip]"
+ #action_can_offer_prisoner_combined_unimportant: "@warning_icon! #X Potential targets have no [casus_bellis|E] against you or already have a [truce|E]#!"
+ #action_can_offer_prisoner_unimportant: "@warning_icon! #X [recipient.GetShortUIName] has no [casus_bellis|E] against you or already have a [truce|E]#!"
+ #hostage_benefit_tt: "#help Hostages may deter or neutralize threats, allowing you to focus your attention elsewhere, and grant monthly [prestige_i|E][prestige|E] to the [warden|E].#!"
+ prisoner_benefit_tt: "#help Prisoners may be sold, for a hefty amount of [gold|E] or maybe even a [hook_i][weak_hook|E].#!" # WIP
+
+
+
+ #action_can_ransom:1 "@gold_icon!Prisoner can be Ransomed"
+ #action_can_ransom_combined_group_label:1 "@gold_icon!Prisoners can be Ransomed"
+ #action_can_ransom_combined_group_name:1 "$action_can_ransom$"
+ #action_can_ransom_desc:2 "You can ransom your [prisoner|E], [recipient.Custom('GetPrimaryTitleTierIcon')][recipient.GetShortUIName], for [gold|E].\n\n[recipient.GetSheHe|U] currently has @gold_icon!#V [recipient.MakeScope.ScriptValue('current_situation_gold_ransom')|0]/[recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#! of the Gold you can demand.$action_can_ransom_HELP$"
+ #action_can_ransom_combined_group_description:1 "You can ransom your [prisoners|E] for [gold|E].$action_can_ransom_HELP$"
+ #action_can_ransom_label:1 "@gold_icon!You can ransom [recipient.Custom('GetPrimaryTitleTierIcon')][recipient.GetShortUINameNoTooltip], @gold_icon!#V [recipient.MakeScope.ScriptValue('current_situation_gold_ransom')|0]/[recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_can_ransom_combined_label:1 "Your [actor.Custom2('RelationToMe', recipient)], [recipient.Custom('GetPrimaryTitleTierIcon')][recipient.GetShortUINameNoTooltip], @gold_icon!#V [recipient.MakeScope.ScriptValue('current_situation_gold_ransom')|0]/[recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_can_ransom_click:0 "#I Click to ransom [prisoner]#!"
+ #action_can_ransom_HELP:0 "\n\n#help If a prisoner is a threat to you, such as a [rival|E], you might not want to ransom them. If so, you might want to [execute|E] them or let them rot in the dungeons indefinitely...#!"
+ 
+ #action_should_pay_ransom:0 "@gold_icon! You should Pay Important Ransom"
+ #action_should_pay_ransom_combined_group_label:0 "@gold_icon! You should Pay Important Ransoms"
+ #action_should_pay_ransom_combined_group_name:0 "$action_should_pay_ransom_combined_group_label$"
+ #action_should_pay_ransom_desc:0 "Your [actor.Custom2('RelationToMe', secondary_recipient)], [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUIName] [secondary_recipient.Custom2('GetSuccessionLinePositionCurrentSituation', actor)], is in [secondary_recipient.Custom('PrisonTypeModifier')] and might fare ill or even be [executed|E] if left in [prison|E]. You should pay [secondary_recipient.GetHerHis] ransom if you wish to protect [secondary_recipient.GetHerHis] [health|E].\n\n[secondary_recipient.GetHerHis|U] ransom is @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#! [gold|E].$action_should_pay_ransom_HELP$"
+ #action_should_pay_ransom_combined_group_description:0 "You have characters important to you who are [imprisoned|E], you should pay their ransoms if you wish to protect their [health|E].$action_vassal_ransom_gives_hook_HELP$"
+ #action_should_pay_ransom_label:0 "@gold_icon! You should pay the Ransom for your [actor.Custom2('RelationToMe', secondary_recipient)] [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUINameNoTooltip] [secondary_recipient.Custom2('GetSuccessionLinePositionCurrentSituation', actor)], @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_should_pay_ransom_combined_label:0 "Your [actor.Custom2('RelationToMe', secondary_recipient)], [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUINameNoTooltip] [secondary_recipient.Custom2('GetSuccessionLinePositionCurrentSituation', actor)], @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_should_pay_ransom_click:0 "#I Click to Pay Ransom#!"
+ #action_should_pay_ransom_HELP:0 "\n\n#help You should make sure that your [heirs|E] are safe and sound, especially your [player_heir|E].\n\nWell, unless it #EMP just so happens#! that their [skills|E] are poor and one of their younger siblings are better — in such a case their inevitable death in a foreign dungeon is nothing but a horrible tragedy...#!"
+ #prisontype_dungeon_mod:0 "the [GetModifier('dungeon').GetNameWithTooltip]"
+ #prisontype_house_arrest_mod:0 "[GetModifier('house_arrest').GetNameWithTooltip]"
+ 
+ #action_vassal_ransom_gives_hook:0 "@cs_weak_hook_icon! Can Pay Vassal Ransom for Hook"
+ #action_vassal_ransom_gives_hook_combined_group_label:0 "$action_vassal_ransom_gives_hook$"
+ #action_vassal_ransom_gives_hook_combined_group_name:0 "$action_vassal_ransom_gives_hook$"
+ #action_vassal_ransom_gives_hook_desc:0 "Your [vassal|E], [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUIName], has an Honorable [personality|E] and would owe you a [hook_i][weak_hook|E] if you were to pay [secondary_recipient.GetHerHis] ransom.\n\n[secondary_recipient.GetHerHis|U] ransom is @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#! [gold|E].$action_vassal_ransom_gives_hook_HELP$"
+ #action_vassal_ransom_gives_hook_combined_group_description:0 "You have [vassals|E] with Honorable [personalities|E] that would owe you a [hook_i][weak_hook|E] if you were to pay their ransoms.$action_vassal_ransom_gives_hook_HELP$"
+ #action_vassal_ransom_gives_hook_label:0 "@cs_weak_hook_icon! You can pay the Ransom for your Vassal [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUINameNoTooltip], @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_vassal_ransom_gives_hook_combined_label:0 "Your [actor.Custom2('RelationToMe', secondary_recipient)], [secondary_recipient.Custom('GetPrimaryTitleTierIcon')][secondary_recipient.GetShortUINameNoTooltip], @gold_icon!#V [secondary_recipient.MakeScope.ScriptValue('ransom_cost_value')|0]#!"
+ #action_vassal_ransom_gives_hook_click:0 "#I Click to Pay Ransom#!"
+ #action_vassal_ransom_gives_hook_HELP:0 "\n\n#help Gaining a Hook on a Vassal can be beneficial, especially if you are looking to increase their [obligations|E] to you by changing their [feudal_contract|E] — which in this instance you are able to!#!"
+ #action_vassal_ransom_gives_hook_unimportant:0 "@warning_icon! #X Only care about this if you have Gold to spare!#!"
+ #action_vassal_ransom_gives_hook_combined_unimportant:0 "$action_vassal_ransom_gives_hook_unimportant$"
