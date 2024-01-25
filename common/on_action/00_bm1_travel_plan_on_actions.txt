@@ -1,0 +1,10 @@
+﻿##############################
+## BM1 travel_plan on_actions
+##############################
+
+# on_arrival_on_action
+on_travel_arrive = {
+	effect = {
+		remove_travel_variables_effect = yes
+	}
+}
