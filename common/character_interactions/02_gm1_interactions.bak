@@ -1,8 +1,8 @@
 ﻿##############################
-## TP Prisoner character_interactions
+## GM1 character_interactions
 ##############################
 
-### offer_prisoner_interaction
+### Offer Prisoner
 # scope:actor = offerer
 # scope:recipient = reciever
 # scope:secondary_actor = prisoner
@@ -12,7 +12,7 @@ offer_prisoner_interaction = {
 	common_interaction = no
 	ai_min_reply_days = 1
 	ai_max_reply_days = 1
-	popup_on_recieve = yes
+	#popup_on_recieve = yes
 	pause_on_receive = yes
 	#icon = "gfx/interface/icons/portraits/punishment.dds"
 	icon = prison
@@ -35,60 +35,34 @@ offer_prisoner_interaction = {
 	cooldown_against_recipient = { days = 0 }
 
 	is_shown = {
-		# Cannot interact with self
+		# Cannot target oneself.
 		NOT = { scope:recipient = scope:actor }
-		# Actor and Recipient significance?
+		# Only significant rulers.
 		scope:actor.highest_held_title_tier > tier_barony
 		scope:recipient.highest_held_title_tier > tier_barony
 	}
 
 	is_valid_showing_failures_only = {
 		# Actor
-		## Must be available.
-		scope:actor = { is_busy_in_events_localised = yes }
-		OR = {
-			## Must have any prisoners to offer
-			custom_description = {
-				text = "basic_valid_prisoner_to_offer"
-				subject = scope:actor
-				object = scope:recipient
-				scope:actor = { has_prisoners = yes }
-			}
-			## Must employ a bodyguard.
-			scope:actor = { employs_court_position = bodyguard_court_position }
+		scope:actor = {
+			## Must be available.
+			is_busy_in_events_localised = yes 
+			## Must have any prisoners to offer.
+			has_prisoners = yes 
+			## Must not have any prisoners already traveling to the recipient.
+			#NOT = { has_any_prisoner_traveling_towards = scope:recipient }
+			## Must have employed a bodyguard.
+			employs_court_position = bodyguard_court_position 
 			## Must have an available bodyguard at court.
-			custom_description = {
-				text = "available_bodyguard_at_court"
-				subject = scope:actor
-				object = scope:recipient
-				any_court_position_holder = {
-					type = bodyguard_court_position
-					is_available = yes
-					NOT = { exists = prisoner_travelling_to_recipient}
-				}
-			}
 		}
-
+		
 		# Recipient
-		## Must be available.
-		scope:recipient = { is_busy_in_events_localised = yes }
-		OR = {
+		scope:recipient = {
+			## Must be available.
+			is_busy_in_events_localised = yes 
 			## Must be at peace with the sender.
-			scope:recipient = { is_at_war_with = scope:actor }
-			## Must not already have any prisoner travelling to the recipient.
-			custom_description = {
-				text = prisoner_already_travelling_tt
-				subject = scope:actor
-				object = scope:recipient
-				scope:actor = {
-					every_prisoner = {
-						if = {
-							limit = { exists = var:prisoner_travelling }
-							var:prisoner_travelling = scope:recipient
-						}
-					}
-				}
-			}
+			NOT = { is_at_war_with = scope:actor }
+			NOT = { has_any_court_position_holder_available = { COURT_POSITION = bodyguard_court_position } }
 		}
 
 		# Theocratic governments are not allowed.
@@ -157,20 +131,22 @@ offer_prisoner_interaction = {
 
 	on_send = {
 		scope:secondary_actor = {
-			add_character_flag = {
-				flag = under_offer_as_prisoner_flag
-				months = 1 # Arbritrary Duration.
+			hidden_effect = {
+				set_interaction_variable_effect = { 
+					FLAG = flag:prisoner_under_offer 
+					YEARS = 1
+				}
 			}
 		}
 		# AI
-		## Stop spamming offers.
 		if = {
 			limit = { scope:recipient = { is_ai = no } }
 			hidden_effect = {
-				scope:secondary_actor = {
-					add_character_flag = {
-						flag = ai_should_not_offer_prisoner
-						years = 3
+				## Stop spamming offers.
+				scope:secondary_actor = { 
+					set_interaction_variable_effect = { 
+						FLAG = flag:ai_prisoner_under_offer
+						YEARS = 3 
 					}
 				}
 			}
@@ -178,13 +154,15 @@ offer_prisoner_interaction = {
 	}
 
 	on_accept = {
+		## Notification Event.
+		scope:actor = { trigger_event = gm1_interaction.0002 }
+
 		custom_description_no_bullet = { text = prisoner_pacts_on_arrival_tt }
-		prisoner_depart_effect = {
+		gm1_prisoner_depart_effect = {
 			PRISONER = scope:secondary_actor
 			RECIEVER = scope:recipient
 			SENDER = scope:actor
 		}
-		scope:actor = { trigger_event = tp_char_interaction.0330 }
 
 		# Clan Unity. 
 		## If we're of the same clan this interaction affects unity.
@@ -204,9 +182,11 @@ offer_prisoner_interaction = {
 	}
 
 	on_decline = {
-		# Trigger Notification Event.
-		scope:actor = { trigger_event = tp_char_interaction.0300 }
-		scope:secondary_actor = { remove_character_flag = under_offer_as_prisoner_flag }
+		## Notification Event.
+		scope:actor = { trigger_event = gm1_interaction.0003 }
+		scope:secondary_actor = {
+			hidden_effect = { remove_interaction_variable_effect = yes }
+		}
 	}
 
 	auto_accept = {
@@ -223,7 +203,7 @@ offer_prisoner_interaction = {
 				scope:actor = { has_strong_hook = scope:recipient }
 			}
 		}
-		trigger_else = { always = no }
+		trigger_else = { always = yes }
 	}
 
 	can_be_blocked = {

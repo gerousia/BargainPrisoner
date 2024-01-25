@@ -1,0 +1,182 @@
+﻿##############################
+## GM1 character_interactions
+##############################
+
+### Offer Prisoner Character Interaction
+# scope:actor = offerer
+# scope:recipient = reciever
+# scope:secondary_actor = prisoner
+# scope:secondary_recipient = n/a
+offer_prisoner_interaction = {
+	category = interaction_category_diplomacy
+	common_interaction = no
+	ai_min_reply_days = 1
+	ai_max_reply_days = 1
+	#popup_on_recieve = yes
+	pause_on_receive = yes
+	#icon = "gfx/interface/icons/portraits/punishment.dds"
+	icon = prison
+
+	populate_actor_list = {
+		scope:actor = {
+			every_prisoner = {
+				limit = { 
+					NOT = { this = scope:recipient } 
+					gm1_basic_valid_target_prisoner_interaction_trigger = { ACTOR = scope:actor }
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	desc = offer_prisoner_interaction_desc
+	prompt = OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER
+	notification_text = OFFER_PRISONER_PROPOSAL
+
+	cooldown_against_recipient = { days = 0 }
+
+	is_shown = {
+		# Cannot target oneself.
+		NOT = { scope:recipient = scope:actor }
+		# Only significant rulers.
+		scope:actor.highest_held_title_tier > tier_barony
+		scope:recipient.highest_held_title_tier > tier_barony
+	}
+
+	is_valid_showing_failures_only = {
+		# Actor
+		## Must have prisoners.
+		custom_description = {
+			text = HAS_AVAILABLE_PRISONERS_TRIGGER
+			subject = scope:actor
+			list_size = {
+				name = characters
+				value = 0 
+			}
+		}
+		
+		# Actor
+		## Must not have any prisoners already traveling to the recipient.
+		custom_description = {
+			text = ALREADY_AWAITING_CHARACTER_INTERACTION_PRISON_OFFER_TRIGGER
+			subject = scope:actor
+			object = scope:recipient
+			scope:actor = {
+				any_prisoner = {
+					count = 0
+					already_under_ongoing_interaction = yes
+					is_traveling_towards = { WHO = scope:recipient }
+				}
+			}
+		}
+
+		# Actor
+		## Must employ a bodyguard.
+		scope:actor = { employs_court_position = bodyguard_court_position }
+		## Must have prisoners.
+		custom_description = {
+			text = "BODYGUARD_TEST_TRIGGER"
+			subject = scope:actor
+			scope:actor = {
+				any_court_position_holder = {
+					type = bodyguard_court_position
+					count >= 1
+					is_available = yes
+					has_travel_companion = no
+				}
+			}
+		}
+
+		# Recipient
+		## Must be available.
+		## Must be at peace with the actor.
+		scope:recipient = { is_busy_in_events_localised = yes }
+		scope:recipient = {	NOT = { is_at_war_with = scope:actor } }
+		# Theocratic Governments are not allowed.
+		NOT = { scope:actor = { government_has_flag = government_is_theocracy } }
+		NOT = { scope:recipient = { government_has_flag = government_is_theocracy } }
+	}
+
+	can_be_picked = {
+		gm1_offer_valid_target_prisoner_interaction_trigger = yes
+	}
+
+	can_send = {
+		# AI
+		trigger_if = {
+			limit = { scope:actor = { is_ai = yes }	}
+			gm1_is_valid_prisoner_ai_trigger = { 
+				RECIPIENT = scope:recipient 
+				PRISONER = scope:secondary_actor
+			}
+			## Stop interaction spam.
+			#scope:secondary_actor = { var:interaction ?= flag:ai_prisoner_under_offer }
+		}
+	}
+
+	cost = {}
+
+	on_send = {
+		scope:secondary_actor = {
+			hidden_effect = {
+				set_interaction_variable_effect = { 
+					TYPE = flag:offer_prisoner_interaction 
+					YEARS = 1
+				}
+			}
+		}
+		# AI
+		if = {
+			limit = { scope:recipient = { is_ai = no } }
+			hidden_effect = {
+				## Stop spamming offers.
+				scope:secondary_actor = { 
+					add_character_flag = { 
+						flag = ai_prisoner_under_offer
+						years = 3 
+					}
+				}
+			}
+		}
+	}
+
+	on_accept = {
+		## Notification Event.
+		scope:actor = { trigger_event = gm1_interaction.0002 }
+
+		#custom_description_no_bullet = { text = prisoner_pacts_on_arrival_tt }
+		gm1_prisoner_depart_effect = {
+			ACTOR = scope:actor
+			RECIPIENT = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+	}
+
+	on_decline = {
+		## Notification Event.
+		scope:actor = { trigger_event = gm1_interaction.0003 }
+		scope:secondary_actor = {
+			hidden_effect = { remove_interaction_variable_effect = yes }
+		}
+	}
+
+	auto_accept = {
+		always = yes
+	}
+
+	can_be_blocked = {}
+
+	on_blocked_effect = {}
+
+	# AI
+	ai_accept = {}
+
+	ai_frequency = 0
+
+	ai_potential = {}
+
+	ai_will_do = {
+		base = 0
+	}
+	
+}
