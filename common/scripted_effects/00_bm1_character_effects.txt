@@ -1,0 +1,44 @@
+﻿##############################
+## BM1 scripted_effects
+##############################
+
+# TYPE = flag
+set_interaction_variable_effect = {
+	hidden_effect = {
+		set_variable = {
+			name = interaction
+			value = $TYPE$
+			years = $YEARS$
+		}
+	}
+}
+
+# TYPE = flag
+# WHO = character
+# YEAR = int
+set_interaction_with_variable_effect = {
+	hidden_effect = {
+		set_interaction_variable_effect = {
+			TYPE = $TYPE$
+			YEARS = $YEARS$
+		}
+		set_variable = {
+			name = interaction_with
+			value = $WHO$
+			years = $YEARS$
+		}
+	}
+}
+
+remove_interaction_variable_effect = {
+	hidden_effect = {
+		if = {
+			limit = { exists = var:interaction }
+			remove_variable = interaction
+		}
+		if = {
+			limit = { exists = var:interaction_with }
+			remove_variable = interaction_with
+		}
+	}
+}

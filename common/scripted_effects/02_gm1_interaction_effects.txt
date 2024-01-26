@@ -1,0 +1,213 @@
+##############################
+## GM1 scripted_effects
+##############################
+
+# offer_prisoner_interaction
+## ACTOR = character
+## RECIPIENT = character
+## PRISONER = character
+gm1_prisoner_depart_effect = {	
+	hidden_effect = {
+		$ACTOR$ = {
+			# Set Travel Companion Scope - Bodyguard.
+			every_court_position_holder = {
+				type = bodyguard_court_position
+				limit = {
+					is_available = yes
+					has_travel_target = no
+					has_travel_companion = no
+				}
+				save_temporary_scope_as = companion 
+			}
+		}
+		$PRISONER$ = {
+			# Set Variables.
+			## Current Imprisoner.
+			set_variable = {
+				name = current_imprisoner
+				value = $ACTOR$
+			}
+			## Next Imprisoner.
+			set_variable = {
+				name = next_imprisoner
+				value = $RECIPIENT$
+			}
+			## Travel Companion.
+			set_travel_companion_effect = { 
+				ACTOR = $PRISONER$
+				TARGET = scope:companion 
+			}
+			## Travel Plan.
+			set_travel_target_variable_effect = { TARGET = $RECIPIENT$ }
+			start_travel_plan = {
+				players_use_planner = no
+				destination = var:travel_target_destination
+				#companion = $ACTOR$
+				on_start_on_action = on_prisoner_depart
+				on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit
+				on_arrival_on_action = on_prisoner_arrive
+				on_arrival_destinations = last
+				return_trip = no
+			}
+		}
+	}
+	debug_log = "GM1: Prisoner Departed for Target."
+	debug_log_scopes = yes
+}
+
+# on_prisoner_arrive
+gm1_invalidate_offer_prisoner_interaction_effect = {
+	hidden_effect = {
+		# Set Invalidation Reason.
+		## Prisoner.
+		if = {
+			limit = { 
+				is_alive = no 
+				is_imprisoned = no
+			}
+			set_variable = {
+				name = invalidate_interaction
+				value = flag:secondary_actor
+			}
+			debug_log = "GM1: invalidated:secondary_actor"
+		}
+		## Sender.
+		else_if = {
+			limit = {
+				var:current_imprisoner = {
+					OR = {
+						is_alive = no
+						is_landed = no
+						# is_imprisoned = yes
+					}
+				}
+			}
+			set_variable = {
+				name = invalidate_interaction
+				value = flag:actor
+			}
+			debug_log = "GM1: invalidated:actor"
+		}
+		## Reciever.
+		else_if = {
+			limit = {
+				var:next_imprisoner = {
+					OR = {
+						is_alive = no
+						is_landed = no
+						# is_imprisoned = yes
+					}
+				}
+			}
+			set_variable = {
+				name = invalidate_interaction
+				value = flag:recipient
+			}
+			debug_log = "GM1: invalidated:recipient"
+		}
+		## Travel Companion (Bodyguard).
+		else_if = {
+			limit = {
+				var:travel_companion ?= {
+					OR = {
+						is_alive = no
+						is_landed = yes
+						is_imprisoned = yes
+						NOT = { has_court_position = bodyguard_court_position }
+					}
+				}
+			}
+			set_variable = {
+				name = invalidate_interaction
+				value = flag:travel_companion
+			}
+			debug_log = "GM1: invalidated:travel_companion"
+		}
+	}
+}
+
+gm1_prisoner_travel_invalidated_effect = {
+	hidden_effect = {
+		remove_travel_variables_effect = yes
+		remove_prisoner_variables_effect = yes
+	}
+	debug_log = "GM1: Prisoner Got Invalidated."
+}
+
+remove_prisoner_variables_effect = {
+	hidden_effect = {
+		## Assigned in offer_prisoner_interaction.
+		if = {
+			limit = { exists = var:interaction }
+			remove_variable = interaction
+		}
+		## Assigned in gm1_prisoner_depart_effect.
+		if = {
+			limit = { exists = var:current_imprisoner }
+			remove_variable = current_imprisoner
+		}
+		if = {
+			limit = { exists = var:next_imprisoner }
+			remove_variable = next_imprisoner
+		}
+		## Assigned in gm1_invalidate_offer_prisoner_interaction_effect
+		if = {
+			limit = { exists = var:invalidate_interaction }
+			remove_variable = invalidate_interaction
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##############################
+## Extra scripted_effects
+##############################
+
+# Placeholder for localization.
+#take_prisoner = {
+#	add_prisoner = $PRISONER$
+#}
+
+add_prisoner = {
+	$PRISONER$ = {
+		if = {
+			limit = { is_imprisoner = yes }
+			release_from_prison = yes
+		}
+	}
+	imprison = {
+		target = $PRISONER$
+		type = house_arrest
+	}
+}

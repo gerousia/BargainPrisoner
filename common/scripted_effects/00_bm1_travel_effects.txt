@@ -1,0 +1,159 @@
+﻿##############################
+## BM1 scripted_effects
+##############################
+
+# variable-list:
+## travel_target
+## travel_target_destination
+## travel_companion
+
+set_travel_target_variable_effect = {
+	hidden_effect = {
+		set_variable = { 
+			name = travel_target
+			value = $TARGET$
+		}
+		if = {
+			limit = { 
+				$TARGET$ = {
+					is_alive = yes
+					is_landed = yes
+					exists = capital_province
+				}
+			}
+			set_travel_target_destination_variable_effect = { TARGET = $TARGET$.capital_province }
+		}
+		else = {
+			set_travel_target_destination_variable_effect = { TARGET = $TARGET$.location }
+		}
+	}
+}
+
+set_travel_target_destination_variable_effect = {
+	hidden_effect = {
+		set_variable = { 
+			name = travel_target_destination
+			value = $TARGET$
+		}
+	}
+}
+
+set_travel_target_destination_home_effect = {
+		hidden_effect = {	
+		## If Imprisoned.
+		if = {
+			limit = { is_imprisoned = yes }
+			if = {
+				limit = { NOT = { location = imprisoner.capital_province } }
+				set_travel_target_destination_variable_effect = { TARGET = imprisoner.capital_province }
+			}
+		}
+		## If Not Imprisoned.
+		else = {
+			### If Landed.
+			if = {
+				limit = { 
+					is_landed = yes
+					exists = capital_province
+				}
+				set_travel_target_destination_variable_effect = { TARGET = capital_province }
+			}
+			### Else Liege Home Court.
+			else_if = {
+				limit = { 
+					liege = {
+						is_alive = yes
+						is_landed = yes
+						exists = capital_province
+					}
+				}
+				set_travel_target_destination_variable_effect = { TARGET = liege.capital_province }
+			}
+			### Else Liege Current Location.
+			else_if = {
+				limit = {
+					liege = {
+						is_alive = yes
+						exists = location
+					}
+				}
+				set_travel_target_destination_variable_effect = { TARGET = liege.location }
+			}
+			### Else Family Member Home Court.
+			else_if = {
+				limit = {
+					any_close_family_member = {
+						is_alive = yes
+						is_landed = yes
+					}
+				}
+				random_close_family_member = {
+					limit = {
+						is_alive = yes
+						is_landed = yes
+					}
+					root = { set_travel_target_destination_variable_effect = { TARGET = this.capital_province } }
+				}
+			}
+			### Else Stay Put.
+			else = { 
+				set_travel_target_destination_variable_effect = { TARGET = location } 
+			}
+		}
+	}
+}
+
+# ACTOR = character
+# TARGET = character
+set_travel_companion_effect = {
+	hidden_effect = {
+		$TARGET$ ?= {
+			## Remove any existing travel companions of $TARGET$.
+			if = {
+				limit = { has_travel_companion = yes }
+				var:travel_companion = { remove_variable = travel_companion }
+			}
+			set_variable = { 
+				name = travel_companion
+				value = $ACTOR$
+			}
+		}
+		$ACTOR$ = {
+			set_variable = { 
+				name = travel_companion
+				value = $TARGET$
+			}
+		}
+	}
+	debug_log = "GM1: set_travel_companion_effect"
+	debug_log_scopes = yes
+}
+
+remove_travel_variables_effect = {
+	hidden_effect = {
+		if = {
+			limit = { exists = var:travel_target }
+			remove_variable = travel_target
+		}
+		if = {
+			limit = { exists = var:travel_target_destination }
+			remove_variable = travel_target_destination
+		}
+		if = {
+			limit = { exists = var:travel_companion }
+			remove_variable = travel_companion
+		}
+	}
+}
+
+start_travel_home_depart_effect = {
+	hidden_effect = {
+		set_travel_target_destination_home_effect = yes
+	}
+	start_travel_plan = {
+		destination = var:travel_target_destination
+		on_arrival_on_action = on_travel_arrive
+		on_arrival_destinations = last
+		return_trip = no
+	}
+}
