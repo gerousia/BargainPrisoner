@@ -1,0 +1,51 @@
+﻿##############################
+## GM1 scripted_triggers
+##############################
+
+##############################
+# interaction-related
+#-----------------------------
+
+# $ACTOR$ = character
+gm1_basic_valid_target_prisoner_interaction_trigger = {
+	## Must be imprisoned.
+	is_imprisoned = yes
+	## Must be imprisoned by actor.
+	is_imprisoned_by = $ACTOR$
+	## Must not be imprisoned by diarch.
+	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
+		PRISONER = this
+		REGENT = this.var:imprisoned_by_diarch
+	}
+}
+
+gm1_offer_valid_target_prisoner_interaction_trigger = {
+	## Must not be under any ongoing interaction.
+	already_under_ongoing_interaction = no
+	## Must be at imprisoner capital.
+	is_at_imprisoner_capital = yes
+	## Must not be dying.
+	health > dying_health
+}
+
+# AI
+gm1_is_valid_prisoner_ai_trigger = {
+	# Recipient.
+	## Must be neighbhors.
+	$RECIPIENT$ = {
+		character_is_land_realm_neighbor = root
+	}
+	# Prisoner.
+	$PRISONER$ = {
+		OR = {
+			is_vassal_of = $RECIPIENT$
+			is_at_war_with = $RECIPIENT$
+			has_any_good_relationship_with_character_trigger = { CHARACTER = $RECIPIENT$ }
+			has_any_bad_relationship_with_character_trigger = { CHARACTER = root }
+			should_avoid_hostile_action_against_due_to_personal_relations_trigger = {
+				ACTOR = root
+				RECIPIENT = this
+			}
+		}
+	}
+}

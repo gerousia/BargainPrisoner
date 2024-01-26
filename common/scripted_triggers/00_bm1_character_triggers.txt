@@ -1,0 +1,61 @@
+﻿##############################
+## BM1 scripted_triggers
+##############################
+
+##############################
+# interaction-related
+#-----------------------------
+
+# TYPE = flag
+has_interaction_type = {
+	var:interaction ?= $TYPE$ 
+}
+
+# WHO = character
+already_has_interaction_with = {
+	var:interaction_with ?= $WHO$
+}
+
+already_under_ongoing_interaction = {
+	exists = var:interaction
+}
+
+##############################
+# travel-related
+#-----------------------------
+
+has_travel_target = {
+	OR = {
+		exists = var:travel_target # character
+		exists = var:travel_target_destination # location
+	}
+}
+
+# WHO = character
+is_traveling_towards = {
+	var:travel_target ?= $WHO$
+}
+
+# DESTINATION = location
+is_traveling_towards_location = {
+	var:travel_target_destination ?= $DESTINATION$
+}
+
+has_travel_companion = {
+	exists = var:travel_companion # character
+}
+
+##############################
+# court-related
+#-----------------------------
+
+any_court_position_holder_currently_available = {
+	any_court_position_holder = {
+		type = $COURT_POSITION$
+		count >= 1
+		is_available = yes
+		has_travel_target = no
+		has_travel_companion = no
+		already_under_ongoing_interaction = no
+	}
+}
