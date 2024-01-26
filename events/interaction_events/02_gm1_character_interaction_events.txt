@@ -1,0 +1,271 @@
+﻿namespace = gm1_interaction
+
+##############################
+## GM1 interaction events
+##############################
+
+# Notification Events.
+## 0000 - 0099 = Offer Prisoner Interaction.
+## 0100 - 0199 = Demand Prisoner Interaction.
+## 0200 - 0299 = Exchange Prisoner Interaction.
+## 0500 - 0599 = Prisoner Interaction Invalidated.
+
+##############################
+# Offer Prisoner Interaction
+# 0000 - 0099
+#-----------------------------
+
+# Based from ./events/interaction_events/character_interaction_events.txt#char_interaction.0330
+## Accepted.
+gm1_interaction.0002 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = gm1_interaction.0002.desc
+		
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
+
+	option = {
+		name = gm1_interaction.0002.a
+	}
+}
+
+# Based from ./events/interaction_events/character_interaction_events.txt#char_interaction.0300
+## Refused.
+gm1_interaction.0003 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = gm1_interaction.0003.desc
+		
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
+
+	option = {
+		name = gm1_interaction.0003.a
+	}
+}
+
+##############################
+# Demand Prisoner Interaction
+# 0100 - 0199
+#-----------------------------
+
+##############################
+# Exchange Prisoner Interaction
+# 0200 - 0299
+#-----------------------------
+
+##############################
+# Prisoner Interaction Invalidated
+# 0500 - 0599
+#-----------------------------
+
+## Start Notification Event-Chain.
+gm1_interaction.0500 = {
+	hidden = yes
+
+	immediate = {
+		if = {
+			limit = { exists ?= var:invalidate_interaction }
+			var:current_imprisoner = {
+				save_scope_as = sender
+			}
+			var:next_imprisoner = { 
+				save_scope_as = reciever 
+			}
+			var:travel_companion = { 
+				save_scope_as = companion 
+			}
+			if = {
+				limit = { var:invalidate_interaction = flag:secondary_actor }
+				trigger_event = gm1_interaction.0511
+			}
+			else_if = {
+				limit = { var:invalidate_interaction = flag:actor }
+				trigger_event = gm1_interaction.0521
+			}
+			else_if = {
+				limit = { var:invalidate_interaction = flag:recipient }
+				trigger_event = gm1_interaction.0531
+			}
+			else_if = {
+				limit = { var:invalidate_interaction = flag:travel_companion }
+				trigger_event = gm1_interaction.0541
+			}
+		}
+		debug_log = "GM1: gm1_interaction.0500"
+		debug_log_scopes = yes
+	}
+}
+
+##############################
+# Prisoner Interaction Invalidated
+# flag:secondary_actor
+# 0510 - 0519
+#-----------------------------
+
+## gm1_interaction.0500
+### flag:secondary_actor
+gm1_interaction.0511 = {
+	type = character_event
+	hidden = yes
+	
+	trigger = { var:invalidate_interaction ?= flag:secondary_actor }
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_interaction.0501 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		## Notify Actor.
+		scope:sender = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_ACTOR_FLAG_SECONDARY_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:reciever
+			}
+		}
+		## Notify Recipient.
+		scope:reciever = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_RECIPIENT_FLAG_SECONDARY_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:sender
+			}
+		}
+	}
+}
+
+##############################
+# Prisoner Interaction Invalidated
+# flag:actor
+# 0520 - 0529
+#-----------------------------
+
+## gm1_interaction.0500
+### flag:actor
+gm1_interaction.0521 = {
+	type = character_event
+	hidden = yes
+	
+	trigger = { var:invalidate_interaction ?= flag:actor }
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_interaction.0502 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		## Notify Actor.
+		scope:sender = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_ACTOR_FLAG_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:receiver
+		}
+		}
+		## Notify Recipient.
+		scope:reciever = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_RECIPIENT_FLAG_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:sender
+			}
+		}
+	}
+}
+
+##############################
+# Prisoner Interaction Invalidated
+# flag:recipient
+# 0530 - 0539
+#-----------------------------
+
+## gm1_interaction.0500
+### flag:recipient
+gm1_interaction.0531 = {
+	type = character_event
+	hidden = yes
+	
+	trigger = { var:invalidate_interaction ?= flag:recipient }
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_interaction.0503 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		## Notify Actor.
+		scope:sender = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_ACTOR_FLAG_RECIPIENT_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:reciever
+			}
+		}
+		## Notify Recipient.
+		scope:reciever = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_RECIPIENT_FLAG_RECIPIENT_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:sender
+			}
+		} 
+	}
+}
+
+##############################
+# Prisoner Interaction Invalidated
+# flag:travel_companion
+# 0540 - 0549
+#-----------------------------
+
+## gm1_interaction.0500
+### flag:travel_companion
+gm1_interaction.0541 = {
+	type = character_event
+	hidden = yes
+	
+	trigger = { var:invalidate_interaction ?= flag:travel_companion }
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_interaction.0504 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		## Notify Actor.
+		scope:sender = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_ACTOR_FLAG_TRAVEL_COMPANION_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:reciever
+			}
+		}
+		## Notify Recipient.
+		scope:reciever = {
+			send_interface_toast = {
+				title = GM1_PRISONER_INTERACTION_INVALIDATED_TITLE
+				custom_tooltip = GM1_PRISONER_INTERACTION_INVALIDATED_RECIPIENT_FLAG_TRAVEL_COMPANION_ACTOR_DESC
+				left_icon = root
+				right_icon = scope:sender
+			}
+		}
+	}
+}
