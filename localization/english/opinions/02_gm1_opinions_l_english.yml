@@ -1,0 +1,35 @@
+﻿##############################
+## GM1 opinions list
+##############################
+
+# opinion-modifier-list:
+## give_prisoner_refused_opinion
+## give_prisoner_failed_opinion
+## attempted_give_me_to_another_prison_opinion
+## given_me_to_another_prison_opinion
+## given_my_family_member_opinion
+## given_me_to_enemy_opinion
+## given_me_war_leader_opinion
+## given_their_war_leader_to_enemy_opinion
+## given_their_war_leader_to_ally_opinion
+
+##############################
+## GM1 opinions localization
+##############################
+
+l_english:
+
+ # ignored_demands_opinion
+ give_prisoner_refused_opinion: "Refused to Give [prisoner|E]"
+ give_prisoner_failed_opinion: "Failed to Send [prisoner|E]"
+
+ attempted_give_me_to_another_prison_opinion: "Attempted Sell Away"
+ given_me_to_another_prison_opinion: "Given Away to Another [ruler|E]"
+ given_my_family_member_opinion: "Given Away [imprisoned|E] Family Member"
+
+ # supported_my_war_opinion
+ # supported_my_enemy_opinion 
+ given_me_to_enemy_opinion: "Given Away to Enemy [ruler|E]"
+ given_me_war_leader_opinion: "Recieved [imprisoned|E] [war_leader|E]"
+ given_their_war_leader_to_enemy_opinion: "Gave Enemy Our [imprisoned|E] [war_leader|E]"
+ given_their_war_leader_to_ally_opinion: "Gave Ally [imprisoned|E] [war_leader|E]"
