@@ -3,16 +3,15 @@
 ##############################
 
 # opinion-modifier-list:
-#														-
-## give_prisoner_refused_opinion						- Refused to give me [new_imprisoner] designated prisoner [imprisoned_target].
-## give_prisoner_failed_opinion							- Failed to give me [new_imprisoner] designated prisoner [imprisoned_target].
-## attempted_give_me_to_another_prison_opinion			- Attempted to give me [imprisoned_target] to another character [new_imprisoner].
-## given_me_to_another_prison_opinion					- Gave me [imprisoned_target] to another character [new_imprisoner].
-## given_my_family_member_opinion						- Gave my [imprisoned_target] family member [close_or_extended_family_member] to another character [new_imprisoner].
-## given_me_to_enemy_opinion							- Gave me [imprisoned_target] to my war enemy [new_imprisoner].
-## given_me_war_leader_opinion							- Gave me [new_imprisoner] my enemy war leader [imprisoned_target].
-## given_their_war_leader_to_enemy_opinion				- Gave their war leader [imprisoned_target] to their war enemy [new_imprisoner].
-## given_their_war_leader_to_ally_opinion				- Gave their enemy war leader [imprisoned_target] to my war ally [new_imprisoner].
+## refused_to_give_imprisoned_opinion						- Refused to give me [imprisoner] designated prisoner [imprisoned_target].
+## failed_to_give_imprisoned_opinion						- Failed to give me [imprisoner] designated prisoner [imprisoned_target].
+## attempted_to_give_imprisoned_opinion					- Attempted to give me [imprisoned_target] to another character [imprisoner].
+## imprisoned_next_imprisoner_transferred				- Gave me [imprisoned_target] to another character [imprisoner].
+## imprisoned_family_member_transferred					- Gave my [imprisoned_target] family member [close_or_extended_family_member] to another character [imprisoner].
+## imprisoned_enemy_imprisoner_transferred				- Gave me [imprisoned_target] to my war enemy [imprisoner].
+## imprisoned_war_leader_transferred					- Gave me [imprisoner] my enemy war leader [imprisoned_target].
+## imprisoned_ally_war_leader_transferred				- Gave their war leader [imprisoned_target] to their war enemy [imprisoner].
+## imprisoned_enemy_war_leader_transferred			- Gave their enemy war leader [imprisoned_target] to my war ally [imprisoner].
 
 ##############################
 ## GM1 opinion_modifiers
@@ -23,38 +22,38 @@
 #------------------------------
 
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/vassal_refused_hostage_demand_opinion
-give_prisoner_refused_opinion = {
+refused_to_give_imprisoned_opinion = {
 	opinion = -15
 	monthly_change = 0.1
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/hostage_died_opinion
-give_prisoner_failed_opinion = {
+failed_to_give_imprisoned_opinion = {
 	opinion = -25
 	monthly_change = 0.1
 	decaying = yes
-	stacking = yess # Added.
+	stacking = yes # Added.
 }
 
 # Values based on ./common/opinion_modifiers/00_crime_and_prison_opinions.txt/attempted_imprisonment_opinion
-attempted_give_me_to_another_prison_opinion = {
+attempted_to_give_imprisoned_opinion = {
 	opinion = -30
 	years = 15
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/00_prison_opinions.txt/imprisoned_me
-given_me_to_another_prison_opinion = {
+imprisoned_next_imprisoner_transferred = {
 	opinion = -30
 	years = 10
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/00_opinion_modifiers.txt/imprisoned_family_member - old
-given_my_family_member_opinion = {
+imprisoned_family_member_transferred = {
 	opinion = -15
-	montly_change = 0.05 # years = 20
+	monthly_change = 0.05 # years = 20
 	decaying = yes
 	stacking = yes # Added.
 }
@@ -64,14 +63,14 @@ given_my_family_member_opinion = {
 #------------------------------
 
 # Values based on ./common/opinion_modifiers/00_friendship_opinions.txt/supported_my_enemy_opinion
-given_me_to_enemy_opinion = {
+imprisoned_enemy_imprisoner_transferred = {
 	opinion = -20
 	years = 10
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/00_friendship_opinions.txt/supported_my_enemy_opinion - old
-given_me_war_leader_opinion = {
+imprisoned_war_leader_transferred = {
 	opinion = 40 # 15
 	monthly_change = 1 # years = 20
 	decaying = yes
@@ -79,14 +78,14 @@ given_me_war_leader_opinion = {
 
 # Values based on ./common/opinion_modifiers/00_friendship_opinions.txt/supported_my_enemy_opinion - old
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/killed_hostage_opinion
-given_their_war_leader_to_enemy_opinion = {
+imprisoned_ally_war_leader_transferred = {
 	opinion = -50
 	monthly_change = 0.1
 	decaying = yes 
 }
 
 # Values based on ./common/opinion_modifiers/00_friendship_opinions.txt/supported_my_war_opinion - old
-given_their_war_leader_to_ally_opinion = {
+imprisoned_enemy_war_leader_transferred = {
 	opinion = 40
 	monthly_change = 0.1
 	decaying = yes

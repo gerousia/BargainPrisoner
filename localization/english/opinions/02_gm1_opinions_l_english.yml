@@ -1,35 +1,33 @@
 ﻿##############################
-## GM1 opinions list
+## GM1 opinion_modifiers list
 ##############################
 
 # opinion-modifier-list:
-## give_prisoner_refused_opinion
-## give_prisoner_failed_opinion
-## attempted_give_me_to_another_prison_opinion
-## given_me_to_another_prison_opinion
-## given_my_family_member_opinion
-## given_me_to_enemy_opinion
-## given_me_war_leader_opinion
-## given_their_war_leader_to_enemy_opinion
-## given_their_war_leader_to_ally_opinion
+## refused_to_give_imprisoned_opinion
+## failed_to_give_imprisoned_opinion
+## attempted_to_give_imprisoned_opinion
+## imprisoned_next_imprisoner_transferred
+## imprisoned_family_member_transferred
+## imprisoned_enemy_imprisoner_transferred
+## imprisoned_war_leader_transferred
+## imprisoned_ally_war_leader_transferred
+## imprisoned_enemy_war_leader_transferred
 
 ##############################
-## GM1 opinions localization
+## GM1 opinions_modifiers localization
 ##############################
 
 l_english:
 
  # ignored_demands_opinion
- give_prisoner_refused_opinion: "Refused to Give [prisoner|E]"
- give_prisoner_failed_opinion: "Failed to Send [prisoner|E]"
-
- attempted_give_me_to_another_prison_opinion: "Attempted Sell Away"
- given_me_to_another_prison_opinion: "Given Away to Another [ruler|E]"
- given_my_family_member_opinion: "Given Away [imprisoned|E] Family Member"
-
  # supported_my_war_opinion
  # supported_my_enemy_opinion 
- given_me_to_enemy_opinion: "Given Away to Enemy [ruler|E]"
- given_me_war_leader_opinion: "Recieved [imprisoned|E] [war_leader|E]"
- given_their_war_leader_to_enemy_opinion: "Gave Enemy Our [imprisoned|E] [war_leader|E]"
- given_their_war_leader_to_ally_opinion: "Gave Ally [imprisoned|E] [war_leader|E]"
+ refused_to_give_imprisoned_opinion: "Refused to Give [prisoner|E]"
+ failed_to_give_imprisoned_opinion: "Failed to Send [prisoner|E]"
+ attempted_to_give_imprisoned_opinion: "Attempted Sell Away"
+ imprisoned_next_imprisoner_transferred: "Given Away to Another [ruler|E]"
+ imprisoned_family_member_transferred: "Given Away [imprisoned|E] Family Member"
+ imprisoned_enemy_imprisoner_transferred: "Given Away to Enemy [ruler|E]"
+ imprisoned_war_leader_transferred: "Recieved [imprisoned|E] [war_leader|E]"
+ imprisoned_ally_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Ally to Enemy"
+ imprisoned_enemy_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Enemy to Ally"
