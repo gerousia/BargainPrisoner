@@ -1,0 +1,29 @@
+﻿
+l_english:
+
+transferred_imprisonment_imprisoned_memory: "moved prison"
+transferred_imprisonment_imprisoned_desc: "My [owner.Custom2('RelationToMeShort', prev_imprisoner)], [prev_imprisoner.GetTitledFirstName], sent me to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_imprisoned_desc_second_perspective: "Your [owner.Custom2('RelationToMeShort', prev_imprisoner)], [prev_imprisoner.GetTitledFirstName], sent you to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_imprisoned_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] [owner.Custom2('RelationToMeShort', prev_imprisoner)], [prev_imprisoner.GetTitledFirstName], sent [owner.GetHerHim] to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+
+transferred_imprisonment_imprisoned_other_desc: "My jailor, [prev_imprisoner.GetTitledFirstName], sent me to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_imprisoned_other_desc_second_perspective: "Your jailor, [prev_imprisoner.GetTitledFirstName], sent you to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_imprisoned_other_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] jailor, [prev_imprisoner.GetTitledFirstName], sent [owner.GetHerHim] to become [next_imprisoner.GetFullNamePossessive] own prisoner"
+
+transferred_imprisonment_next_imprisoner_memory: "recieved prisoner"
+transferred_imprisonment_next_imprisoner_desc: "I recieved [imprisoner.GetFullNamePossessive] [imprisoner.Custom2('RelationToMeShort', imprisoned)], [imprisoned.GetTitledFirstName], as my own prisoner"
+transferred_imprisonment_next_imprisoner_desc_second_perspective: "You recieved [imprisoner.GetFullNamePossessive] [imprisoned.Custom2('RelationToMeShort', imprisoner)], [imprisoned.GetTitledFirstName], as your own prisoner"
+transferred_imprisonment_next_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] recieved [imprisoner.GetFullNamePossessive] [imprisoned.Custom2('RelationToMeShort', imprisoner)], [imprisoned.GetTitledFirstName], as [owner.GetHerHim] own prisoner"
+
+transferred_imprisonment_next_imprisoner_other_desc: "I recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as my own prisoner"
+transferred_imprisonment_next_imprisoner_other_desc_second_perspective: "You recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as your own prisoner"
+transferred_imprisonment_next_imprisoner_other_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as [owner.GetHerHim] own prisoner"
+
+transferred_imprisonment_prev_imprisoner_memory: "sent prisoner"
+transferred_imprisonment_prev_imprisoner_desc: "I sent my [owner.Custom2('RelationToMeShort', imprisoned)], [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_prev_imprisoner_desc_second_perspective: "You sent your [owner.Custom2('RelationToMe', imprisoned)], [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_prev_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] sent [owner.GetHerHis] [owner.Custom2('RelationToMeShort', imprisoned)], [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+
+transferred_imprisonment_prev_imprisoner_other_desc: "I sent my prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_prev_imprisoner_other_desc_second_perspective: "You sent your prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+transferred_imprisonment_prev_imprisoner_other_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] sent [owner.GetHerHis] prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"

@@ -1,0 +1,136 @@
+##############################
+## GM1 character_memories list
+##############################
+
+# character-memory-list:
+## transferred_imprisonment_imprisoned_memory
+## transferred_imprisonment_next_imprisoner_memory
+## transferred_imprisonment_prev_imprisoner_memory
+
+##############################
+## GM1 character_memories
+##############################
+
+#------------------------------
+# imprisonment-memories
+#------------------------------
+
+transferred_imprisonment_imprisoned_memory = {
+	categories = { negative prison intimidation }
+	icon = "prison.dds"
+	description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_imprisoned_desc
+			}
+			desc = transferred_imprisonment_imprisoned_other_desc
+		}
+	}
+
+	second_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_imprisoned_desc_second_perspective
+			}
+			desc = transferred_imprisonment_imprisoned_other_desc_second_perspective
+		}
+	}
+
+	third_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_imprisoned_desc_third_perspective
+			}
+			desc = transferred_imprisonment_imprisoned_other_desc_third_perspective
+		}
+	}
+
+	participants = { prev_imprisoner next_imprisoner }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+transferred_imprisonment_next_imprisoner_memory = {
+	categories = { prison intimidation }
+	icon = "prison.dds"
+	description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_next_imprisoner_desc
+			}
+			desc = transferred_imprisonment_next_imprisoner_other_desc
+		}
+	}
+
+	second_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_next_imprisoner_desc_second_perspective
+			}
+			desc = transferred_imprisonment_next_imprisoner_other_desc_second_perspective
+		}
+	}
+
+	third_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_next_imprisoner_desc_third_perspective
+			}
+			desc = transferred_imprisonment_next_imprisoner_other_desc_third_perspective
+		}
+	}
+
+	participants = { imprisoned imprisoner }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
+
+transferred_imprisonment_prev_imprisoner_memory = {
+	categories = { prison intimidation }
+	icon = "prison.dds"
+	description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_prev_imprisoner_desc
+			}
+			desc = transferred_imprisonment_prev_imprisoner_other_desc
+		}
+	}
+
+	second_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_prev_imprisoner_desc_second_perspective
+			}
+			desc = transferred_imprisonment_prev_imprisoner_other_desc_second_perspective
+		}
+	}
+
+	third_perspective_description = {
+		first_valid = {
+			triggered_desc = {
+				trigger = {	exists = this_is_turned_off_at_the_moment } # todo
+				desc = transferred_imprisonment_prev_imprisoner_desc_third_perspective
+			}
+			desc = transferred_imprisonment_prev_imprisoner_other_desc_third_perspective
+		}
+	}
+
+	participants = { imprisoned imprisoner }
+
+	duration = {
+		years = memory_default_duration
+	}
+}
