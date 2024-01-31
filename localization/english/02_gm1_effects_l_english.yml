@@ -1,0 +1,19 @@
+﻿##############################
+## GM1 effect_localization
+##############################
+
+l_english:
+
+ IMPRISONMENT_RELATIVES_TRANSFER_EFFECT: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
+ IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
+ IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 30#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
+ IMPRISONMENT_WAR_TRANSFER_EFFECT_TT: "@alert_icon! [CHARACTER.GetTitledFirstName|V] is at war with [TARGET_CHARACTER.GetShortUIName]:"
+ IMPRISONMENT_MY_WAR_TRANSFER_EFFECT_TT: "@warning_icon! #X You are at war with [TARGET_CHARACTER.GetShortUIName]#!"
+ IMPRISONMENT_CHARACTER_WAR_TRANSFER_EFFECT_TT: "@alert_icon! [CHARACTER.GetTitledFirstName|V] is at war with [TARGET_CHARACTER.GetShortUIName]:"
+ IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TT: "$BULLET_WITH_TAB$@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
+ IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 40#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 50#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 20#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TT: "@alert_icon! [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat|U] [vassal|E]"
+ IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat|U] [head_of_faith|E]#!"
