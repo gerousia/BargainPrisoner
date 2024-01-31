@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 opinion_modifiers list
 ##############################
 # opinion-modifier-list:
@@ -55,6 +55,13 @@ imprisoned_family_member_transferred = {
 	monthly_change = 0.05 # years = 20
 	decaying = yes
 	stacking = yes # Added.
+}
+
+# Values based on ./common/opinion_modifiers/00_religious_opinion.txt/destroyed_papacy_opinion - old
+imprisoned_head_of_faith_transferred = {
+	opinion = -40
+	monthly_change = 0.05 # years = 40
+	decaying = yes
 }
 
 #------------------------------
