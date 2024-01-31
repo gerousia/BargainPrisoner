@@ -1,8 +1,9 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects list
 ##############################
 
 # effects:
+## move_from_prison														- Localization for the imprisoner moving the imprisonment target's prison.
 ## transfer_imprisoned_character_effect									- Assigns a new imprisoner to the imprisoned character and applies modifiers to all involved parties.
 ## transfer_imprisoned_memory_character_effect							- Generates a memory for the involved characters: imprisonment_target, prev_imprisoner, and next_prisoner.
 ## transfer_imprisoned_release_character_effect							- Releases the imprisonment target from their previous imprisoner.
@@ -64,6 +65,19 @@
 # imprisonment-related
 #------------------------------
 
+move_from_prison = {
+	custom_description = {
+		text = RELEASE_IMPRISONED_EFFECT_TT
+		subject = imprisoner
+		object = this
+	}
+	custom_description = {
+		text = MOVE_FROM_PRISON_EFFECT_TT
+		subject = this
+	}
+	hidden_effect = { release_from_prison = yes }
+}
+
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
 ## TARGET (character)
 ## IMPRISONER (character)
@@ -83,14 +97,13 @@ transfer_imprisoned_character_effect = {
 
 	transfer_imprisoned_release_character_effect = {
 		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
+		IMPRISONER = scope:prev_imprisoner
 		NEXT_IMPRISONER = scope:next_imprisoner
 	}
 
 	transfer_imprisoned_imprison_character_effect = {
 		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
+		IMPRISONER = scope:next_imprisoner
 	}
 
 	transfer_imprisoned_stress_character_effect = {
@@ -194,14 +207,13 @@ transfer_imprisoned_memory_character_effect = {
 ## NEXT_IMPRISONER (character)
 transfer_imprisoned_release_character_effect = {
 	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
+	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
 
 	scope:imprisonment_target = {
 		if = {
 			limit = { 
 				is_imprisoned = yes 
-				is_imprisoned_by = scope:prev_imprisoner
+				is_imprisoned_by = scope:curr_imprisoner
 			}
 
 			## We won't change the original vanilla on_release_from_prison on_action.
@@ -220,11 +232,57 @@ transfer_imprisoned_release_character_effect = {
 			}
 
 			# imprisonment_target is released by prev_imprisoner.
-			hidden_effect = { release_from_prison = yes	}
+			move_from_prison = yes
 			
 			## What technically happens when you "escaped_from_prison"?
 			## - Prevents release_from_prison_memory from being created.
 			## - Changes imprisoned_me to imprisoned_me_past opinion modifier. (* This doesn't even work for some reason?)
+
+			## imprisonment_target opinion towards curr_imprisoner.
+			hidden_effect = {
+				if = {
+					limit = {
+						has_opinion_modifier = {
+							modifier = imprisoned_me
+							target = scope:curr_imprisoner
+						}
+					}
+					remove_opinion = {
+						modifier = imprisoned_me
+						target = scope:curr_imprisoner
+					}
+				}
+				add_opinion = {
+					modifier = imprisoned_me_past
+					target = scope:curr_imprisoner
+				}
+			}
+			## They'd rather not be with their previous jailor if they are a PoS.
+			if = {
+				limit = {
+					$NEXT_IMPRISONER$ ?= { NOT = { is_at_war_with = prev } }
+					is_head_of_faith_of = { WHO ?= $NEXT_IMPRISONER$ }
+					OR = {
+						has_character_modifier = recently_tortured
+						has_character_modifier = recently_blinded
+						has_character_modifier = recently_castrated
+						scope:prev_imprisoner = {
+							NOR = { 
+								has_trait = sadistic
+								has_trait = callous
+								has_trait = arbitrary
+								has_trait = wrathful
+								has_trait = vengeful
+								has_trait = deceitful
+							} 
+						}
+					}
+				}
+				add_opinion = {
+					modifier = imprisoned_next_imprisoner_transferred
+					target = scope:curr_imprisoner
+				}
+			}
 		}
 	}
 }
@@ -235,8 +293,7 @@ transfer_imprisoned_release_character_effect = {
 ## NEXT_IMPRISONER (character)
 transfer_imprisoned_imprison_character_effect = {
 	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
+	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
 
 	scope:imprisonment_target = {
 		if = {
@@ -248,7 +305,7 @@ transfer_imprisoned_imprison_character_effect = {
 					is_spouse_of = liege
 				}
 			}
-			scope:next_imprisoner = {
+			scope:curr_imprisoner = {
 				imprison = {
 					target = prev
 					type = house_arrest
@@ -256,67 +313,17 @@ transfer_imprisoned_imprison_character_effect = {
 			}
 		}
 		else = {
-			scope:next_imprisoner = {
+			scope:curr_imprisoner = {
 				imprison = {
 					target = prev
 					type = dungeon
 				}
 			}
 		}
-	}
-
-	# imprisonment_target opinion.
-	scope:imprisonment_target = {
-		## imprisonment_target opinion towards prev_imprisoner.
-		hidden_effect = {
-			if = {
-				limit = {
-					has_opinion_modifier = {
-						modifier = imprisoned_me
-						target = scope:prev_imprisoner
-					}
-				}
-				remove_opinion = {
-					modifier = imprisoned_me
-					target = scope:prev_imprisoner
-				}
-			}
-			add_opinion = {
-				modifier = imprisoned_me_past
-				target = scope:prev_imprisoner
-			}
-		}
-
-		if = {
-			limit = { 
-				NOT = { is_at_war_with = scope:next_imprisoner }
-				OR = {
-					### They'd rather not be with their previous jailor if they are a PoS.
-					has_character_modifier = recently_tortured
-					has_character_modifier = recently_blinded
-					has_character_modifier = recently_castrated
-					scope:prev_imprisoner = {
-						NOR = { 
-							has_trait = sadistic
-							has_trait = callous
-							has_trait = arbitrary
-							has_trait = wrathful
-							has_trait = vengeful
-							has_trait = deceitful
-						} 
-					}
-				}
-			}
-			add_opinion = {
-				modifier = imprisoned_next_imprisoner_transferred
-				target = scope:prev_imprisoner
-			}
-		}
-
-		## imprisonment_target opinion towards next_imprisoner.
+		## imprisonment_target opinion towards curr_imprisoner.
 		add_opinion = {
 			modifier = imprisoned_me
-			target = scope:next_imprisoner
+			target = scope:curr_imprisoner
 		}
 	}
 }
@@ -891,6 +898,12 @@ transfer_imprisoned_head_of_faith_character_effect = {
 					is_head_of_faith_of = { WHO = prev }
 				}
 			}
+
+			reverse_add_opinion = {
+				modifier = imprisoned_head_of_faith_transferred
+				target = scope:imprisonment_target
+			}
+
 			add_piety_level = -1
 			add_piety = medium_piety_loss
 			IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TOOLTIP = { 
@@ -935,7 +948,7 @@ transfer_imprisoned_escalates_rivalry_effect = {
 			limit = {
 				NOT = { has_relation_rival = scope:curr_imprisoner }
 				OR = {
-					is_at_war_with ?= $OTHER$
+					$OTHER$ ?= { is_at_war_with = prev }
 					has_requested_excommunication_by = { WHO = scope:curr_imprisoner }
 					has_opinion_modifier = {
 						target = scope:curr_imprisoner
@@ -1019,7 +1032,7 @@ IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_TOOLTIP = {
 # WHO (character)
 # WITH (character)
 IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description_no_bullet = {
+	custom_description = {
 		text = IMPRISONMENT_WAR_TRANSFER_EFFECT_TT
 		subject = $WHO$
 		object = $WITH$
@@ -1076,7 +1089,7 @@ IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP = {
 
 # WHO (character)
 IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description_no_bullet = {
+	custom_description = {
 		text = IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TT
 		subject = $WHO$
 		object = $VASSAL$
@@ -1086,7 +1099,7 @@ IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TOOLTIP = {
 # WHO (character)
 # HEAD_OF_FAITH (character
 IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description_no_bullet = {
+	custom_description = {
 		text = IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TT
 		subject = $WHO$
 		object = $HEAD_OF_FAITH$ 
