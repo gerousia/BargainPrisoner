@@ -1,20 +1,5 @@
 ﻿##############################
-## GM1 opinion_modifiers list
-##############################
-
-# opinion-modifier-list:
-## refused_to_give_imprisoned_opinion
-## failed_to_give_imprisoned_opinion
-## attempted_to_give_imprisoned_opinion
-## imprisoned_next_imprisoner_transferred
-## imprisoned_family_member_transferred
-## imprisoned_enemy_imprisoner_transferred
-## imprisoned_war_leader_transferred
-## imprisoned_ally_war_leader_transferred
-## imprisoned_enemy_war_leader_transferred
-
-##############################
-## GM1 opinions_modifiers localization
+## GM1 opinions localization
 ##############################
 
 l_english:
@@ -28,6 +13,6 @@ l_english:
  imprisoned_next_imprisoner_transferred: "Given Away to Another [ruler|E]"
  imprisoned_family_member_transferred: "Given Away [imprisoned|E] Family Member"
  imprisoned_enemy_imprisoner_transferred: "Given Away to Enemy [ruler|E]"
- imprisoned_war_leader_transferred: "Recieved [imprisoned|E] [war_leader|E]"
+ #~~imprisoned_war_leader_transferred: "Recieved [imprisoned|E] [war_leader|E]"~~
  imprisoned_ally_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Ally to Enemy"
  imprisoned_enemy_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Enemy to Ally"
