@@ -4,16 +4,24 @@
 
 l_english:
 
- IMPRISONMENT_RELATIVES_TRANSFER_EFFECT: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
- IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
- IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON: "All of [THIS.GetCharacter.GetShortUINamePossessive|V] [family|E] loses #N 30#! [opinion|E] of [TARGET_IMPRISONER.GetShortUIName]"
- IMPRISONMENT_WAR_TRANSFER_EFFECT_TT: "@alert_icon! [CHARACTER.GetTitledFirstName|V] is at war with [TARGET_CHARACTER.GetShortUIName]:"
- IMPRISONMENT_MY_WAR_TRANSFER_EFFECT_TT: "@warning_icon! #X You are at war with [TARGET_CHARACTER.GetShortUIName]#!"
- IMPRISONMENT_CHARACTER_WAR_TRANSFER_EFFECT_TT: "@alert_icon! [CHARACTER.GetTitledFirstName|V] is at war with [TARGET_CHARACTER.GetShortUIName]:"
- IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TT: "$BULLET_WITH_TAB$@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
- IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 40#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 50#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TT: "$BULLET_WITH_TAB$All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 20#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TT: "@alert_icon! [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat|U] [vassal|E]"
- IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat|U] [head_of_faith|E]#!"
+ MUST_TRAVEL_TOWARDS_COURT: "#weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ RELEASES_PRISONER_TOOLTIP_EFFECT: "Releases [TARGET_CHARACTER.GetShortUIName]"
+ MOVES_PRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Moves [prison|E]#! $MUST_TRAVEL_TOWARDS_COURT$"
+ IMPRISON_PRISONER_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISON_EFFECT$#! $MUST_TRAVEL_TOWARDS_COURT$"
+
+ TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_HOUSE_ARREST: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_DUNGEON: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 30#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+
+ TRANSFER_IMPRISONMENT_AT_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon! #alert_trial' )] [CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] at [war|E] with [TARGET_CHARACTER.GetShortUINameNoFormat|U]#!"
+ TRANSFER_IMPRISONMENT_WAR_LEADER_TOOLTIP_EFFECT: "@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
+ TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 20#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT_WAR_LEADER: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 40#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]" 
+ TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT_WAR_LEADER: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 50#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
+ 
+ TRANSFER_IMPRISONMENT_VASSAL_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon! #alert_trial' )] [TARGET_CHARACTER.GetTitledFirstName|U] is [Select_CString( CHARACTER.IsLocalPlayer, 'your', CHARACTER.GetShortUINamePossessiveNoFormat )] [vassal|E]#!"
+ TRANSFER_IMPRISONMENT_HEAD_OF_FAITH_TOOLTIP_EFFECT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [Select_CString( CHARACTER.IsLocalPlayer, 'your', CHARACTER.GetShortUINamePossessiveNoFormat )] [head_of_faith|E]#!"
+
+ IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT: "@portrait_punishment_icon! #weak Crime — Rightful imprisonment#!"
+ IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT_WAR: "@portrait_punishment_icon! #weak War — Just imprisonment#!"

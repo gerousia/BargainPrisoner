@@ -15,41 +15,41 @@
 # imprisonment-memories
 #------------------------------
 
-transferred_imprisonment_imprisoned_memory = {
+transfer_imprisonment_prisoner_memory = {
 	categories = { negative prison intimidation }
 	icon = "prison.dds"
 	description = {
-		desc = transferred_imprisonment_imprisoned_desc
+		desc = transfer_imprisonment_prisoner_desc
 	}
 
 	second_perspective_description = {
-		desc = transferred_imprisonment_imprisoned_desc_second_perspective
+		desc = transfer_imprisonment_prisoner_desc_second_perspective
 	}
 
 	third_perspective_description = {
-		desc = transferred_imprisonment_imprisoned_desc_third_perspective
+		desc = transfer_imprisonment_prisoner_desc_third_perspective
 	}
 
-	participants = { prev_imprisoner next_imprisoner }
+	participants = { previous_imprisoner current_imprisoner }
 
 	duration = {
 		years = memory_default_duration
 	}
 }
 
-transferred_imprisonment_next_imprisoner_memory = {
+transfer_imprisonment_previous_imprisoner_memory = {
 	categories = { prison intimidation }
 	icon = "prison.dds"
 	description = {
-		desc = transferred_imprisonment_next_imprisoner_desc
+		desc = transfer_imprisonment_previous_imprisoner_desc
 	}
 
 	second_perspective_description = {
-		desc = transferred_imprisonment_next_imprisoner_desc_second_perspective
+		desc = transfer_imprisonment_previous_imprisoner_desc_second_perspective
 	}
 
 	third_perspective_description = {
-		desc = transferred_imprisonment_next_imprisoner_desc_third_perspective
+		desc = transfer_imprisonment_previous_imprisoner_desc_third_perspective
 	}
 
 	participants = { imprisoned imprisoner }
@@ -59,19 +59,19 @@ transferred_imprisonment_next_imprisoner_memory = {
 	}
 }
 
-transferred_imprisonment_prev_imprisoner_memory = {
+transfer_imprisonment_current_imprisoner_memory = {
 	categories = { prison intimidation }
 	icon = "prison.dds"
 	description = {
-		desc = transferred_imprisonment_prev_imprisoner_desc
+		desc = transfer_imprisonment_current_imprisoner_desc
 	}
 
 	second_perspective_description = {
-		desc = transferred_imprisonment_prev_imprisoner_desc_second_perspective
+		desc = transfer_imprisonment_current_imprisoner_desc_second_perspective
 	}
 
 	third_perspective_description = {
-		desc = transferred_imprisonment_prev_imprisoner_desc_third_perspective
+		desc = transfer_imprisonment_current_imprisoner_desc_third_perspective
 	}
 
 	participants = { imprisoned imprisoner }

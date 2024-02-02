@@ -3,60 +3,21 @@
 ##############################
 
 # effects:
-## move_from_prison														- Localization for the imprisoner moving the imprisonment target's prison.
-## transfer_imprisoned_character_effect									- Assigns a new imprisoner to the imprisoned character and applies modifiers to all involved parties.
-## transfer_imprisoned_memory_character_effect							- Generates a memory for the involved characters: imprisonment_target, prev_imprisoner, and next_prisoner.
-## transfer_imprisoned_release_character_effect							- Releases the imprisonment target from their previous imprisoner.
-## transfer_imprisoned_imprison_character_effect						- Imprisons the imprisonment target by the next imprisoner.
-## transfer_imprisoned_stress_character_effect							- Applies stress modifiers to either the previous or next imprisoner.
-## transfer_imprisoned_stress_effect									- Applies stress modifiers to the imprisoner.
-## transfer_imprisoned_dread_character_effect							- Applies dread modifiers to either the previous or next imprisoner.
-## transfer_imprisoned_dread_effect										- Applies dread modifiers to the imprisoner.
-## transfer_imprisoned_schemes_character_effect							- Disbands any schemes by either the previous or next imprisoner against the imprisonment target.
-## transfer_imprisoned_schemes_effect									- Disbands any schemes by the imprisoner against the imprisoned.
-## transferred_imprisoned_family_member_consequences_effect				- Applies opinion modifiers from the imprisoned family members to either the previous or next imprisoner.
-## transferred_imprisoned_war_participant_consequences_effect			- Applies opinion modifiers to all war participants involved in the war between the imprisonment target and the next imprisoner, if such a war exists.
-## transferred_imprisoned_vassal_consequences_effect					- Applies tyranny modifiers to either the previous or next imprisoner if the imprisonment target is their vassal.
-## transfer_imprisoned_vassal_character_effect							- Applies tyranny modifiers to the imprisoner if the imprisoned is their vassal.
-## transferred_imprisoned_lover_consequences_effect						- Initiates an event to break up lovers for either the previous or next imprisoner if the imprisonment target is their lover.
-## transfer_imprisoned_lover_character_effect							- Initiates an event to break up lovers between the imprisoner and the imprisoned.
-## transferred_imprisoned_head_of_faith_consequences_effect				- Applies piety level modifiers to either the previous or next imprisoner if the imprisonment target is their Head of Faith.
-## transfer_imprisoned_head_of_faith_character_effect					- Applies piety level modifiers to the imprisoner if the imprisoned is their Head of Faith.
-## transferred_imprisoned_rivalry_consequences_effect					- Adjusts rivalry levels for either the previous or next imprisoner if the imprisonment target has a negative relationship with them.
-## transfer_imprisoned_escalates_rivalry_effect							- Adjusts rivalry levels for the imprisoner if there is neither an imprisonment reason nor a war involving the imprisoned.
-## transfer_imprisoned_tyranny_effect									- Applies tyranny modifiers to imprisoner if the imprisoned had no reason for imprisonment.
-
-# localization-tooltips:
-## IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST_TOOLTIP
-## IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON_TOOLTIP
-## IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_TOOLTIP
-## IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP
-## IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TOOLTIP
-## IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP
-## IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP
-## IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP
-## IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP
-## IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TOOLTIP
-## IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TOOLTIP
-
-# variable-list:
-## -
-
-# opinion-modifier-list:
-## imprisoned_me
-## imprisoned_me_past
-## imprisoned_family_member
-## imprisoned_family_member_dungeon
-## imprisoned_family_member_transferred
-## imprisoned_next_imprisoner_transferred
-## imprisoned_enemy_imprisoner_transferred
-## imprisoned_war_leader_transferred
-## imprisoned_ally_war_leader_transferred
-## imprisoned_enemy_war_leader_transferred
-## supported_my_war_opinion
-## supported_my_enemy_opinion
-## respect_opinion
-
+## transfer_imprisonment_attempt_character_effect						- Applies stress and dread modifiers, escalates rivalry, and disbands any schemes by the imprisoner against the imprisoned.
+## transfer_imprisonment_character_effect
+## change_imprisoner_effect 											- Assigns a new imprisoner to the imprisoned character, create memories, and applies modifiers to all involved parties.
+## change_imprisoner_relatives_effect									- Applies opinion modifiers from the imprisoned family members to either the previous or next imprisoner.
+## change_imprisoner_lovers_effect										- Initiates an event to break up lovers for either the previous or next imprisoner if the
+## transfer_imprisonment_prisoner_is_at_war_with_effect					- Applies opinion modifiers to all war participants involved in the war between the imprisonment target and the next imprisoner, if such a war exists.
+## transfer_imprisonment_prisoner_is_vassal_of_effect					- Applies tyranny modifiers to either the previous or next imprisoner if the imprisonment target is their vassal.
+## transfer_imprisonment_vassal_effect
+## transfer_imprisonment_prisoner_is_head_of_faith_of_effect			- Applies piety level modifiers to the imprisoner if the imprisoned is their Head of Faith.
+## transfer_imprisonment_head_of_faith_effect
+## transfer_imprisonment_imprisoner_stress_effect						- Applies stress modifiers to either the previous or next imprisoner.
+## transfer_imprisonment_stress_effect
+## transfer_imprisonment_imprisoner_dread_effect						- Applies dread modifiers to either the previous or next imprisoner.
+## transfer_imprisonment_dread_effect
+									
 ##############################
 ## GM1 scripted_effects
 ##############################
@@ -65,265 +26,389 @@
 # imprisonment-related
 #------------------------------
 
-move_from_prison = {
-	custom_description = {
-		text = RELEASE_IMPRISONED_EFFECT_TT
-		subject = imprisoner
-		object = this
-	}
-	custom_description = {
-		text = MOVE_FROM_PRISON_EFFECT_TT
-		subject = this
-	}
-	hidden_effect = { release_from_prison = yes }
-}
-
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## IMPRISONER (character)
-## TARGET_IMPRISONER (character)
-transfer_imprisoned_character_effect = {
-	play_music_cue = "mx_cue_sacredrite"
-
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$TARGET_IMPRISONER$ = { save_scope_as = next_imprisoner }
-	
-	transfer_imprisoned_memory_character_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transfer_imprisoned_release_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transfer_imprisoned_imprison_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-
-	transfer_imprisoned_stress_character_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transfer_imprisoned_dread_character_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transfer_imprisoned_schemes_character_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_family_member_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_war_participant_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_vassal_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_lover_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_head_of_faith_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-
-	transferred_imprisoned_rivalry_consequences_effect = {
-		TARGET = scope:imprisonment_target
-		PREV_IMPRISONER = scope:prev_imprisoner
-		NEXT_IMPRISONER = scope:next_imprisoner
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
 ## TARGET (character)
 ## PREV_IMPRISONER (character)
 ## NEXT_IMPRISONER (character)
-transfer_imprisoned_memory_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	scope:imprisonment_target = {
-		create_character_memory = {
-			type = transferred_imprisonment_imprisoned_memory
-			participants = {
-				next_imprisoner = scope:next_imprisoner
-				prev_imprisoner = scope:prev_imprisoner
-			}
-		}
-	}
-
-	scope:next_imprisoner = {
-		create_character_memory = {
-			type = transferred_imprisonment_next_imprisoner_memory
-			participants = {
-				imprisoned = scope:imprisonment_target
-				imprisoner = scope:prev_imprisoner
-			}
-		}
-	}
-
-	scope:prev_imprisoner = {
-		create_character_memory = {
-			type = transferred_imprisonment_prev_imprisoner_memory
-			participants = {
-				imprisoned = scope:imprisonment_target
-				imprisoner = scope:next_imprisoner
-			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## PREV_IMPRISONER (character)
-## NEXT_IMPRISONER (character)
-transfer_imprisoned_release_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:imprisonment_target = {
-		if = {
-			limit = { 
-				is_imprisoned = yes 
-				is_imprisoned_by = scope:curr_imprisoner
-			}
-
-			## We won't change the original vanilla on_release_from_prison on_action.
-			## Instead we'll make use of escaped_from_prison_flag character_flag.
-			## * Remove when changed or if there's a better way to implement this.
-			
-			add_character_flag = {
-				flag = escaped_from_prison_flag
-				days = 1
-			}
-
-			## To make sure you don't get spammed about the release (* I don't know where this is from the code).
-			add_character_flag = {
-				flag = block_for_prison_release_notification
-				days = 1
-			}
-
-			# imprisonment_target is released by prev_imprisoner.
-			move_from_prison = yes
-			
-			## What technically happens when you "escaped_from_prison"?
-			## - Prevents release_from_prison_memory from being created.
-			## - Changes imprisoned_me to imprisoned_me_past opinion modifier. (* This doesn't even work for some reason?)
-
-			## imprisonment_target opinion towards curr_imprisoner.
-			hidden_effect = {
-				if = {
-					limit = {
-						has_opinion_modifier = {
-							modifier = imprisoned_me
-							target = scope:curr_imprisoner
-						}
-					}
-					remove_opinion = {
-						modifier = imprisoned_me
-						target = scope:curr_imprisoner
-					}
-				}
-				add_opinion = {
-					modifier = imprisoned_me_past
-					target = scope:curr_imprisoner
-				}
-			}
-			## They'd rather not be with their previous jailor if they are a PoS.
-			if = {
-				limit = {
-					$NEXT_IMPRISONER$ ?= { NOT = { is_at_war_with = prev } }
-					is_head_of_faith_of = { WHO ?= $NEXT_IMPRISONER$ }
-					OR = {
-						has_character_modifier = recently_tortured
-						has_character_modifier = recently_blinded
-						has_character_modifier = recently_castrated
-						scope:prev_imprisoner = {
-							NOR = { 
-								has_trait = sadistic
-								has_trait = callous
-								has_trait = arbitrary
-								has_trait = wrathful
-								has_trait = vengeful
-								has_trait = deceitful
-							} 
-						}
-					}
-				}
-				add_opinion = {
-					modifier = imprisoned_next_imprisoner_transferred
-					target = scope:curr_imprisoner
-				}
-			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## PREV_IMPRISONER (character)
-## NEXT_IMPRISONER (character)
-transfer_imprisoned_imprison_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:imprisonment_target = {
+transfer_imprisonment_attempt_character_effect = {
+	$TARGET$ = {
 		if = {
 			limit = {
-				exists = liege
+				NOT = { has_relation_rival = imprisoner }
 				OR = {
-					is_landed = yes
-					is_close_or_extended_family_of = liege
-					is_spouse_of = liege
+					$IMPRISONER$ = { is_at_war_with = $TARGET$ }
+					has_requested_excommunication_by = { WHO = imprisoner }
+					has_opinion_modifier = {
+						modifier = revoked_title
+						target = imprisoner
+					}
 				}
 			}
-			scope:curr_imprisoner = {
-				imprison = {
-					target = prev
-					type = house_arrest
+			hidden_effect = {
+				if = {
+					limit = { has_relation_potential_rival = imprisoner }
+					remove_relation_potential_rival = imprisoner
 				}
 			}
+			set_relation_rival = imprisoner
 		}
 		else = {
-			scope:curr_imprisoner = {
-				imprison = {
-					target = prev
-					type = dungeon
+			hidden_effect = {
+				progress_towards_rival_effect = {
+					CHARACTER = imprisoner
+					REASON = rival_imprisoned
+					OPINION = 0
 				}
 			}
 		}
-		## imprisonment_target opinion towards curr_imprisoner.
+
+		imprisoner = {
+			disband_all_schemes_effect = {
+				WHO = this
+				TARGET = $TARGET$
+			}		
+		}
+	}
+
+	$IMPRISONER$ = {
+		disband_all_schemes_effect = {
+			WHO = this
+			TARGET = $TARGET$
+		}		
+	}
+
+	transfer_imprisonment_imprisoner_stress_effect = {
+		TARGET = $TARGET$
+		PREV_IMPRISONER = $TARGET$.imprisoner
+		NEXT_IMPRISONER = $IMPRISONER$
+	}
+
+	transfer_imprisonment_imprisoner_dread_effect = {
+		TARGET = $TARGET$
+		PREV_IMPRISONER = $TARGET$.imprisoner
+		NEXT_IMPRISONER = $IMPRISONER$
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## TARGET (character)
+## CURR_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+transfer_imprisonment_character_effect = {
+	$TARGET$ = { save_scope_as = imprisonment_target }
+	$TARGET$.imprisoner = { save_scope_as = prev_imprisoner }
+	$IMPRISONER$ = { save_scope_as = next_imprisoner }
+
+	change_imprisoner_effect = { 
+		TARGET = scope:imprisonment_target 
+		CURR_IMPRISONER = scope:prev_imprisoner
+		NEXT_IMPRISONER = scope:next_imprisoner
+	}
+
+	transfer_imprisonment_prisoner_is_at_war_with_effect = {
+		TARGET = scope:imprisonment_target
+		PREV_IMPRISONER = scope:prev_imprisoner
+		NEXT_IMPRISONER = scope:next_imprisoner
+	}
+
+	transfer_imprisonment_prisoner_is_vassal_of_effect = {
+		TARGET = scope:imprisonment_target
+		PREV_IMPRISONER = scope:prev_imprisoner
+		NEXT_IMPRISONER = scope:next_imprisoner
+	}
+
+	transfer_imprisonment_prisoner_is_head_of_faith_of_effect = {
+		TARGET = scope:imprisonment_target
+		PREV_IMPRISONER = scope:prev_imprisoner
+		NEXT_IMPRISONER = scope:next_imprisoner
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## TARGET (character)
+## CURR_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+change_imprisoner_effect = {
+	$TARGET$ = {
+		create_character_memory = {
+			type = transfer_imprisonment_prisoner_memory
+			participants = {
+				previous_imprisoner = $CURR_IMPRISONER$
+				current_imprisoner = $NEXT_IMPRISONER$
+			}
+		}
+	}
+
+	$CURR_IMPRISONER$ = {
+		create_character_memory = {
+			type = transfer_imprisonment_previous_imprisoner_memory
+			participants = {
+				imprisoned = $TARGET$
+				imprisoner = $NEXT_IMPRISONER$
+			}
+		}
+	}
+
+	$NEXT_IMPRISONER$ = {
+		create_character_memory = {
+			type = transfer_imprisonment_current_imprisoner_memory
+			participants = {
+				imprisoned = $TARGET$
+				imprisoner = $CURR_IMPRISONER$
+			}
+		}
+	}
+
+	$TARGET$ = {
+		## We won't change the original vanilla on_release_from_prison in on_action.
+		## Instead we'll make use of the existing escaped_from_prison_flag.
+		## * Remove when changed or if there's a better way to implement this.
+
+		## What technically happens when you "escaped_from_prison"?
+		## - Prevents release_from_prison_memory from being created.
+		## - Changes imprisoned_me to imprisoned_me_past opinion modifier. (* This doesn't even work for some reason?)
+
+		if = {
+			limit = { has_character_modifier = allowed_to_go_outside }
+			remove_character_modifier = allowed_to_go_outside
+		}
+		if = {
+			limit = { has_character_modifier = moldy_gruel_diet }
+			remove_character_modifier = moldy_gruel_diet
+		}
+		
+		add_character_flag = {
+			flag = escaped_from_prison_flag
+			days = 1
+		}
+	
+		add_character_flag = {
+			flag = block_for_prison_release_notification
+			days = 1
+		}
+	
+		custom_description = {
+			text = RELEASES_PRISONER_TOOLTIP_EFFECT
+			subject = $CURR_IMPRISONER$
+			object = $TARGET$
+			if = {
+				limit = {
+					has_opinion_modifier = {
+						modifier = imprisoned_me
+						target = $CURR_IMPRISONER$
+					}
+				}
+				remove_opinion = {
+					modifier = imprisoned_me
+					target = $CURR_IMPRISONER$
+				}
+			}
+			add_opinion = {
+				modifier = imprisoned_me_past
+				target = $CURR_IMPRISONER$
+			}
+			release_from_prison = yes
+		}
+
+		custom_description_no_bullet = {
+			text = MOVES_PRISON_TOOLTIP_EFFECT
+			$CURR_IMPRISONER$ = {
+				if = {
+					limit = { has_imprisonment_reason = $TARGET$ }
+					consume_imprisonment_reason = $TARGET$
+				}
+			}
+		}
+
+		custom_description_no_bullet = {
+			text = IMPRISON_PRISONER_TOOLTIP_EFFECT
+			subject = $NEXT_IMPRISONER$
+			object = $TARGET$
+			if = {
+				limit = {
+					exists = liege
+					OR = {
+						is_landed = yes
+						is_close_or_extended_family_of = liege
+						is_spouse_of = liege
+					}
+				}
+				$NEXT_IMPRISONER$ = {
+					imprison = {
+						target = $TARGET$
+						type = house_arrest
+					}
+				}
+			}
+			else = {
+				$NEXT_IMPRISONER$ = {
+					imprison = {
+						target = $TARGET$
+						type = dungeon
+					}
+				}
+			}
+		}
+	}
+
+	$TARGET$ = {
+		## imprisonment_target opinion towards their previous imprisoner.
+		## They'd rather not be with their previous imprisoner if they are a PoS.
+		if = {
+			limit = {
+				NOT = { $NEXT_IMPRISONER$ = { is_at_war_with = $TARGET$ } }
+				is_head_of_faith_of = { WHO = $NEXT_IMPRISONER$ }
+				OR = {
+					has_character_modifier = recently_tortured
+					has_character_modifier = recently_blinded
+					has_character_modifier = recently_castrated
+					$CURR_IMPRISONER$ = {
+						NOR = { 
+							has_trait = sadistic
+							has_trait = callous
+							has_trait = arbitrary
+							has_trait = wrathful
+							has_trait = vengeful
+							has_trait = deceitful
+						} 
+					}
+				}
+			}
+			add_opinion = {
+				modifier = transferred_me
+				target = $CURR_IMPRISONER$
+			}
+			## imprisonment_target opinion towards next_imprisoner.
+		}
 		add_opinion = {
 			modifier = imprisoned_me
-			target = scope:curr_imprisoner
+			target = $NEXT_IMPRISONER$
+		}
+	}
+
+	change_imprisoner_relatives_effect = {
+		TARGET = $TARGET$
+		PREV_IMPRISONER = $CURR_IMPRISONER$
+		NEXT_IMPRISONER = $NEXT_IMPRISONER$
+	}
+
+	change_imprisoner_lovers_effect = {
+		TARGET = $TARGET$
+		PREV_IMPRISONER = $CURR_IMPRISONER$
+		NEXT_IMPRISONER = $NEXT_IMPRISONER$
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## TARGET (character)
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+change_imprisoner_relatives_effect = {
+	$TARGET$ = {
+		# relatives opinion towards previous imprisoner
+		if = {
+			limit = { 
+				any_close_or_extended_family_member = { 
+					count >= 1
+					NOT = { $NEXT_IMPRISONER$ = this } 
+					NOT = { $PREV_IMPRISONER$ = this }
+				} 
+			}
+			custom_description = {
+				text = TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP
+				subject = $TARGET$
+				object = $PREV_IMPRISONER$
+				every_close_or_extended_family_member = {
+					limit = {
+						OR = {
+							NOT = { $NEXT_IMPRISONER$ = this } 
+							NOT = { $PREV_IMPRISONER$ = this } 
+						}
+					}
+					add_opinion = {
+						modifier = transferred_family_member
+						target = $PREV_IMPRISONER$
+					}
+				}
+			}
+		}
+	
+		# relatives opinion towards next imprisoner
+		if = {
+			limit = { 
+				any_close_or_extended_family_member = { 
+					count >= 1
+					NOT = { $PREV_IMPRISONER$ = this }
+					NOT = { $NEXT_IMPRISONER$ = this } 
+				} 
+			}
+			if = {
+				limit = { is_in_prison_type = house_arrest }
+				custom_description = {
+					text = TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_HOUSE_ARREST
+					subject = $TARGET$
+					object = $NEXT_IMPRISONER$
+					every_close_or_extended_family_member = {
+						limit = {
+							NOT = { $PREV_IMPRISONER$ = this }
+							NOT = { $NEXT_IMPRISONER$ = this } 
+						}
+						add_opinion = {
+							modifier = imprisoned_family_member
+							target = $NEXT_IMPRISONER$
+						}
+					}
+				}
+			}
+			else_if = {
+				limit = { is_in_prison_type = dungeon }
+				custom_description = {
+					text = TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_DUNGEON
+					subject = $TARGET$
+					object = $NEXT_IMPRISONER$
+					every_close_or_extended_family_member = {
+						limit = {
+							NOT = { $PREV_IMPRISONER$ = this }
+							NOT = { $NEXT_IMPRISONER$ = this } 
+						}
+						add_opinion = {
+							modifier = imprisoned_family_member_dungeon
+							target = $NEXT_IMPRISONER$
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## TARGET (character)
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+change_imprisoner_lovers_effect = {
+	$TARGET$ = {
+		if = {
+			limit = {
+				has_relation_lover = $PREV_IMPRISONER$
+				NOT = { has_relation_rival = $PREV_IMPRISONER$ }
+			}
+			trigger_event = {
+				id = lover.0101
+				days = { 14 30 }
+			}
+		}
+
+		if = {
+			limit = {
+				has_relation_lover = $NEXT_IMPRISONER$
+				NOT = { has_relation_rival = $NEXT_IMPRISONER$ }
+			}
+			trigger_event = {
+				id = lover.0101
+				days = { 14 30 }
+			}
 		}
 	}
 }
@@ -331,32 +416,345 @@ transfer_imprisoned_imprison_character_effect = {
 # TARGET (character)
 # PREV_IMPRISONER (character)
 # NEXT_IMPRISONER (character)
-transfer_imprisoned_stress_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
+transfer_imprisonment_prisoner_is_at_war_with_effect = {
+	$TARGET$ = {
+		every_character_war = {
+			limit = {
+				any_war_participant = { 
+					$NEXT_IMPRISONER$ = this
+					$NEXT_IMPRISONER$ = {
+						NOT = { is_allied_in_war = $TARGET$ }
+						NOT = { is_allied_in_war = $PREV_IMPRISONER$ }
+					}
+				}
+			}
 
-	transfer_imprisoned_stress_effect = { 
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
+			custom_description_no_bullet = {
+				text = TRANSFER_IMPRISONMENT_AT_WAR_TOOLTIP_EFFECT
+				subject = $TARGET$
+				object = $NEXT_IMPRISONER$
+			}
+
+			custom_description_no_bullet = {
+				text = TRANSFER_IMPRISONMENT_AT_WAR_TOOLTIP_EFFECT
+				subject = $NEXT_IMPRISONER$ 
+				object = $TARGET$
+			}
+
+			if = {
+				limit = { is_leader_in_war = $TARGET$ }
+
+				custom_description_no_bullet = {
+					text = TRANSFER_IMPRISONMENT_WAR_LEADER_TOOLTIP_EFFECT
+					subject = $TARGET$ 
+				}
+
+				if = {
+					limit = {
+						any_war_participant = {
+							count >= 1
+							NOT = { $TARGET$ = this }
+							NOT = { $PREV_IMPRISONER$ = this } 
+							NOT = { $NEXT_IMPRISONER$ = this } 
+							is_allied_in_war = $TARGET$
+						}
+					}
+
+					## allies' opinion towards previous imprisoner
+					custom_description = {
+						text = TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT_WAR_LEADER # IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TT
+						subject = $TARGET$
+						object = $PREV_IMPRISONER$
+						every_war_participant = {
+							limit = {
+								NOT = { $TARGET$ = this }
+								NOT = { $PREV_IMPRISONER$ = this } 
+								NOT = { $NEXT_IMPRISONER$ = this } 
+								is_allied_in_war = $TARGET$
+							}
+							add_opinion = {
+								modifier = supported_my_enemy_opinion
+								target = $PREV_IMPRISONER$
+								opinion = -50
+							}
+						}
+					}
+				}
+
+				if = {
+					limit = {
+						any_war_participant = {
+							count >= 1
+							NOT = { $TARGET$ = this }
+							NOT = { $PREV_IMPRISONER$ = this } 
+							NOT = { $NEXT_IMPRISONER$ = this } 
+							is_allied_in_war = $NEXT_IMPRISONER$
+						}
+					}
+
+					## enemies' opinion towards previous imprisoner
+					custom_description = {
+						text = TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT_WAR_LEADER
+						subject = $NEXT_IMPRISONER$
+						object = $PREV_IMPRISONER$
+						every_war_participant = {
+							limit = {
+								NOT = { $TARGET$ = this }
+								NOT = { $PREV_IMPRISONER$ = this } 
+								NOT = { $NEXT_IMPRISONER$ = this } 
+								is_allied_in_war = $NEXT_IMPRISONER$
+							}
+							add_opinion = {
+								modifier = supported_my_war_opinion
+								target = $PREV_IMPRISONER$
+								opinion = 40
+							}
+						}
+					}
+				}
+
+				$NEXT_IMPRISONER$ = {
+					add_opinion = {
+						modifier = supported_my_war_opinion
+						target = $PREV_IMPRISONER$
+						opinion = 40
+					}
+				}
+			}
+			else_if = {
+				limit = { NOT { is_leader_in_war = $TARGET$ } }
+				if = {
+					limit = {
+						any_war_participant = {
+							count >= 1
+							NOT = { $TARGET$ = this }
+							NOT = { $PREV_IMPRISONER$ = this } 
+							NOT = { $NEXT_IMPRISONER$ = this } 
+							is_allied_in_war = $TARGET$
+						}
+					}
+
+					## allies' opinion towards previous imprisoner
+					custom_description = {
+						text = TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT
+						subject = $TARGET$
+						object = $PREV_IMPRISONER$
+						every_war_participant = {
+							limit = {
+								NOT = { $TARGET$ = this }
+								NOT = { $PREV_IMPRISONER$ = this } 
+								NOT = { $NEXT_IMPRISONER$ = this } 
+								is_allied_in_war = $TARGET$
+							}
+							add_opinion = {
+								modifier = supported_my_enemy_opinion
+								target = $PREV_IMPRISONER$
+							}
+						}
+					}
+				}
+
+				if = {
+					limit = {
+						any_war_participant = {
+							count >= 1
+							NOT = { $TARGET$ = this }
+							NOT = { $PREV_IMPRISONER$ = this } 
+							NOT = { $NEXT_IMPRISONER$ = this } 
+							is_allied_in_war = $NEXT_IMPRISONER$
+						}
+					}
+
+					## enemies' opinion towards previous imprisoner
+					custom_description = {
+						text = TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT
+						subject = $NEXT_IMPRISONER$
+						object = $PREV_IMPRISONER$
+						every_war_participant = {
+							limit = {
+								NOT = { $TARGET$ = this }
+								NOT = { $PREV_IMPRISONER$ = this } 
+								NOT = { $NEXT_IMPRISONER$ = this } 
+								is_allied_in_war = $NEXT_IMPRISONER$
+							}
+							add_opinion = {
+								modifier = supported_my_war_opinion
+								target = $PREV_IMPRISONER$
+							}
+						}
+					}
+				}
+
+				$NEXT_IMPRISONER$ = {
+					add_opinion = {
+						modifier = supported_my_war_opinion
+						target = $PREV_IMPRISONER$
+					}
+				}
+			}
+
+			$TARGET$ = {
+				add_opinion = {
+					modifier = supported_my_enemy_opinion
+					target = $PREV_IMPRISONER$
+					opinion = -50
+				}
+			}
+		}
 	}
-		
-	transfer_imprisoned_stress_effect = { 
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
+
+	# tooltip for sadistic roleplayers
+	$PREV_IMPRISONER$ = {
+		if = {
+			limit = { is_at_war_with = $TARGET$	}
+			custom_description_no_bullet = {
+				text = TRANSFER_IMPRISONMENT_AT_WAR_TOOLTIP_EFFECT
+				subject = this
+				object = $TARGET$
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_tyranny_effect
+## TARGET (character)
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+transfer_imprisonment_prisoner_is_vassal_of_effect = {
+	## sending without any imprisonment_reason incurs tyranny.
+	transfer_imprisonment_vassal_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $PREV_IMPRISONER$
+	}
+`
+	## recieving without any imprisonment_reason incurs tyranny.
+	transfer_imprisonment_vassal_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $NEXT_IMPRISONER$
+	}
+}
+
+transfer_imprisonment_vassal_effect = {
+	$IMPRISONER$ = {
+		if = {
+			limit = { $TARGET$.liege = prev }
+
+			custom_description_no_bullet = {
+				text = TRANSFER_IMPRISONMENT_VASSAL_TOOLTIP_EFFECT
+				subject = $IMPRISONER$
+				object = $TARGET$
+			}
+
+			if = {
+				limit = { has_imprisonment_reason = $TARGET$ }
+				custom_description_no_bullet = { 
+					text = IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT
+					subject = this
+				}
+			}
+			else_if = {
+				limit = { 
+					is_at_war_with = $TARGET$ 
+					NOT = { is_allied_in_war = $TARGET$ }
+				}
+				custom_description_no_bullet = {
+					text = IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT_WAR
+					subject = this
+				}
+			}
+			else = { 
+				add_tyranny_no_bullet = {
+					VALUE = imprisonment_tyranny_gain
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_HoF_consequences_effect
+## TARGET (character)
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+transfer_imprisonment_prisoner_is_head_of_faith_of_effect = {
+	transfer_imprisonment_head_of_faith_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $PREV_IMPRISONER$
+	}
+
+	transfer_imprisonment_head_of_faith_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $NEXT_IMPRISONER$
+	}
+
+	$TARGET$ = {
+		if = {
+			limit = { 
+				NOT = { $NEXT_IMPRISONER$.faith = $TARGET$.faith }	
+			}
+			add_opinion = {
+				modifier = transferred_me_head_of_faith
+				target = $PREV_IMPRISONER$
+			}
+		}
+	}
+}
+
+transfer_imprisonment_head_of_faith_effect = {		
+	$IMPRISONER$ = {
+		if = {
+			limit = { $TARGET$ = { is_head_of_faith_of = { WHO = $IMPRISONER$ } } }
+
+			custom_description_no_bullet = {
+				text = TRANSFER_IMPRISONMENT_HEAD_OF_FAITH_TOOLTIP_EFFECT
+				subject = this
+				object = $TARGET$
+			}
+
+			if = {
+				limit = { has_imprisonment_reason = $TARGET$ }
+				custom_description_no_bullet = { 
+					text = IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT 
+					subject = this
+				}
+			}
+			else_if = {
+				limit = { 
+					is_at_war_with = $TARGET$ 
+					NOT = { is_allied_in_war = $TARGET$ }
+				}
+				custom_description_no_bullet = {
+					text = IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT_WAR 
+					subject = this
+				}
+			}
+			else = { 
+				add_piety_level = -1
+				add_piety = medium_piety_loss
+			}
+		}
 	}
 }
 
 # based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
 ## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_stress_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+transfer_imprisonment_imprisoner_stress_effect = {
+	transfer_imprisonment_stress_effect = { 
+		TARGET = $TARGET$
+		IMPRISONER = $PREV_IMPRISONER$
+	}
+		
+	transfer_imprisonment_stress_effect = { 
+		TARGET = $TARGET$
+		IMPRISONER = $NEXT_IMPRISONER$
+	}
+}
 
-	scope:curr_imprisoner = {
+transfer_imprisonment_stress_effect = {
+	 $IMPRISONER$ = {
 		if = {
-			limit = { has_imprisonment_reason = scope:imprisonment_target }
+			limit = { has_imprisonment_reason = $TARGET$ }
 			stress_impact = {
 				compassionate = minor_stress_impact_gain
 				forgiving = minor_stress_impact_gain
@@ -371,41 +769,32 @@ transfer_imprisoned_stress_effect = {
 	}
 }
 
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transfer_imprisoned_dread_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
+# based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
+## TARGET (character)
+## PREV_IMPRISONER (character)
+## NEXT_IMPRISONER (character)
+transfer_imprisonment_imprisoner_dread_effect = {
 	transfer_imprisoned_dread_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
+		TARGET = $TARGET$
+		IMPRISONER = $PREV_IMPRISONER$
 	}
 
 	transfer_imprisoned_dread_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
+		TARGET = $TARGET$
+		IMPRISONER = $NEXT_IMPRISONER$
 	}
 }
 
-# based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_dread_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:curr_imprisoner = {
+transfer_imprisonment_dread_effect = {
+	$IMPRISONER$ = {
 		if = {
-			limit = { NOT = { has_imprisonment_reason = scope:imprisonment_target } }
+			limit = { NOT = { has_imprisonment_reason = $TARGET$ } }
 			if = {
 				limit = {
-					scope:imprisonment_target = {
+					$TARGET$ = {
 						OR = {
-							is_spouse_of = prev
-							is_close_family_of = prev
+							is_spouse_of = $IMPRISONER$
+							is_close_family_of = $IMPRISONER$
 							tier_or_related_liege_tier_greater_or_equal_trigger = { TIER = tier_kingdom }
 						}
 					}
@@ -414,7 +803,7 @@ transfer_imprisoned_dread_effect = {
 			}
 			else_if = {
 				limit = {
-					scope:imprisonment_target = {
+					$TARGET$ = {
 						OR = {
 							tier_or_related_liege_tier_equal_trigger = { TIER = tier_duchy }
 							tier_or_related_liege_tier_equal_trigger = { TIER = tier_county }
@@ -424,684 +813,5 @@ transfer_imprisoned_dread_effect = {
 				add_dread = minor_dread_gain
 			}
 		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transfer_imprisoned_schemes_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	transfer_imprisoned_schemes_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-	}
-
-	transfer_imprisoned_schemes_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_schemes_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:curr_imprisoner = {
-		if = {
-			limit = { any_scheme = { scheme_target = scope:imprisonment_target } }
-			every_scheme = {
-				limit = { scheme_target = scope:imprisonment_target }
-				end_scheme = yes
-			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## PREV_IMPRISONER (character)
-## NEXT_IMPRISONER (character)
-transferred_imprisoned_family_member_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	scope:imprisonment_target = {
-		## imprisonment_target's close_or_extended_family_member opinion towards prev_imprisoner.
-		if = {
-			limit = { 
-				any_close_or_extended_family_member = { 
-					count >= 1
-					NOT = { scope:next_imprisoner = this } 
-					NOT = { scope:prev_imprisoner = this }
-				} 
-			}
-			IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_TOOLTIP = { WHO = scope:prev_imprisoner }
-			hidden_effect = {
-				every_close_or_extended_family_member = {
-					limit = {
-						OR = {
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-						}
-					}
-					add_opinion = {
-						modifier = imprisoned_family_member_transferred
-						target = scope:prev_imprisoner
-					}
-				}
-			}
-		}
-
-		## imprisonment_target's close_or_extended_family_member opinion towards next_imprisoner.
-		if = {
-			limit = { is_in_prison_type = house_arrest }
-			if = {
-				limit = { 
-					any_close_or_extended_family_member = { 
-						count >= 1
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this }
-					} 
-				}
-				IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST_TOOLTIP = { WHO = scope:next_imprisoner }
-				hidden_effect = {
-					every_close_or_extended_family_member = {
-						limit = {
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-						}
-						add_opinion = {
-							modifier = imprisoned_family_member
-							target = scope:next_imprisoner
-						}
-					}
-				}
-			}
-		}
-		else_if = {
-			limit = { is_in_prison_type = dungeon }
-			if = {
-				limit = { 
-					any_close_or_extended_family_member = { 
-						count >= 1
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this }
-					} 
-				}
-				IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON_TOOLTIP = { WHO = scope:next_imprisoner }
-				hidden_effect = {
-					every_close_or_extended_family_member = {
-						limit = {
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-						}
-						add_opinion = {
-							modifier = imprisoned_family_member_dungeon
-							target = scope:next_imprisoner
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transferred_imprisoned_war_participant_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	# prev_imprisoner tooltip for sadistic roleplayers.
-	scope:prev_imprisoner = {
-		if = {
-			limit = {
-				is_at_war_with = scope:imprisonment_target
-				NOT = { is_allied_in_war = scope:imprisonment_target }
-			}
-			IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = { # but why though?
-				WHO = this
-				WITH = scope:imprisonment_target 
-			}
-		}
-	}
-
-	# imprisonment_target's opinion towards prev_imprisoner.
-	scope:imprisonment_target = {
-		if = {
-			limit = {
-				is_at_war_with = scope:next_imprisoner
-				NOT = { is_allied_in_war = scope:next_imprisoner }
-			}
-			add_opinion = {
-				modifier = imprisoned_enemy_imprisoner_transferred
-				target = scope:prev_imprisoner
-			}
-		}
-	}
-
-	# imprisonment_target's war_participants.
-	scope:imprisonment_target = {
-		## imprisonment_target as a war_leader.
-		every_character_war = {
-			limit = {
-				any_war_participant = { scope:next_imprisoner = this }
-				prev = { NOT = { is_allied_in_war = scope:next_imprisoner } }
-				is_war_leader = prev 
-			}
-
-			### imprisonment_target's allies opinion in war towards prev_imprisoner.
-			IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = scope:imprisonment_target
-				WITH = scope:next_imprisoner 
-			}
-			if = {
-				limit = {
-					any_war_participant = {
-						count >= 1
-						NOT = { scope:imprisonment_target = this }
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this } 
-						is_allied_in_war = scope:imprisonment_target
-					}
-				}
-				IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP = { 
-					WHO = scope:imprisonment_target
-					TARGET = scope:prev_imprisoner
-				}
-				hidden_effect = {
-					every_war_participant = {
-						limit = {
-							NOT = { scope:imprisonment_target = this }
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-							is_allied_in_war = scope:imprisonment_target
-						}
-						add_opinion = {
-							modifier = imprisoned_ally_war_leader_transferred
-							target = scope:prev_imprisoner
-						}
-					}
-				}
-			}
-
-			IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = scope:imprisonment_target
-			}
-
-			### next_imprisoner's opinon in war towards prev_imprisoner.
-			scope:next_imprisoner = {
-				add_opinion = {
-					modifier = supported_my_war_opinion
-					target = scope:prev_imprisoner
-					opinion = 40
-				}
-			}
-
-			### next_imprisoner's allies opinion in war towards prev_imprisoner.
-			IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = scope:next_imprisoner
-				WITH = scope:imprisonment_target 
-			}
-			if = {
-				limit = {
-					any_war_participant = {
-						count >= 1
-						NOT = { scope:imprisonment_target = this }
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this } 
-						is_allied_in_war = scope:next_imprisoner
-					}
-				}
-				IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP = { 
-					WHO = scope:next_imprisoner
-					TARGET = scope:prev_imprisoner
-				}
-				hidden_effect = {
-					every_war_participant = {
-						limit = {
-							NOT = { scope:imprisonment_target = this }
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-							is_allied_in_war = scope:next_imprisoner
-						}
-						add_opinion = {
-							modifier = imprisoned_enemy_war_leader_transferred
-							target = scope:prev_imprisoner
-						}
-					}
-				}
-			}
-		}
-
-		## imprisonment_target as a participant.
-		every_character_war = {
-			limit = {
-				any_war_participant = { scope:next_imprisoner = this }
-				prev = { NOT = { is_allied_in_war = scope:next_imprisoner } }
-				NOT = { is_war_leader = prev }
-			}
-
-			### imprisonment_target's allies opinion in war towards prev_imprisoner.
-			IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = scope:imprisonment_target
-				WITH = scope:next_imprisoner 
-			}
-
-			if = {
-				limit = {
-					any_war_participant = {
-						count >= 1
-						NOT = { scope:imprisonment_target = this }
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this } 
-						is_allied_in_war = scope:imprisonment_target
-					}
-				}
-				IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP = { 
-					WHO = scope:imprisonment_target 
-					TARGET = scope:prev_imprisoner
-				}
-				hidden_effect = {
-					every_war_participant = {
-						limit = {
-							NOT = { scope:imprisonment_target = this }
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-							is_allied_in_war = scope:imprisonment_target
-						}
-						add_opinion = {
-							modifier = supported_my_enemy_opinion
-							target = scope:prev_imprisoner
-						}
-					}
-				}
-			}
-
-			### next_imprisoner's opinon in war towards prev_imprisoner.
-			scope:next_imprisoner = {
-				add_opinion = {
-					modifier = supported_my_war_opinion
-					target = scope:prev_imprisoner
-				}
-			}
-
-			### next_imprisoner's allies opinion in war towards prev_imprisoner.
-			IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = scope:next_imprisoner
-				WITH = scope:imprisonment_target 
-			}
-
-			if = {
-				limit = {
-					any_war_participant = {
-						count >= 1
-						NOT = { scope:imprisonment_target = this }
-						NOT = { scope:next_imprisoner = this } 
-						NOT = { scope:prev_imprisoner = this } 
-						is_allied_in_war = scope:next_imprisoner
-					}
-				}
-				IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP = { 
-					WHO = scope:next_imprisoner
-					TARGET = scope:prev_imprisoner 
-				}
-				hidden_effect = {
-					every_war_participant = {
-						limit = {
-							NOT = { scope:imprisonment_target = this }
-							NOT = { scope:next_imprisoner = this } 
-							NOT = { scope:prev_imprisoner = this } 
-							is_allied_in_war = scope:next_imprisoner
-						}
-						add_opinion = {
-							modifier = supported_my_war_opinion
-							target = scope:prev_imprisoner
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transferred_imprisoned_vassal_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	## sending without any imprisonment_reason incurs tyranny.
-	transfer_imprisoned_vassal_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-	}
-
-	## recieving without any imprisonment_reason incurs tyranny.
-	transfer_imprisoned_vassal_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-}
-
-# TARGET (character)
-# IMPRISONER (character)
-transfer_imprisoned_vassal_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:curr_imprisoner = {
-		if = {
-			limit = { scope:imprisonment_target = { is_vassal_of = prev } }
-			transfer_imprisoned_tyranny_effect = {
-				TARGET = scope:imprisonment_target
-				IMPRISONER = this
-			}
-			IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = this
-				VASSAL = scope:imprisonment_target
-			}
-		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transferred_imprisoned_lover_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	## receives a break-up event if imprisonment_target's is their lover.
-	transfer_imprisoned_lover_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-	}
-
-	## receives a break-up event if imprisonment_target's is their lover.
-	transfer_imprisoned_lover_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_lover_character_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:curr_imprisoner = {
-		if = {
-			limit = {
-				has_relation_lover = scope:imprisonment_target
-				NOT = { has_relation_rival = scope:imprisonment_target }
-			}
-			scope:imprisonment_target = {
-				trigger_event = {
-					id = lover.0101 # TODO Replacement
-					days = { 14 30 }
-				}
-			}
-		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transferred_imprisoned_head_of_faith_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	## send without any imprisonment_reason incurs piety_level loss.
-	transfer_imprisoned_head_of_faith_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-	}
-
-	## recieve without any imprisonment_reason incurs piety_level loss.
-	transfer_imprisoned_head_of_faith_character_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_HoF_consequences_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_head_of_faith_character_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:curr_imprisoner = {
-		if = {
-			limit = { 
-				NOT = { has_imprisonment_reason = scope:imprisonment_target }
-				scope:imprisonment_target = {
-					is_head_of_faith_of = { WHO = prev }
-				}
-			}
-
-			reverse_add_opinion = {
-				modifier = imprisoned_head_of_faith_transferred
-				target = scope:imprisonment_target
-			}
-
-			add_piety_level = -1
-			add_piety = medium_piety_loss
-			IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TOOLTIP = { 
-				WHO = this
-				HEAD_OF_FAITH = scope:imprisonment_target 
-			}
-		}
-	}
-}
-
-# TARGET (character)
-# PREV_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
-transferred_imprisoned_rivalry_consequences_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$PREV_IMPRISONER$ = { save_scope_as = prev_imprisoner }
-	$NEXT_IMPRISONER$ = { save_scope_as = next_imprisoner }
-
-	# send without imprisonment_reasons or while at war with the recipient incurs rivalry.
-	transfer_imprisoned_escalates_rivalry_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:prev_imprisoner
-		OTHER = scope:next_imprisoner
-	}
-
-	# recieve without imprisonment_reasons or while at war with the recipient incurs rivalry.
-	transfer_imprisoned_escalates_rivalry_effect = {
-		TARGET = scope:imprisonment_target
-		IMPRISONER = scope:next_imprisoner
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_escalates_rivalry_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	scope:imprisonment_target = {
-		if = {
-			limit = {
-				NOT = { has_relation_rival = scope:curr_imprisoner }
-				OR = {
-					$OTHER$ ?= { is_at_war_with = prev }
-					has_requested_excommunication_by = { WHO = scope:curr_imprisoner }
-					has_opinion_modifier = {
-						target = scope:curr_imprisoner
-						modifier = revoked_title
-					}
-				}
-			}
-			hidden_effect = {
-				if = {
-					limit = { has_relation_potential_rival = scope:curr_imprisoner }
-					remove_relation_potential_rival = scope:curr_imprisoner
-				}
-			}
-			set_relation_rival = scope:curr_imprisoner
-		}
-		else = {
-			hidden_effect = {
-				progress_towards_rival_effect = {
-					CHARACTER = scope:curr_imprisoner
-					REASON = rival_imprisoned
-					OPINION = 0
-				}
-			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_tyranny_effect
-## TARGET (character)
-## IMPRISONER (character)
-transfer_imprisoned_tyranny_effect = {
-	$TARGET$ = {save_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_scope_as = curr_imprisoner }
-
-	## Determine if tyrannical or not
-	scope:curr_imprisoner = { 
-		if = {
-			limit = { exists = scope:use_strife_not_tyranny }
-			if = {
-				limit = { has_imprisonment_reason = scope:imprisonment_target }
-				consume_imprisonment_reasons = scope:imprisonment_target
-			}
-			else = { change_strife_opinion = medium_strige_gain }
-		}
-		else_if = {
-			limit = { has_imprisonment_reason = scope:imprisonment_target }
-			custom_tooltip = IS_ALLOWED_TO_TRANSFER_IMPRISONED_DESC
-		}
-		else_if = {
-			limit = { is_at_war_with = scope:imprisonment_target }
-			custom_tooltip = IS_ALLOWED_TO_TRANSFER_IMPRISONED_AT_WAR_DESC # But why would you do this though?
-		}
-		else = { add_tyranny = imprisonment_tyranny_gain }
-	}
-}
-
-#------------------------------
-# localization-related
-#------------------------------
-
-# To the author at PDX who wrote this original line, "- there is no god nor consistency when it comes to localization.", you're goddamn right.
-
-# WHO (character)
-IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST_TOOLTIP = {
-	$WHO$ = { save_scope_as = TARGET_IMPRISONER }
-	custom_tooltip = IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_HOUSE_ARREST
-}
-
-# WHO (character)
-IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON_TOOLTIP = {
-	$WHO$ = { save_scope_as = TARGET_IMPRISONER }
-	custom_tooltip = IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_DUNGEON
-}
-
-# WHO (character)
-IMPRISONMENT_RELATIVES_TRANSFER_EFFECT_TOOLTIP = {
-	$WHO$ = { save_scope_as = TARGET_IMPRISONER }
-	custom_tooltip = IMPRISONMENT_RELATIVES_TRANSFER_EFFECT
-}
-
-# WHO (character)
-# WITH (character)
-IMPRISONMENT_WAR_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description = {
-		text = IMPRISONMENT_WAR_TRANSFER_EFFECT_TT
-		subject = $WHO$
-		object = $WITH$
-	}
-}
-
-# WHO (character)
-IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description_no_bullet = {
-		text = IMPRISONMENT_WAR_LEADER_TRANSFER_EFFECT_TT
-		subject = $WHO$
-	}
-}
-
-# WHO (character)
-# TARGET (character)
-IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP = {
-	custom_description_no_bullet = { 
-		text = IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_WAR_LEADER_TT ## imprisonment_target's enemies
-		subject = $WHO$
-		object = $TARGET$
-	}
-}
-
-# WHO (character)
-# TARGET (character)
-IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TOOLTIP = {
-	custom_description_no_bullet = { 
-		text = IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_WAR_LEADER_TT ## imprisonment_target's allies
-		subject = $WHO$
-		object = $TARGET$
-	}
-}
-
-# WHO (character)
-# TARGET (character)
-IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP = {
-	custom_description_no_bullet = { 
-		text = IMPRISONMENT_ALLIES_GAIN_TRANSFER_EFFECT_PARTICIPANT_TT ## imprisonment_target's enemies
-		subject = $WHO$
-		object = $TARGET$
-	}
-}
-
-# WHO (character)
-# TARGET (character)
-IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TOOLTIP = {
-	custom_description_no_bullet = { 
-		text = IMPRISONMENT_ALLIES_LOSE_TRANSFER_EFFECT_PARTICIPANT_TT ## imprisonment_target's allies
-		subject = $WHO$
-		object = $TARGET$
-	}
-}
-
-# WHO (character)
-IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description = {
-		text = IMPRISONMENT_VASSAL_TRANSFER_EFFECT_TT
-		subject = $WHO$
-		object = $VASSAL$
-	}
-}
-
-# WHO (character)
-# HEAD_OF_FAITH (character
-IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TOOLTIP = {
-	custom_description = {
-		text = IMPRISONMENT_HEAD_OF_FAITH_TRANSFER_EFFECT_TT
-		subject = $WHO$
-		object = $HEAD_OF_FAITH$ 
 	}
 }

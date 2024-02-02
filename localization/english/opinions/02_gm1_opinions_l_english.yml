@@ -7,13 +7,9 @@ l_english:
  # ignored_demands_opinion
  # supported_my_war_opinion
  # supported_my_enemy_opinion 
- refused_to_give_imprisoned_opinion: "Refused to Give [prisoner|E]"
- failed_to_give_imprisoned_opinion: "Failed to Send [prisoner|E]"
- attempted_to_give_imprisoned_opinion: "Attempted Sell Away"
- imprisoned_next_imprisoner_transferred: "Given Away to Another [ruler|E]"
- imprisoned_family_member_transferred: "Given Away [imprisoned|E] Family Member"
- imprisoned_head_of_faith_transferred: "Given Away to Non-Believer"
- imprisoned_enemy_imprisoner_transferred: "Given Away to Enemy [ruler|E]"
- #~~imprisoned_war_leader_transferred: "Recieved [imprisoned|E] [war_leader|E]"~~
- imprisoned_ally_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Ally to Enemy"
- imprisoned_enemy_war_leader_transferred: "Gave [imprisoned|E] [war_leader|E] Enemy to Ally"
+ refused_transfer_imprisonment: "Refused to Give [prisoner|E]"
+ failed_transfer_imprisonment: "Failed to Send [prisoner|E]"
+ transferred_me_attempt: "Attempted Gave Away"
+ transferred_me: "Given Away to Another [ruler|E]"
+ transferred_me_head_of_faith: "Given Away to a Non-Believer"
+ transferred_family_member: "Given Away [imprisoned|E] Family Member"
