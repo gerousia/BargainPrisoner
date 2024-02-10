@@ -1,31 +1,25 @@
 ﻿##############################
-## GM1 opinion_modifiers list
-##############################
-# opinion-modifier-list:
-## refused_transfer_imprisonment						- Refused to give me designated prisoner.
-## failed_transfer_imprisonment							- Failed to give me designated prisoner.
-## transferred_me_attempt								- Attempted to give me to another character.
-## transferred_me										- Gave me to another ruler.
-## transferred_me_head_of_faith 						- Gave me to a non-believer.
-## transferred_family_member							- Gave my family member to another ruler.
-
-##############################
 ## GM1 opinion_modifiers
 ##############################
-
 #------------------------------
-# general-opinions
+# list
 #------------------------------
+# refused_change_imprisoner
+# failed_change_imprisoner
+# transferred_me_attempt
+# transferred_me
+# transferred_me_different_faith
+# transferred_family_member
 
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/vassal_refused_hostage_demand_opinion
-refused_transfer_imprisonment = {
+refused_change_imprisoner = {
 	opinion = -15
 	monthly_change = 0.1
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/hostage_died_opinion
-failed_transfer_imprisonment = {
+failed_change_imprisoner = {
 	opinion = -25
 	monthly_change = 0.1
 	decaying = yes
@@ -46,17 +40,17 @@ transferred_me = {
 	decaying = yes
 }
 
+# based on ./common/opinion_modifiers/00_religious_opinion.txt/destroyed_papacy_opinion - old
+transferred_me_different_faith = {
+	opinion = -40
+	monthly_change = 0.05 # years = 40
+	decaying = yes
+}
+
 # based on ./common/opinion_modifiers/00_opinion_modifiers.txt/imprisoned_family_member - old
 transferred_family_member = {
 	opinion = -15
 	monthly_change = 0.05 # years = 20
 	decaying = yes
 	stacking = yes # Added.
-}
-
-# based on ./common/opinion_modifiers/00_religious_opinion.txt/destroyed_papacy_opinion - old
-transferred_me_head_of_faith = {
-	opinion = -40
-	monthly_change = 0.05 # years = 40
-	decaying = yes
 }

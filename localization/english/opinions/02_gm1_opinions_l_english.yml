@@ -1,5 +1,5 @@
 ﻿##############################
-## GM1 opinions localization
+## GM1 opinion_modifiers
 ##############################
 
 l_english:
@@ -7,9 +7,9 @@ l_english:
  # ignored_demands_opinion
  # supported_my_war_opinion
  # supported_my_enemy_opinion 
- refused_transfer_imprisonment: "Refused to Give [prisoner|E]"
- failed_transfer_imprisonment: "Failed to Send [prisoner|E]"
- transferred_me_attempt: "Attempted Gave Away"
- transferred_me: "Given Away to Another [ruler|E]"
- transferred_me_head_of_faith: "Given Away to a Non-Believer"
+ refused_change_imprisoner: "Refused to Give [prisoner|E]"
+ failed_change_imprisoner: "Failed to Send [prisoner|E]"
+ transferred_me_attempt: "Attempted to Give Away"
+ transferred_me: "Given Away"
+ transferred_me_different_faith: "Given Away to Non-Believer"
  transferred_family_member: "Given Away [imprisoned|E] Family Member"
