@@ -1,28 +1,90 @@
 ﻿##############################
 ## BM1 scripted_triggers
 ##############################
+#------------------------------
+# list
+#------------------------------
+# has_requested_excommunication_by
+# is_head_of_faith_of
+# is_being_tortured
+#
+# has_interaction_type
+# has_invalidate_interaction_reason_type
+# already_under_ongoing_interaction
+# already_under_ongoing_interaction_with
+#
+# has_travel_companion
+# has_travel_target
+# is_traveling_towards
+# is_traveling_towards_location
 
-##############################
-# interaction-related
-#-----------------------------
-
-# TYPE = flag
-has_interaction_type = {
-	var:interaction ?= $TYPE$ 
+has_requested_excommunication_by = {
+	exists = var:requested_my_excommunication
+	var:requested_my_excommunication = $WHO$
 }
 
-# WHO = character
-already_has_interaction_with = {
-	var:interaction_with ?= $WHO$
+# WHO (character)
+is_head_of_faith_of = {
+	$WHO$ = {
+		exists = faith.religious_head
+		faith.religious_head = prev
+	}
+}
+
+is_being_tortured = {
+	custom_description = {
+		text = "currently_being_tortured"
+		subject = this
+		has_character_flag = is_being_tortured
+	}
+}
+
+#------------------------------
+# interaction-related
+#------------------------------
+
+# TYPE (flag)
+has_interaction_type = {
+	exists = var:under_interaction
+	var:under_interaction = $TYPE$ 
+}
+
+# TYPE (flag)
+has_invalidate_interaction_reason_type = {
+	exists = var:under_interaction # flag
+	exists = var:invalidate_interaction_reason # flag
+	var:invalidate_interaction_reason = $TYPE$
 }
 
 already_under_ongoing_interaction = {
-	exists = var:interaction
+	custom_description = {
+		text = "already_under_ongoing_interaction_trigger"
+		subject = this
+		OR = {
+			exists = var:under_interaction # flag
+			exists = var:under_interaction_with # character
+		}
+	}
 }
 
-##############################
+# WHO (character)
+already_under_ongoing_interaction_with = {
+	custom_description = {
+		text = "already_under_ongoing_interaction_with_trigger"
+		subject = this
+		object = $WHO$
+		exists = var:under_interaction_with
+		var:under_interaction_with = $WHO$
+	}
+}
+
+#------------------------------
 # travel-related
-#-----------------------------
+#------------------------------
+
+has_travel_companion = {
+	exists = var:travel_companion # character
+}
 
 has_travel_target = {
 	OR = {
@@ -31,31 +93,22 @@ has_travel_target = {
 	}
 }
 
-# WHO = character
+# WHO (character)
 is_traveling_towards = {
-	var:travel_target ?= $WHO$
+	custom_description = {
+		text = "is_traveling_towards_trigger"
+		subject = this
+		object = $WHO$
+		var:travel_target = $WHO$
+	}
 }
 
-# DESTINATION = location
+# DESTINATION (location)
 is_traveling_towards_location = {
-	var:travel_target_destination ?= $DESTINATION$
-}
-
-has_travel_companion = {
-	exists = var:travel_companion # character
-}
-
-##############################
-# court-related
-#-----------------------------
-
-any_court_position_holder_currently_available = {
-	any_court_position_holder = {
-		type = $COURT_POSITION$
-		count >= 1
-		is_available = yes
-		has_travel_target = no
-		has_travel_companion = no
-		already_under_ongoing_interaction = no
+	custom_description = {
+		text = "is_traveling_towards_location_trigger"
+		subject = this
+		object = $DESTINATION$
+		var:travel_target_destination = $DESTINATION$
 	}
 }

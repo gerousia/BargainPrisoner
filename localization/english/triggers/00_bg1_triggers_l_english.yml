@@ -1,0 +1,29 @@
+﻿##############################
+## BG1 scripted_triggers
+##############################
+
+# PDX bug - remove when fixed
+
+l_english:
+
+ HAS_PRISONERS_TRIGGER: "Has a [prisoner|E]"
+ HAS_NO_PRISONERS_TRIGGER: "Does #bold not#! have any [prisoner|E]"
+ I_HAVE_PRISONERS_TRIGGER: "You have a [prisoner|E]"
+ I_HAVE_NO_PRISONERS_TRIGGER: "You do #bold not#! have any [prisoner|E]"
+ THEY_HAVE_PRISONERS_TRIGGER: "[CHARACTER.GetShortUIName|U] has a [prisoner|E]"
+ THEY_HAVE_NO_PRISONERS_TRIGGER: "[CHARACTER.GetShortUIName|U] does #bold not#! have a any [prisoner|E]"
+
+ ANY_PRISONER: "Any Prisoner:"
+ ANY_PRISONER_FIRST: "Any of my Prisoners:"
+ ANY_PRISONER_THIRD: "Any of [CHARACTER.GetShortUINamePossessive] Prisoners:"
+ ALL_PRISONER: "All Prisoners:"
+ ALL_PRISONER_FIRST: "All my Prisoners:"
+ ALL_PRISONER_THIRD: "All of [CHARACTER.GetShortUINamePossessive] Prisoners:"
+ COUNT_EQ_PRISONER: "$PARAMETERS$ Prisoner:"
+ COUNT_EQ_PRISONER_FIRST: "$PARAMETERS$ of my Prisoners:"
+ COUNT_EQ_PRISONER_THIRD: "$PARAMETERS$ of [CHARACTER.GetShortUINamePossessive] Prisoners:"
+ NOT_COUNT_EQ_PRISONER: "$PARAMETERS$ Prisoner:"
+ NOT_COUNT_EQ_PRISONER_FIRST: "$PARAMETERS$ of my Prisoners:"
+ NOT_COUNT_EQ_PRISONER_THIRD: "$PARAMETERS$ of [CHARACTER.GetShortUINamePossessive] Prisoners:"
+ COUNT_GT_EQ_PRISONER: "$PARAMETERS$ Prisoner:"
+ COUNT_GT_EQ_PRISONER_THIRD: "$PARAMETERS$ of [CHARACTER.GetShortUINamePossessive] Prisoner:"

@@ -1,0 +1,9 @@
+﻿##############################
+## GM1 triggers localization
+##############################
+
+l_english:
+
+ IS_NOT_AT_IMPRISONER_CAPITAL_TRIGGER: "Is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ I_AM_NOT_AT_IMPRISONER_CAPITAL_TRIGGER: "You are currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ CHARACTER_IS_NOT_AT_IMPRISONER_CAPITAL_TRIGGER: "[CHARACTER.GetShortUIName|V] is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"

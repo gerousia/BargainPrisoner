@@ -1,0 +1,33 @@
+﻿##############################
+## BM1 scripted_triggers
+##############################
+
+reverse_spending_hook = {
+	global = TARGET_SPEND_THEIR_HOOK
+	first = TARGET_SPEND_THEIR_HOOK_ON_YOU
+	third = TARGET_SPEND_THEIR_HOOK_ON_CHARACTER
+}
+
+is_traveling_towards_location_trigger = {
+	global = IS_TRAVELING_TOWARDS_TRIGGER
+	first = I_AM_TRAVELING_TOWARDS_TRIGGER
+	third = CHARACTER_IS_TRAVELING_TOWARDS_TRIGGER
+}
+
+is_traveling_towards_location_trigger = {
+	global = IS_TRAVELING_TOWARDS_LOCATION_TRIGGER
+	first = I_AM_TRAVELING_TOWARDS_LOCATION_TRIGGER
+	third = CHARACTER_IS_TRAVELING_TOWARDS_LOCATION_TRIGGER
+}
+
+already_under_ongoing_interaction_trigger = {
+	global = ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER
+	first = I_AM_ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER
+	third = CHARACTER_IS_ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER
+}
+
+already_under_ongoing_interaction_with_trigger = {
+	global = ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER
+	first = I_AM_ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER
+	third = CHARACTER_IS_ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER
+}
