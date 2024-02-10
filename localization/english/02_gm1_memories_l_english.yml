@@ -1,20 +1,20 @@
 ﻿##############################
-## GM1 character_memories localization
+## GM1 character_memory_types
 ##############################
 
 l_english:
 
-transfer_imprisonment_prisoner_memory: "Moved Prison"
-transfer_imprisonment_prisoner_desc: "My jailor, [previous_imprisoner.GetTitledFirstName], sent me to become [current_imprisoner.GetFullNamePossessive] own prisoner"
-transfer_imprisonment_prisoner_desc_second_perspective: "Your jailor, [previous_imprisoner.GetTitledFirstName], sent you to become [current_imprisoner.GetFullNamePossessive] own prisoner"
-transfer_imprisonment_prisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] jailor, [previous_imprisoner.GetTitledFirstName], sent [owner.GetHerHim] to become [current_imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_prisoner_memory: "Moved Prison"
+change_imprisoner_prisoner_desc: "My jailor, [old_imprisoner.GetTitledFirstName], sent me to become [new_imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_prisoner_desc_second_perspective: "Your jailor, [old_imprisoner.GetTitledFirstName], sent you to become [new_imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_prisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] jailor, [old_imprisoner.GetTitledFirstName], sent [owner.GetHerHim] to become [new_imprisoner.GetFullNamePossessive] own prisoner"
 
-transfer_imprisonment_previous_imprisoner_memory: "Sent Prisoner"
-transfer_imprisonment_previous_imprisoner_desc: "I sent my prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
-transfer_imprisonment_previous_imprisoner_desc_second_perspective: "You sent your prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
-transfer_imprisonment_previous_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] sent [owner.GetHerHis] prisoner, [imprisoned.GetTitledFirstName], to become [imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_old_imprisoner_memory: "Sent Prisoner"
+change_imprisoner_old_imprisoner_desc: "I sent my prisoner, [prisoner.GetTitledFirstName], to become [new_imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_old_imprisoner_desc_second_perspective: "You sent your prisoner, [prisoner.GetTitledFirstName], to become [new_imprisoner.GetFullNamePossessive] own prisoner"
+change_imprisoner_old_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] sent [owner.GetHerHis] prisoner, [prisoner.GetTitledFirstName], to become [new_imprisoner.GetFullNamePossessive] own prisoner"
 
-transfer_imprisonment_current_imprisoner_memory: "Recieved Prisoner"
-transfer_imprisonment_current_imprisoner_desc: "I recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as my own prisoner"
-transfer_imprisonment_current_imprisoner_desc_second_perspective: "You recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as your own prisoner"
-transfer_imprisonment_current_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] recieved [imprisoner.GetFullNamePossessive] prisoner, [imprisoned.GetTitledFirstName], as [owner.GetHerHim] own prisoner"
+change_imprisoner_new_imprisoner_memory: "Recieved Prisoner"
+change_imprisoner_new_imprisoner_desc: "I received [old_imprisoner.GetFullNamePossessive] prisoner, [prisoner.GetTitledFirstName], as my own prisoner"
+change_imprisoner_new_imprisoner_desc_second_perspective: "You received [old_imprisoner.GetFullNamePossessive] prisoner, [prisoner.GetTitledFirstName], as your own prisoner"
+change_imprisoner_new_imprisoner_desc_third_perspective: "[owner.GetTitledFirstNamePossessive] received [old_imprisoner.GetFullNamePossessive] prisoner, [prisoner.GetTitledFirstName], as [owner.GetHerHim] own prisoner"
