@@ -1,0 +1,22 @@
+
+l_english:
+
+ gm1_transfer_system.0501.t: "A Change in Circumstances"
+ gm1_transfer_system.0501.intro: "Sigh..."
+ gm1_transfer_system.0501.desc.a: "I have learned that my prisoner, [prisoner.GetFirstName], has unfortunately died while traveling with [companion.GetHerHis] bodyguard, [companion.GetTitledFirstName]."
+ gm1_transfer_system.0501.desc.b: "I have learned that my prisoner, [prisoner.GetFirstName], has narrowly escaped while traveling with [companion.GetHerHis] bodyguard, [companion.GetTitledFirstName]!"
+ gm1_transfer_system.0501.desc.c: "[receiver.GetTitledFirstName], the [prisoner.Custom2('RelationToMe', SCOPE.sC('receiver'))] of my prisoner, [prisoner.GetFirstName], has met an untimely demise before my prisoner and their escort could reach them."
+ gm1_transfer_system.0501.desc.d: "[receiver.GetTitledFirstName], the [prisoner.Custom2('RelationToMe', SCOPE.sC('receiver'))] of my prisoner, [prisoner.GetFirstName], has lost [receiver.GetHerHis] land before my prisoner and their escort could reach them."
+ gm1_transfer_system.0501.desc.e: ""
+ gm1_transfer_system.0501.outro: ""
+ gm1_transfer_system.0501.a: ""
+
+ gm1_transfer_system.0511.t: "A Change in Circumstances"
+ gm1_transfer_system.0511.intro: "Sigh..."
+ gm1_transfer_system.0511.desc.a: "I have learned that my prisoner, [prisoner.GetFirstName], has unfortunately died while traveling with [companion.GetHerHis] bodyguard, [companion.GetTitledFirstName]."
+ gm1_transfer_system.0511.desc.b: "I have learned that my prisoner, [prisoner.GetFirstName], has narrowly escaped while traveling with [companion.GetHerHis] bodyguard, [companion.GetTitledFirstName]!"
+ gm1_transfer_system.0511.desc.c: "[receiver.GetTitledFirstName], the [prisoner.Custom2('RelationToMe', SCOPE.sC('receiver'))] of my prisoner, [prisoner.GetFirstName], has met an untimely demise before my prisoner and their escort could reach them."
+ gm1_transfer_system.0511.desc.d: "[receiver.GetTitledFirstName], the [prisoner.Custom2('RelationToMe', SCOPE.sC('receiver'))] of my prisoner, [prisoner.GetFirstName], has lost [receiver.GetHerHis] land before my prisoner and their escort could reach them."
+ gm1_transfer_system.0511.desc.e: ""
+ gm1_transfer_system.0511.outro: ""
+ gm1_transfer_system.0511.a: ""
