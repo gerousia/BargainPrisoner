@@ -34,7 +34,6 @@ is_head_of_faith_of = {
 is_being_tortured = {
 	custom_description = {
 		text = "currently_being_tortured"
-		subject = this
 		has_character_flag = is_being_tortured
 	}
 }
@@ -59,7 +58,6 @@ has_invalidate_interaction_reason_type = {
 already_under_ongoing_interaction = {
 	custom_description = {
 		text = "already_under_ongoing_interaction_trigger"
-		subject = this
 		OR = {
 			exists = var:under_interaction # flag
 			exists = var:under_interaction_with # character
@@ -71,7 +69,6 @@ already_under_ongoing_interaction = {
 already_under_ongoing_interaction_with = {
 	custom_description = {
 		text = "already_under_ongoing_interaction_with_trigger"
-		subject = this
 		object = $WHO$
 		exists = var:under_interaction_with
 		var:under_interaction_with = $WHO$
@@ -97,7 +94,6 @@ has_travel_target = {
 is_traveling_towards = {
 	custom_description = {
 		text = "is_traveling_towards_trigger"
-		subject = this
 		object = $WHO$
 		var:travel_target = $WHO$
 	}
@@ -107,7 +103,6 @@ is_traveling_towards = {
 is_traveling_towards_location = {
 	custom_description = {
 		text = "is_traveling_towards_location_trigger"
-		subject = this
 		object = $DESTINATION$
 		var:travel_target_destination = $DESTINATION$
 	}

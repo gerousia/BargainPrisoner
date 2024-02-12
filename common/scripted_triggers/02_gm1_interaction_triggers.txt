@@ -12,29 +12,26 @@
 # interaction-related
 #------------------------------
 
-# CURR_IMPRISONER (character)
-# NEXT_IMPRISONER (character)
+# SENDER (character)
 gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
-	## Must not be themself.
-	NOT = { $NEXT_IMPRISONER$ = this }
 	## Must be imprisoned.
-	is_imprisoned = yes
 	## Must be imprisoned by actor.
-	is_imprisoned_by = $CURR_IMPRISONER$
+	trigger_if = {
+		limit = { is_imprisoned = yes }
+		is_imprisoned_by = $SENDER$
+	}
+	## Must not be themselves
+	#NOT = { $RECEIVER$ = this }
 	## Must not be imprisoned by diarch.
 	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
 		PRISONER = this
 		REGENT = this.var:imprisoned_by_diarch
 	}
-}
-
-gm1_available_for_transfer_prisoner_interaction_trigger = {
 	## Must not be under any ongoing interaction.
 	already_under_ongoing_interaction = no
 	## Must be at imprisoner capital.
 	custom_description = {
 		text = "is_at_imprisoner_capital"
-		subject = this
 		object = imprisoner
 		is_at_location = imprisoner.capital_province
 	}
@@ -45,23 +42,55 @@ gm1_available_for_transfer_prisoner_interaction_trigger = {
 }
 
 # AI
-gm1_available_for_transfer_prisoner_interaction_trigger_ai = {
-	# Recipient.
-	## Must be neighbhors.
-	$RECIPIENT$ = {
-		character_is_land_realm_neighbor = root
-	}
-	# Prisoner.
-	$PRISONER$ = {
-		OR = {
-			is_vassal_of = $RECIPIENT$
-			is_at_war_with = $RECIPIENT$
-			has_any_good_relationship_with_character_trigger = { CHARACTER = $RECIPIENT$ }
-			has_any_bad_relationship_with_character_trigger = { CHARACTER = root }
-			should_avoid_hostile_action_against_due_to_personal_relations_trigger = {
-				ACTOR = root
-				RECIPIENT = this
+gm1_valid_for_transfer_prisoner_interaction_ai_trigger = {
+	## Must be neighbhors
+	$RECEIVER$ = { character_is_land_realm_neighbor = $SENDER$ }
+	# Don't waste prisoners on those who are broke
+	#$RECEIVER$.current_gold_value <= $SENDER$.current_gold_value
+	# Don't send prisoners to those you seriously hate, or vice versa
+	NOR = {
+		should_avoid_hostile_action_against_due_to_personal_relations_trigger = {
+			ACTOR = $SENDER$
+			RECIPIENT = $RECEIVER$
+		}
+
+		$RECEIVER$ = {
+			has_any_bad_relationship_with_character_trigger = { CHARACTER = $SENDER$ }
+		}
+
+		$SENDER$.house.house_head ?= {
+			any_owned_story = {
+				story_type = story_cycle_house_feud
+				var:house_feud_house ?= $RECEIVER$.house
 			}
+		}	
+	}
+}
+
+gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
+	# Don't inform of unimportant cases
+	NOT = { is_allied_to = root }
+}
+
+gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
+	# Context checks, e.g. alliance
+	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
+
+	root = {
+		# You have a prisoner to offer
+		any_prisoner = {
+			count >= 1
+			gm1_basic_valid_for_transfer_prisoner_interaction_trigger = { 
+				SENDER = $SENDER$
+				RECEIVER = $RECEIVER$
+			}
+			save_temporary_scope_as = prisoner
+		}
+		# Ensure Offer might be accepted
+		is_character_interaction_potentially_accepted = {
+			interaction = offer_prisoner_interaction
+			recipient = $RECEIVER$
+			secondary_actor = scope:prisoner
 		}
 	}
 }
