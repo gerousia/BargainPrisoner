@@ -1,10 +1,6 @@
 ﻿##############################
-## BG1 effect_localization
+## BG1 scripted_effects
 ##############################
-
-#------------------------------
-# character-related
-#------------------------------
 
 add_tyranny_no_bullet_effect = {
 	first_past = I_GAINED_TYRANNY_EFFECT
