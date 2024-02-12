@@ -2,181 +2,1800 @@
 ## GM1 character_interactions
 ##############################
 
-### Offer Prisoner Character Interaction
-# scope:actor = offerer
-# scope:recipient = reciever
-# scope:secondary_actor = prisoner
-# scope:secondary_recipient = n/a
 offer_prisoner_interaction = {
-	category = interaction_category_diplomacy
 	common_interaction = no
-	ai_min_reply_days = 1
-	ai_max_reply_days = 1
-	#popup_on_recieve = yes
-	pause_on_receive = yes
-	#icon = "gfx/interface/icons/portraits/punishment.dds"
+	category = interaction_category_diplomacy
 	icon = prison
 
-	populate_actor_list = {
-		scope:actor = {
-			every_prisoner = {
-				limit = { 
-					NOT = { this = scope:recipient } 
-					gm1_basic_valid_target_prisoner_interaction_trigger = { ACTOR = scope:actor }
-				}
-				add_to_list = characters
-			}
-		}
-	}
+	popup_on_receive = yes
+	pause_on_receive = yes
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
 
 	desc = offer_prisoner_interaction_desc
-	prompt = OFFER_PRISONER_SELECT_PRISONER_TO_TRANSFER
-	notification_text = OFFER_PRISONER_PROPOSAL
+	notification_text = OFFER_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT
+	prompt = OFFER_PRISONER_INTERACTION_SELECT_TARGET
 
 	cooldown_against_recipient = { days = 0 }
 
 	is_shown = {
 		# Cannot target oneself.
 		NOT = { scope:recipient = scope:actor }
-		# Only significant rulers.
+		# Only significant rulers are allowed to use this interaction.
 		scope:actor.highest_held_title_tier > tier_barony
 		scope:recipient.highest_held_title_tier > tier_barony
 	}
 
 	is_valid_showing_failures_only = {
+		# Theocratic Governments are not allowed.
+		NOT = { scope:actor = { government_has_flag = government_is_theocracy } }
+		NOT = { scope:recipient = { government_has_flag = government_is_theocracy } }
+
 		# Actor
-		## Must have prisoners.
-		custom_description = {
-			text = HAS_AVAILABLE_PRISONERS_TRIGGER
-			subject = scope:actor
-			list_size = {
-				name = characters
-				value = 0 
+		## Must be available.
+		## Must not be imprisoned.
+		## Must have prisoners
+		## Must not have any prisoners already under interaction.
+			## Must employ a bodyguard.
+			## Must have at least 1 available bodyguard.
+		## Must be at peace with the Recipient.
+		scope:actor = { 
+			is_busy_in_events_localised = yes
+			is_imprisoned = no 
+			has_prisoners = yes
+			#employs_court_position = bodyguard_court_position
+
+			NOT = {
+				is_at_war_with = scope:recipient
 			}
 		}
-		
-		# Actor
-		## Must not have any prisoners already traveling to the recipient.
+
 		custom_description = {
-			text = ALREADY_AWAITING_CHARACTER_INTERACTION_PRISON_OFFER_TRIGGER
+			text = "already_under_ongoing_interaction_with_trigger"
 			subject = scope:actor
 			object = scope:recipient
 			scope:actor = {
-				any_prisoner = {
-					count = 0
-					already_under_ongoing_interaction = yes
-					is_traveling_towards = { WHO = scope:recipient }
+				trigger_if = {
+					limit = { has_prisoners = yes }
+					any_prisoner = {
+						count = 0
+						already_under_ongoing_interaction_with = {
+							WHO = scope:recipient
+						}
+					}
 				}
 			}
 		}
 
-		# Actor
-		## Must employ a bodyguard.
-		scope:actor = { employs_court_position = bodyguard_court_position }
-		## Must have prisoners.
 		custom_description = {
-			text = "BODYGUARD_TEST_TRIGGER"
+			text = "has_available_bodyguard_companion"
 			subject = scope:actor
 			scope:actor = {
-				any_court_position_holder = {
-					type = bodyguard_court_position
-					count >= 1
-					is_available = yes
-					has_travel_companion = no
+				trigger_if = {
+					limit = { employs_court_position = bodyguard_court_position }
+					any_court_position_holder = {
+						type = bodyguard_court_position
+						is_available = yes
+						has_travel_companion = no
+					}
+				}
+			}
+		}
+		
+		# Recipient
+		## Must be available.
+		## Must not be imprisoned.
+		scope:recipient = { 
+			is_busy_in_events_localised = yes
+			is_imprisoned = no 
+		}
+	}
+
+	can_be_picked = {
+
+	}
+
+	can_send = {
+		
+	}
+
+	populate_actor_list = {
+		scope:actor = {
+			every_prisoner = {
+				limit = { 
+					NOT = { scope:recipient = this }
+					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+						SENDER = scope:actor
+						#RECEIVER = scope:recipient
+					}
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	localization_values = {
+		EXPLOITIVE_EXTORTIONATE_BARTER_COST = scope:secondary_actor.highly_increased_barter_cost_value
+		EXPLOITIVE_BARTER_COST = scope:secondary_actor.increased_barter_cost_value
+		EXTORTIONATE_BARTER_COST = scope:secondary_actor.slightly_increased_barter_cost_value
+		BARTER_COST = scope:secondary_actor.barter_cost_value
+		CURRENT_GOLD = scope:recipient.gold
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
+
+			scope:recipient ?= {
+				gold >= scope:secondary_actor.highly_increased_barter_cost_value
+			}
+		}
+
+		flag = exploitive_extortionate_gold
+		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
+
+			scope:recipient ?= {
+				gold < scope:secondary_actor.highly_increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = exploitive_extortionate_current_gold
+		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+
+			scope:recipient ?= {
+				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
+			}
+		}
+
+		flag = extortionate_gold
+		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+
+			scope:recipient ?= {
+				gold < scope:secondary_actor.slightly_increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = extortionate_current_gold
+		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient 
+			}
+
+			scope:recipient ?= {
+				gold >= scope:secondary_actor.increased_barter_cost_value
+			}
+		}
+
+		flag = exploitive_gold
+		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
+
+			scope:recipient ?= {
+				gold < scope:secondary_actor.increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = exploitive_current_gold
+		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+
+			scope:recipient ?= {
+				gold >= scope:secondary_actor.barter_cost_value
+			}
+		}
+
+		flag = gold
+		localization = "BARTER_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+
+			scope:recipient ?= {
+				gold < scope:secondary_actor.barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = current_gold
+		localization = "BARTER_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
+		}
+
+		is_valid = {
+			scope:actor = {
+				can_add_hook = {
+					target = scope:recipient
+					type = loyalty_hook
+				}
+			}
+		}
+
+		flag = strong_hook
+		localization = "BARTER_FAVOR_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:secondary_actor ?= {
+				NOT = { is_at_war_with = scope:recipient }
+			}
+		}
+
+		is_valid = {
+			scope:actor = {
+				can_add_hook = {
+					target = scope:recipient
+					type = favor_hook
+				}
+			}
+		}
+
+		flag = favor
+		localization = "BARTER_FAVOR_OPTION"
+	}
+
+	send_options_exclusive = no
+
+	on_send = {
+		#scope:secondary_actor = {
+		#	hidden_effect = {
+		#		set_interaction_with_effect = {
+		#			WHO = scope:recipient
+		#			TYPE = flag:transfer_prisoner_interaction
+		#			YEARS = 3
+		#		}
+		#	}
+		#}
+	}
+
+	on_accept = {	
+		transfer_prisoner_interaction_immediate_effect = {
+			PRISONER = scope:secondary_actor
+			IMPRISONER = scope:actor
+			NEW_IMPRISONER = scope:recipient
+		}
+
+		transfer_prisoner_interaction_effect = {
+			PRISONER = scope:secondary_actor
+			IMPRISONER = scope:actor
+			NEW_IMPRISONER = scope:recipient
+		}
+
+		## Clan Unity.
+		scope:actor = {
+			if = {
+				limit = {
+					government_has_flag = government_is_clan
+					house = scope:recipient.house
+				}
+				add_clan_unity_interaction_effect = {
+					CHARACTER = this
+					TARGET = scope:recipient
+					VALUE = medium_unity_loss
+					DESC = clan_unity_hostage.desc
+					REVERSE_NON_HOUSE_TARGET = no
+				}
+			}
+		}
+
+		## Notification Event.
+		scope:actor = {
+			save_scope_as = sender
+		}
+
+		scope:recipient = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_actor = {
+			save_scope_as = prisoner
+		}
+
+		scope:sender = {
+			trigger_event = gm1_char_interaction_notification.0101
+		}
+
+	}
+
+	on_decline = {	
+		## Notification Event.
+		scope:actor = {
+			save_scope_as = sender
+		}
+
+		scope:recipient = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_actor = {
+			save_scope_as = prisoner
+			remove_all_interaction_variable_effect = yes
+		}
+
+		scope:sender = {
+			trigger_event = gm1_char_interaction_notification.0012 
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = neighboring_rulers
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+
+	ai_frequency = 0 # 36
+
+	ai_potential = { highest_held_title_tier >= tier_county }
+
+	ai_accept = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = 0
+
+		## Recipient's Personality
+		gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+
+		## General Modifiers
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:actor
+			multiplier = 0.5
+			desc = AI_OPINION_REASON
+		}
+
+		gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_government_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_realm_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_culture_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+		
+		gm1_transfer_prisoner_interaction_ai_relation_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_dread_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_perk_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_trait_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}	
+
+		## Modifiers towards Prisoner
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:secondary_actor
+			multiplier = -0.5
+			desc = AI_OPINION_REASON
+		}
+
+		modifier = {
+			exists = scope:secondary_actor
+			add = interaction_actor_prisoner_value
+			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
+		}
+
+		modifier = {
+			scope:recipient = { is_at_war_with = scope:secondary_actor }
+			add = 300
+			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
+		}
+
+		gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
+			RECEIVER = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_relation_modifier_prisoner = {
+			RECEIVER = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+
+		## Option Modifiers
+
+		modifier = {
+			OR = {
+				scope:exploitive_extortionate_gold ?= yes
+				scope:exploitive_extortionate_current_gold ?= yes
+				scope:extortionate_current_gold ?= yes
+				scope:extortionate_gold ?= yes 
+				scope:exploitive_gold ?= yes 
+				scope:exploitive_current_gold ?= yes
+				scope:gold ?= yes 
+				scope:current_gold ?= yes
+			}
+			add = {
+				if = {
+					limit = { scope:exploitive_extortionate_gold ?= yes }
+					subtract = scope:secondary_actor.highly_increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:extortionate_gold ?= yes }
+					subtract = scope:secondary_actor.slightly_increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:exploitive_gold ?= yes }
+					subtract = scope:secondary_actor.increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:gold ?= yes }
+					subtract = scope:secondary_actor.barter_cost_value
+				}
+				else = { subtract = scope:recipient.current_gold_value }
+				multiply = {
+					value = 1
+					if = {
+						limit = { scope:recipient.ai_greed >= medium_positive_ai_value }
+						add = 0.25
+					}
+				}
+			}
+			desc = "LOSE_GOLD_REASON"
+		}
+
+		modifier = {
+			scope:strong_hook = yes
+			add = {
+				value = -50
+				multiply = 2
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					subtract = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GIVE_HOOK_REASON"
+		}
+	
+		modifier = {
+			scope:favor = yes
+			add = {
+				value = -50
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					subtract = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GIVE_HOOK_REASON"
+		}
+	}
+
+	ai_will_do = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = -10000
+
+		## General Modifiers
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:actor
+			multiplier = 0.5
+			desc = AI_OPINION_REASON
+		}
+
+		gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_government_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_realm_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_culture_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+		
+		gm1_transfer_prisoner_interaction_ai_relation_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		## Modifiers towards Prisoner
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:secondary_actor
+			multiplier = -0.5
+			desc = AI_OPINION_REASON
+		}
+
+		modifier = {
+			exists = scope:secondary_actor
+			add = interaction_actor_prisoner_value
+			desc = INTERACTION_AI_REASON_PRISONER_VALUE
+		}
+	}
+}
+
+demand_prisoner_interaction = {
+	common_interaction = no
+	category = interaction_category_diplomacy
+	icon = prison
+
+	popup_on_receive = yes
+	pause_on_receive = yes
+
+	should_use_extra_icon = {
+		scope:actor = { has_usable_hook = scope:recipient }
+	}
+
+	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+
+	desc = demand_prisoner_interaction_desc
+	notification_text = DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT
+	prompt = DEMAND_PRISONER_INTERACTION_SELECT_TARGET
+
+	cooldown_against_recipient = { days = 0 }
+
+	is_shown = {
+		# Cannot target oneself.
+		NOT = { scope:recipient = scope:actor }
+		# Only significant rulers are allowed to use this interaction.
+		scope:actor.highest_held_title_tier > tier_barony
+		scope:recipient.highest_held_title_tier > tier_barony
+	}
+
+	is_valid_showing_failures_only = {
+		# Theocratic Governments are not allowed.
+		NOT = { scope:actor = { government_has_flag = government_is_theocracy } }
+		NOT = { scope:recipient = { government_has_flag = government_is_theocracy } }
+
+		# Recipient
+		## Must be available.
+		## Must not be imprisoned.
+		## Must have prisoners.
+		## Must not have any prisoners already under interaction.
+		scope:recipient = {
+			is_busy_in_events_localised = yes
+			is_imprisoned = no
+			has_prisoners = yes
+		}
+
+		custom_description = {
+			text = "already_under_ongoing_interaction_with_trigger"
+			subject = scope:recipient
+			object = scope:actor
+			scope:recipient = {
+				trigger_if = {
+					limit = { has_prisoners = yes }
+					any_prisoner = {
+						count = 0
+						already_under_ongoing_interaction_with = {
+							WHO = scope:actor
+						}
+					}
+				}
+			}
+		}
+		
+		# Actor
+		## Must be available.
+		## Must not be imprisoned.
+		## Must be at peace with the Recipient.
+		scope:actor = { 
+			is_busy_in_events_localised = yes
+			is_imprisoned = no 
+
+			NOT = {
+				is_at_war_with = scope:recipient
+			}
+		}
+	}
+
+	can_be_picked = {
+
+	}
+
+	auto_accept = {
+		## Always accepts demands from their liege unless they have a Hook on them
+		trigger_if = {
+			limit = { 
+				#NOT = { scope:recipient = { has_hook = scope:actor } } 
+				scope:recipient = { is_vassal_of = scope:actor } # For jank localization issues
+			}
+			scope:recipient = { is_vassal_of = scope:actor }
+		}
+		## Always accepts against Strong Hook
+		trigger_else = {
+			custom_description = {
+				text = "spending_hook"
+				subject = scope:actor
+				object = scope:recipient
+				scope:hook ?= yes
+				scope:actor = { has_strong_usable_hook = scope:recipient }
+			}
+		}
+	}
+
+	can_send = {
+		
+	}
+	
+	can_be_blocked = {
+		## Hook from Recipient can counteract, but only if Actor is not forcing the action via Strong Hook.
+		custom_description = {
+			text = "spending_hook"
+			subject = scope:recipient
+			object = scope:actor
+			scope:recipient = { has_hook = scope:actor }
+			NAND = {
+				scope:hook = yes
+				scope:actor = { has_strong_hook = scope:recipient }
+			}
+		}
+	}
+
+	populate_recipient_list = {
+		scope:recipient = {
+			every_prisoner = {
+				limit = { 
+					NOT = { scope:actor = this }
+					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+						SENDER = scope:recipient
+					}
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	localization_values = {
+		EXPLOITIVE_EXTORTIONATE_BARTER_COST = scope:secondary_recipient.highly_increased_barter_cost_value
+		EXPLOITIVE_BARTER_COST = scope:secondary_recipient.increased_barter_cost_value
+		EXTORTIONATE_BARTER_COST = scope:secondary_recipient.slightly_increased_barter_cost_value
+		BARTER_COST = scope:secondary_recipient.barter_cost_value
+		CURRENT_GOLD = scope:actor.gold
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:recipient
+			}
+
+			scope:actor ?= {
+				gold >= scope:secondary_recipient.highly_increased_barter_cost_value
+			}
+		}
+
+		flag = exploitive_extortionate_gold
+		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
+			}
+
+			scope:actor ?= {
+				gold < scope:secondary_recipient.highly_increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = exploitive_extortionate_current_gold
+		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
+			}
+
+			scope:actor ?= {
+				gold >= scope:secondary_recipient.slightly_increased_barter_cost_value
+			}
+		}
+
+		flag = extortionate_gold
+		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:actor = {
+				NOT = { is_vassal_of = scope:actor }
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
+			}
+
+			scope:actor ?= {
+				gold < scope:secondary_recipient.slightly_increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = extortionate_current_gold
+		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor 
+			}
+
+			scope:actor ?= {
+				gold >= scope:secondary_recipient.increased_barter_cost_value
+			}
+		}
+
+		flag = exploitive_gold
+		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
+			}
+
+			scope:actor ?= {
+				gold < scope:secondary_recipient.increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = exploitive_current_gold
+		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
+			}
+
+			scope:actor ?= {
+				gold >= scope:secondary_recipient.barter_cost_value
+			}
+		}
+
+		flag = gold
+		localization = "BARTER_GOLD_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+				OR = {
+					is_lowborn = yes
+					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
+				}
+			}
+
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
+			}
+
+			scope:actor ?= {
+				gold < scope:secondary_recipient.barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = current_gold
+		localization = "BARTER_CURRENT_GOLD_OPTION"
+	}
+
+	## Forces auto-accepts against Strong Hook
+	## Cannot be used in tandem with other options to avoid Gold cheese
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+			}
+
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
+			}
+
+			scope:actor = {
+				NOT = { has_usable_hook = scope:recipient }
+			}
+		}
+
+		is_valid = {
+			scope:recipient = {
+				can_add_hook = {
+					target = scope:actor
+					type = loyalty_hook
+				}
+			}
+		}
+
+		flag = strong_hook
+		localization = "BARTER_OWE_FAVOR_OPTION"
+	}
+
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+			}
+
+			scope:secondary_recipient ?= {
+				NOT = { is_at_war_with = scope:actor }
+			}
+
+			scope:actor = {
+				NOT = { has_usable_hook = scope:recipient }
+			}
+		}
+
+		is_valid = {
+			scope:recipient = {
+				can_add_hook = {
+					target = scope:actor
+					type = favor_hook
+				}
+			}
+		}
+
+		flag = favor
+		localization = "BARTER_OWE_FAVOR_OPTION"
+	}
+
+	## Hook can be used to force this through
+	## We don't force-force this on/for the player
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+			}
+			
+			scope:actor = {
+				has_usable_hook = scope:recipient
+			}
+		}
+
+		flag = hook
+		localization = "GENERIC_SPEND_A_HOOK"
+	}
+
+	send_options_exclusive = no
+
+	on_send = {
+		#scope:secondary_actor = {
+		#	hidden_effect = {
+		#		set_interaction_with_effect = {
+		#			WHO = scope:recipient
+		#			TYPE = flag:transfer_prisoner_interaction
+		#			YEARS = 3
+		#		}
+		#	}
+		#}
+	}
+
+	on_accept = {	
+		transfer_prisoner_interaction_immediate_effect = {
+			PRISONER = scope:secondary_recipient
+			IMPRISONER = scope:recipient
+			NEW_IMPRISONER = scope:actor
+		}
+
+		transfer_prisoner_interaction_effect = {
+			PRISONER = scope:secondary_recipient
+			IMPRISONER = scope:recipient
+			NEW_IMPRISONER = scope:actor
+		}
+
+		## Clan Unity.
+		scope:actor = {
+			if = {
+				limit = {
+					government_has_flag = government_is_clan
+					house = scope:recipient.house
+				}
+				add_clan_unity_interaction_effect = {
+					CHARACTER = this
+					TARGET = scope:recipient
+					VALUE = medium_unity_loss
+					DESC = clan_unity_hostage.desc
+					REVERSE_NON_HOUSE_TARGET = no
+				}
+			}
+		}
+
+		## Notification Event.
+		scope:recipient = {
+			save_scope_as = sender
+		}
+
+		scope:actor = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_recipient = {
+			save_scope_as = prisoner
+		}
+
+		scope:receiver = {
+			trigger_event = gm1_char_interaction_notification.0102
+		}
+
+	}
+
+	on_decline = {	
+		## Notification Event.
+		scope:recipient = {
+			save_scope_as = sender
+		}
+
+		scope:actor = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_recipient = {
+			save_scope_as = prisoner
+			remove_all_interaction_variable_effect = yes
+		}
+
+		scope:receiver = {
+			trigger_event = gm1_char_interaction_notification.0022 
+		}
+	}
+
+	on_blocked_effect = {
+		scope:recipient = {
+			remove_hook = {
+				target = scope:actor
+			}
+		}
+	}
+
+	on_auto_accept = {
+		scope:actor = {
+			if = {
+				limit = {
+					scope:hook = yes
+					has_strong_usable_hook = scope:recipient
+				}
+				use_hook = scope:recipient
+			}
+		}
+
+		scope:recipient = {
+			add_opinion = {
+				target = scope:actor
+				modifier = demanded_transfer_prisoner
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = neighboring_rulers
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+
+	ai_frequency = 0 # 36
+
+	ai_potential = { highest_held_title_tier >= tier_county }
+
+	ai_accept = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = 0
+
+		## Recipient's Personality
+		gm1_transfer_prisoner_interaction_ai_demand_personality_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+			PRISONER = scope:secondary_recipient
+		}
+
+		## General Modifiers
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:actor
+			multiplier = 0.5
+			desc = AI_OPINION_REASON
+		}
+
+		gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_government_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_realm_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_culture_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+		
+		gm1_transfer_prisoner_interaction_ai_relation_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_dread_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_perk_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+			PRISONER = scope:secondary_recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_trait_modifier = {
+			SENDER = scope:recipient
+			RECEIVER = scope:actor
+		}	
+
+		## Modifiers towards Prisoner
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:secondary_recipient
+			multiplier = -0.5
+			desc = AI_OPINION_REASON
+		}
+
+		modifier = {
+			exists = scope:secondary_recipient
+			add = interaction_recipient_prisoner_value
+			desc = INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE
+		}
+
+		modifier = {
+			scope:recipient = { is_at_war_with = scope:secondary_recipient }
+			add = -300
+			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
+		}
+
+		## Option Modifiers
+
+		modifier = {
+			OR = {
+				scope:exploitive_extortionate_gold ?= yes
+				scope:exploitive_extortionate_current_gold ?= yes
+				scope:extortionate_current_gold ?= yes
+				scope:extortionate_gold ?= yes 
+				scope:exploitive_gold ?= yes 
+				scope:exploitive_current_gold ?= yes
+				scope:gold ?= yes 
+				scope:current_gold ?= yes
+			}
+			add = {
+				if = {
+					limit = { scope:exploitive_extortionate_gold ?= yes }
+					add = scope:secondary_recipient.highly_increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:extortionate_gold ?= yes }
+					add = scope:secondary_recipient.slightly_increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:exploitive_gold ?= yes }
+					add = scope:secondary_recipient.increased_barter_cost_value
+				}
+				else_if = {
+					limit = { scope:gold ?= yes }
+					add = scope:secondary_recipient.barter_cost_value
+				}
+				else = { add = scope:actor.current_gold_value }
+				multiply = {
+					value = 1
+					if = {
+						limit = { scope:recipient.ai_greed >= medium_positive_ai_value } # They really love gold
+						add = 0.25
+					}
+				}
+			}
+			desc = "GAIN_GOLD_REASON"
+		}
+
+		modifier = {
+			scope:strong_hook = yes
+			add = {
+				value = 50
+				multiply = 2
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					add = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GAIN_STRONG_HOOK_REASON"
+		}
+	
+		modifier = {
+			scope:favor = yes
+			scope:recipient.top_liege = scope:actor.top_liege
+			add = {
+				value = 50
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					add = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GAIN_HOOK_REASON"
+		}
+
+		modifier = {
+			scope:favor = yes
+			NOT = { scope:recipient.top_liege = scope:actor.top_liege }
+			add = 0
+			desc = "NO_USE_FOR_A_FAVOR_REASON"
+		}
+
+		modifier = {
+			scope:hook = yes
+			add = {
+				value = 50
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					subtract = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GENERIC_HOOK_POSITIVE_REASON"
+		}
+	}
+
+	ai_will_do = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = -10000
+	}
+}
+
+exchange_prisoner_interaction = {
+	common_interaction = no
+	category = interaction_category_diplomacy
+	icon = prison
+
+	popup_on_receive = yes
+	pause_on_receive = yes
+
+	should_use_extra_icon = {
+		scope:actor = { has_usable_hook = scope:recipient }
+	}
+
+	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
+
+	ai_maybe = yes
+	ai_min_reply_days = 4
+	ai_max_reply_days = 9
+
+	desc = exchange_prisoner_interaction_desc
+	notification_text = EXCHANGE_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT
+	prompt = EXCHANGE_PRISONER_INTERACTION_SELECT_TARGET
+
+	cooldown_against_recipient = { days = 0 }
+
+	is_shown = {
+		# Cannot target oneself.
+		NOT = { scope:recipient = scope:actor }
+		# Only significant rulers are allowed to use this interaction.
+		scope:actor.highest_held_title_tier > tier_barony
+		scope:recipient.highest_held_title_tier > tier_barony
+	}
+
+	is_valid_showing_failures_only = {
+		# Theocratic Governments are not allowed.
+		NOT = { scope:actor = { government_has_flag = government_is_theocracy } }
+		NOT = { scope:recipient = { government_has_flag = government_is_theocracy } }
+
+		# Actor
+		## Must be available.
+		## Must not be imprisoned.
+		## Must have prisoners
+		## Must not have any prisoners already under interaction.
+		## Must be at peace with the recipient.
+		scope:actor = { 
+			is_busy_in_events_localised = yes
+			is_imprisoned = no 
+			has_prisoners = yes
+			NOT = {
+				is_at_war_with = scope:recipient
+			}
+		}
+
+		custom_description = {
+			text = "already_under_ongoing_interaction_with_trigger"
+			subject = scope:actor
+			object = scope:recipient
+			scope:actor = {
+				trigger_if = {
+					limit = { has_prisoners = yes }
+					any_prisoner = {
+						count = 0
+						already_under_ongoing_interaction_with = {
+							WHO = scope:recipient
+						}
+					}
 				}
 			}
 		}
 
 		# Recipient
 		## Must be available.
-		## Must be at peace with the actor.
-		scope:recipient = { is_busy_in_events_localised = yes }
-		scope:recipient = {	NOT = { is_at_war_with = scope:actor } }
-		# Theocratic Governments are not allowed.
-		NOT = { scope:actor = { government_has_flag = government_is_theocracy } }
-		NOT = { scope:recipient = { government_has_flag = government_is_theocracy } }
-	}
-
-	can_be_picked = {
-		gm1_offer_valid_target_prisoner_interaction_trigger = yes
-	}
-
-	can_send = {
-		# AI
-		trigger_if = {
-			limit = { scope:actor = { is_ai = yes }	}
-			gm1_is_valid_prisoner_ai_trigger = { 
-				RECIPIENT = scope:recipient 
-				PRISONER = scope:secondary_actor
-			}
-			## Stop interaction spam.
-			#scope:secondary_actor = { var:interaction ?= flag:ai_prisoner_under_offer }
+		## Must not be imprisoned.
+		## Must have prisoners.
+		## Must not have any prisoners already under interaction.
+		scope:recipient = {
+			is_busy_in_events_localised = yes
+			is_imprisoned = no
+			has_prisoners = yes
 		}
-	}
 
-	cost = {}
-
-	on_send = {
-		scope:secondary_actor = {
-			hidden_effect = {
-				set_interaction_variable_effect = { 
-					TYPE = flag:offer_prisoner_interaction 
-					YEARS = 1
-				}
-			}
-		}
-		# AI
-		if = {
-			limit = { scope:recipient = { is_ai = no } }
-			hidden_effect = {
-				## Stop spamming offers.
-				scope:secondary_actor = { 
-					add_character_flag = { 
-						flag = ai_prisoner_under_offer
-						years = 3 
+		custom_description = {
+			text = "already_under_ongoing_interaction_with_trigger"
+			subject = scope:recipient
+			object = scope:actor
+			scope:recipient = {
+				trigger_if = {
+					limit = { has_prisoners = yes }
+					any_prisoner = {
+						count = 0
+						already_under_ongoing_interaction_with = {
+							WHO = scope:actor
+						}
 					}
 				}
 			}
 		}
 	}
 
-	on_accept = {
-		## Notification Event.
-		scope:actor = { trigger_event = gm1_interaction.0002 }
+	can_be_picked = {
 
-		#custom_description_no_bullet = { text = prisoner_pacts_on_arrival_tt }
-		gm1_prisoner_depart_effect = {
-			ACTOR = scope:actor
-			RECIPIENT = scope:recipient
-			PRISONER = scope:secondary_actor
-		}
-	}
-
-	on_decline = {
-		## Notification Event.
-		scope:actor = { trigger_event = gm1_interaction.0003 }
-		scope:secondary_actor = {
-			hidden_effect = { remove_interaction_variable_effect = yes }
-		}
 	}
 
 	auto_accept = {
-		always = yes
+		## Always accepts against Strong Hook
+		custom_description = {
+			text = "spending_hook"
+			subject = scope:actor
+			object = scope:recipient
+			scope:hook ?= yes
+			scope:actor = { has_strong_usable_hook = scope:recipient }
+		}
 	}
 
-	can_be_blocked = {}
-
-	on_blocked_effect = {}
-
-	# AI
-	ai_accept = {}
-
-	ai_frequency = 0
-
-	ai_potential = {}
-
-	ai_will_do = {
-		base = 0
+	can_send = {
+		
 	}
 	
+	can_be_blocked = {
+		## Hook from Recipient can counteract, but only if Actor is not forcing the action via Strong Hook.
+		custom_description = {
+			text = "spending_hook"
+			subject = scope:recipient
+			object = scope:actor
+			scope:recipient = { has_hook = scope:actor }
+			NAND = {
+				scope:hook = yes
+				scope:actor = { has_strong_hook = scope:recipient }
+			}
+		}
+	}
+
+	populate_actor_list = {
+		scope:actor = {
+			every_prisoner = {
+				limit = { 
+					NOT = { scope:recipient = this }
+					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+						SENDER = scope:actor
+					}
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	populate_recipient_list = {
+		scope:recipient = {
+			every_prisoner = {
+				limit = { 
+					NOT = { scope:actor = this }
+					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+						SENDER = scope:recipient
+					}
+				}
+				add_to_list = characters
+			}
+		}
+	}
+
+	## Hook can be used to force this through
+	## We don't force-force this on/for the player
+	send_option = {
+		is_shown = {
+			scope:recipient = {
+				NOT = { is_vassal_of = scope:actor }
+			}
+			
+			scope:actor = {
+				has_usable_hook = scope:recipient
+			}
+		}
+
+		flag = hook
+		localization = "GENERIC_SPEND_A_HOOK"
+	}
+
+	send_options_exclusive = no
+
+	on_send = {
+		#scope:secondary_actor = {
+		#	hidden_effect = {
+		#		set_interaction_with_effect = {
+		#			WHO = scope:recipient
+		#			TYPE = flag:transfer_prisoner_interaction
+		#			YEARS = 3
+		#		}
+		#	}
+		#}
+	}
+
+	on_accept = {	
+		transfer_prisoner_interaction_effect = {
+			PRISONER = scope:secondary_actor
+			IMPRISONER = scope:actor
+			NEW_IMPRISONER = scope:recipient
+		}
+
+		transfer_prisoner_interaction_effect = {
+			PRISONER = scope:secondary_recipient
+			IMPRISONER = scope:recipient
+			NEW_IMPRISONER = scope:actor
+		}
+
+		## Clan Unity.
+		scope:actor = {
+			if = {
+				limit = {
+					government_has_flag = government_is_clan
+					house = scope:recipient.house
+				}
+				add_clan_unity_interaction_effect = {
+					CHARACTER = this
+					TARGET = scope:recipient
+					VALUE = medium_unity_loss
+					DESC = clan_unity_hostage.desc
+					REVERSE_NON_HOUSE_TARGET = no
+				}
+			}
+		}
+
+		## Notification Event.
+		scope:recipient = {
+			save_scope_as = sender
+		}
+
+		scope:actor = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_recipient = {
+			save_scope_as = prisoner
+		}
+
+		scope:receiver = {
+			trigger_event = gm1_char_interaction_notification.0102
+		}
+
+	}
+
+	on_decline = {	
+		## Notification Event.
+		scope:recipient = {
+			save_scope_as = sender
+		}
+
+		scope:actor = {
+			save_scope_as = receiver
+		}
+
+		scope:secondary_recipient = {
+			save_scope_as = prisoner
+			remove_all_interaction_variable_effect = yes
+		}
+
+		scope:receiver = {
+			trigger_event = gm1_char_interaction_notification.0022 
+		}
+	}
+
+	on_blocked_effect = {
+		scope:recipient = {
+			remove_hook = {
+				target = scope:actor
+			}
+		}
+	}
+
+	on_auto_accept = {
+		scope:actor = {
+			if = {
+				limit = {
+					scope:hook = yes
+					has_strong_usable_hook = scope:recipient
+				}
+				use_hook = scope:recipient
+			}
+		}
+
+		scope:recipient = {
+			add_opinion = {
+				target = scope:actor
+				modifier = demanded_transfer_prisoner
+			}
+		}
+	}
+
+	ai_targets = {
+		ai_recipients = neighboring_rulers
+		ai_recipients = peer_vassals
+		ai_recipients = vassals
+		ai_recipients = liege
+	}
+
+	ai_frequency = 0 # 36
+
+	ai_potential = { highest_held_title_tier >= tier_county }
+
+	ai_accept = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = 0
+
+		## Recipient's Personality
+		gm1_transfer_prisoner_interaction_ai_exchange_personality_modifier = {
+			PARTAKER = scope:actor
+			PARTAKEE = scope:recipient
+			PARTAKER_PRISONER = scope:secondary_actor
+			PARTAKEE_PRISONER = scope:secondary_recipient
+		}
+
+		## General Modifiers
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:actor
+			multiplier = 0.5
+			desc = AI_OPINION_REASON
+		}
+
+		gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_government_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_realm_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_culture_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+		
+		gm1_transfer_prisoner_interaction_ai_relation_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_dread_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}
+
+		gm1_transfer_prisoner_interaction_ai_perk_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+			PRISONER = scope:secondary_actor
+		}
+
+		gm1_transfer_prisoner_interaction_ai_trait_modifier = {
+			SENDER = scope:actor
+			RECEIVER = scope:recipient
+		}	
+
+		## Modifiers towards your Prisoner
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:secondary_actor
+			multiplier = -0.5
+			desc = AI_OPINION_REASON
+		}
+
+		modifier = {
+			exists = scope:secondary_actor
+			add = interaction_actor_prisoner_value
+			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
+		}
+
+		## Modifiers towards their Prisoner
+
+		opinion_modifier = {
+			who = scope:recipient
+			opinion_target = scope:secondary_recipient
+			multiplier = -0.5
+			desc = AI_OPINION_REASON
+		}
+
+		modifier = {
+			exists = scope:secondary_recipient
+			add = interaction_recipient_prisoner_value
+			desc = INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE
+		}
+
+		## Option Modifiers
+
+		modifier = {
+			scope:hook = yes
+			add = {
+				value = 50
+				if = {
+					limit = {
+						scope:recipient.ai_vengefulness > 0
+					}
+					subtract = scope:recipient.ai_vengefulness
+				}
+			}
+			desc = "GENERIC_HOOK_POSITIVE_REASON"
+		}
+	}
+
+	ai_will_do = {
+		## These rulers shouldn't be carefree in giving away prisoners.
+		base = -10000
+	}
 }
