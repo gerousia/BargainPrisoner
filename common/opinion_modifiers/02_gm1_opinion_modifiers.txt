@@ -4,22 +4,30 @@
 #------------------------------
 # list
 #------------------------------
-# refused_change_imprisoner
-# failed_change_imprisoner
+# demanded_transfer_prisoner
+# refused_transfer_prisoner
+# failed_transfer_prisoner
 # transferred_me_attempt
 # transferred_me
 # transferred_me_different_faith
 # transferred_family_member
 
+# Values based on ./common/opinion_modifiers/00_prison_opinions.txt/demanded_recruitment
+demanded_transfer_prisoner = {
+	opinion = -15
+	years = 10
+	decaying = yes
+}
+
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/vassal_refused_hostage_demand_opinion
-refused_change_imprisoner = {
+refused_transfer_prisoner = {
 	opinion = -15
 	monthly_change = 0.1
 	decaying = yes
 }
 
 # Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/hostage_died_opinion
-failed_change_imprisoner = {
+failed_transfer_prisoner = {
 	opinion = -25
 	monthly_change = 0.1
 	decaying = yes
