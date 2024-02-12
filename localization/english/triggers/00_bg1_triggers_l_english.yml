@@ -11,7 +11,7 @@ l_english:
  I_HAVE_PRISONERS_TRIGGER: "You have a [prisoner|E]"
  I_HAVE_NO_PRISONERS_TRIGGER: "You do #bold not#! have any [prisoner|E]"
  THEY_HAVE_PRISONERS_TRIGGER: "[CHARACTER.GetShortUIName|U] has a [prisoner|E]"
- THEY_HAVE_NO_PRISONERS_TRIGGER: "[CHARACTER.GetShortUIName|U] does #bold not#! have a any [prisoner|E]"
+ THEY_HAVE_NO_PRISONERS_TRIGGER: "[CHARACTER.GetShortUIName|U] does #bold not#! have any [prisoner|E]"
 
  ANY_PRISONER: "Any Prisoner:"
  ANY_PRISONER_FIRST: "Any of my Prisoners:"
