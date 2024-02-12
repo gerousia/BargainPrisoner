@@ -1,44 +1,92 @@
 ﻿##############################
+## BM1 scripted_effects list
+##############################
+
+# effects:
+## set_interaction_effect						- Assigns character an interaction (flag) with x-amount of duration (years) variable for internal flag reference.
+## set_interaction_with_effect					- Assigns character an interaction (flag) and interaction_with (character) with x-amount of duration (years) variables for internal flag or character reference.
+## set_invalidate_interaction_reason_effect
+## remove_all_interaction_variable_effect			- Removes any existing interaction-related variables: interaction interaction_with.
+## disband_all_schemes_effect					- Disbands all existing schemes on a target.
+
+# variable-list:
+## interaction (flag)
+## interaction_with (character)
+
+##############################
 ## BM1 scripted_effects
 ##############################
 
-# TYPE = flag
-set_interaction_variable_effect = {
+#------------------------------
+# interaction-related
+#------------------------------
+
+# TYPE (flag)
+# YEARS (int)
+set_interaction_effect = {
 	hidden_effect = {
 		set_variable = {
-			name = interaction
+			name = under_interaction
 			value = $TYPE$
 			years = $YEARS$
 		}
 	}
 }
 
-# TYPE = flag
-# WHO = character
-# YEAR = int
-set_interaction_with_variable_effect = {
+# WHO (character)
+# TYPE (flag)
+# YEAR (int)
+set_interaction_with_effect = {
 	hidden_effect = {
-		set_interaction_variable_effect = {
+		set_interaction_effect = {
 			TYPE = $TYPE$
 			YEARS = $YEARS$
 		}
 		set_variable = {
-			name = interaction_with
+			name = under_interaction_with
 			value = $WHO$
 			years = $YEARS$
 		}
 	}
 }
 
-remove_interaction_variable_effect = {
+# REASON (flag)
+set_invalidate_interaction_reason_effect = {
+	set_variable = {
+		name = invalidate_interaction_reason
+		value = $REASON$
+	}
+}
+
+remove_all_interaction_variable_effect = {
 	hidden_effect = {
 		if = {
-			limit = { exists = var:interaction }
-			remove_variable = interaction
+			limit = { exists = var:under_interaction }
+			remove_variable = under_interaction
 		}
 		if = {
-			limit = { exists = var:interaction_with }
-			remove_variable = interaction_with
+			limit = { exists = var:under_interaction_with }
+			remove_variable = under_interaction_with
+		}
+		if = {
+			limit = { exists = var:invalidate_interaction_reason }
+			remove_variable = invalidate_interaction_reason
+		}
+	}
+}
+
+# WHO (character)
+# TARGET (character)
+disband_all_schemes_effect = {
+	hidden_effect = {
+		$WHO$ = {
+			if = {
+				limit = { any_scheme = { scheme_target = $TARGET$ } }
+				every_scheme = {
+					limit = { scheme_target = $TARGET$ }
+					end_scheme = yes
+				}
+			}
 		}
 	}
 }

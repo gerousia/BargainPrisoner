@@ -1,159 +1,467 @@
+﻿##############################
+## GM1 scripted_effects list
+##############################
+
+# effects:
+## gm1_prisoner_depart_effect								- Assigns character a travel_companion (bodyguard_court_position); old_imprisoner (root.imprisoner); new_imprisoner (character); travel_target (character); Then initiates travel_plan towards new_imprisoner.
+## gm1_invalidate_offer_prisoner_interaction_effect			- Determines and assigns character a invalidate_interaction (flag) variable.
+## gm1_prisoner_travel_invalidated_effect					- Removes any existing travel-related variables, interaction-related, and prisoner-interaction-related variables: travel_target travel_target_destination travel_companion interaction interaction_with current_imprisoner next_imprisoner invalidate_interaction
+## remove_prisoner_variables_effect							- Removes any interaction-related and prisoner-interaction-related variables: interaction interaction_with current_imprisoner next_imprisoner invalidate_interaction
+
+# variable-list:
+## current_imprisoner (character)
+## next_imprisoner (character)
+## invalidate_interaction (flag)
+
 ##############################
 ## GM1 scripted_effects
 ##############################
 
-# offer_prisoner_interaction
-## ACTOR = character
-## RECIPIENT = character
-## PRISONER = character
-gm1_prisoner_depart_effect = {	
-	hidden_effect = {
-		$ACTOR$ = {
-			# Set Travel Companion Scope - Bodyguard.
-			every_court_position_holder = {
-				type = bodyguard_court_position
-				limit = {
-					is_available = yes
-					has_travel_target = no
-					has_travel_companion = no
-				}
-				save_temporary_scope_as = companion 
-			}
+#------------------------------
+# interaction travel-related
+#------------------------------
+
+# transfer_prisoner_interaction
+## TARGET (character)
+## SENDER (character)
+## RECEIVER (character)
+transfer_prisoner_company_depart_effect = {
+	$TARGET$ = {
+		## set current_imprisoner
+		set_variable = {
+			name = current_imprisoner
+			value = $SENDER$
 		}
-		$PRISONER$ = {
-			# Set Variables.
-			## Current Imprisoner.
-			set_variable = {
-				name = current_imprisoner
-				value = $ACTOR$
-			}
-			## Next Imprisoner.
-			set_variable = {
-				name = next_imprisoner
-				value = $RECIPIENT$
-			}
-			## Travel Companion.
-			set_travel_companion_effect = { 
-				ACTOR = $PRISONER$
-				TARGET = scope:companion 
-			}
-			## Travel Plan.
-			set_travel_target_variable_effect = { TARGET = $RECIPIENT$ }
-			start_travel_plan = {
-				players_use_planner = no
-				destination = var:travel_target_destination
-				#companion = $ACTOR$
-				on_start_on_action = on_prisoner_depart
-				on_travel_planner_cancel_on_action = on_prisoner_depart_travel_planner_exit
-				on_arrival_on_action = on_prisoner_arrive
-				on_arrival_destinations = last
-				return_trip = no
-			}
+
+		## set next_imprisoner
+		set_variable = {
+			name = next_imprisoner
+			value = $RECEIVER$
+		}
+
+		## set travel_companion
+		set_travel_companion_effect = { 
+			WITH = $COMPANION$ 
 		}
 	}
-	debug_log = "GM1: Prisoner Departed for Target."
+
+	$COMPANION$ = {
+		set_travel_target_effect = { TARGET = $RECEIVER$ }
+		start_travel_plan = {
+			players_use_planner = no
+			destination = var:travel_target_destination
+			on_start_on_action = on_transfer_prisoner_company_depart
+			on_travel_planner_cancel_on_action = on_transfer_prisoner_company_depart_travel_planner_exit
+			on_arrival_on_action = on_transfer_prisoner_company_arrive
+			on_arrival_destinations = all_but_last
+			return_trip = yes
+		}
+	}
+
+	debug_log = "GM1: $SENDER$ sends $TARGET$ with $COMPANION$ to depart for $RECEIVER$"
 	debug_log_scopes = yes
 }
 
+# PRISONER (character)
+# BODYGUARD (character)
+remove_transfer_prisoner_company_variables_effect = {
+	hidden_effect = {
+		$PRISONER$ = {
+			## Assigned in offer_prisoner_interaction.
+			if = {
+				limit = { already_under_ongoing_interaction = yes }
+				remove_all_interaction_variable_effect = yes
+			}
+
+			## Assigned in transfer_prisoner_company_depart_effect
+			if = {
+				limit = { exists = var:current_imprisoner }
+				remove_variable = current_imprisoner
+			}
+
+			## Assigned in transfer_prisoner_company_depart_effect
+			if = {
+				limit = { exists = var:next_imprisoner }
+				remove_variable = next_imprisoner
+			}
+
+			## Assigned in transfer_prisoner_company_depart_effect
+			if = {
+				limit = { has_travel_target = yes }
+				remove_travel_variables_effect = yes
+			}
+		}
+		
+		$COMPANION$ = {
+			if = {
+				limit = { has_travel_target = yes }
+				remove_travel_variables_effect = yes
+			}
+		}
+	}
+}
+
 # on_prisoner_arrive
-gm1_invalidate_offer_prisoner_interaction_effect = {
-	hidden_effect = {
-		# Set Invalidation Reason.
-		## Prisoner.
+## invalidate_interaction
+## flag:secondary_actor
+## flag:actor
+## flag:recipient
+## flag:travel_companion
+invalidate_transfer_prisoner_interaction_effect = {
+	$PRISONER$ = {
 		if = {
-			limit = { 
-				is_alive = no 
-				is_imprisoned = no
+			## The prisoner died.
+			limit = { is_alive = no }
+			$COMPANION$ = {
+				trigger_event = some_event
 			}
-			set_variable = {
-				name = invalidate_interaction
-				value = flag:secondary_actor
-			}
-			debug_log = "GM1: invalidated:secondary_actor"
 		}
-		## Sender.
-		else_if = {
-			limit = {
-				var:current_imprisoner = {
-					OR = {
-						is_alive = no
-						is_landed = no
-						# is_imprisoned = yes
+		else = {
+			## There must be something that happened to the sender 
+			if = {
+				limit = {
+					var:current_imprisoner = {
+						OR = {
+							is_alive = no
+							is_landed = no
+							# is_imprisoned = yes
+						}
 					}
 				}
+				set_invalidate_interaction_reason_effect = { REASON = flag:sender }
+				debug_log = "GM1: invalidate flag:sender"
 			}
-			set_variable = {
-				name = invalidate_interaction
-				value = flag:actor
-			}
-			debug_log = "GM1: invalidated:actor"
-		}
-		## Reciever.
-		else_if = {
-			limit = {
-				var:next_imprisoner = {
-					OR = {
-						is_alive = no
-						is_landed = no
-						# is_imprisoned = yes
+			## There must be something that happened to the receiver. 
+			else_if = {
+				limit = {
+					var:next_imprisoner = {
+						OR = {
+							is_alive = no
+							is_landed = no
+							# is_imprisoned = yes
+						}
 					}
 				}
+				set_invalidate_interaction_reason_effect = { REASON = flag:receiver	}
+				debug_log = "GM1: invalidate flag:receiver"
 			}
-			set_variable = {
-				name = invalidate_interaction
-				value = flag:recipient
-			}
-			debug_log = "GM1: invalidated:recipient"
-		}
-		## Travel Companion (Bodyguard).
-		else_if = {
-			limit = {
-				var:travel_companion ?= {
-					OR = {
-						is_alive = no
-						is_landed = yes
-						is_imprisoned = yes
-						NOT = { has_court_position = bodyguard_court_position }
+			## There must be something that happened to the companion 
+			else_if = {
+				limit = {
+					var:travel_companion = {
+						OR = {
+							is_alive = no
+							is_landed = yes
+							is_imprisoned = yes
+							NOT = { has_court_position = bodyguard_court_position }
+						}
 					}
 				}
+				set_invalidate_interaction_reason_effect = { REASON = flag:companion }
+				debug_log = "GM1: invalidate flag:bodyguard"
 			}
-			set_variable = {
-				name = invalidate_interaction
-				value = flag:travel_companion
+
+			if = {
+				limit = { exists = var:invalidate_interaction_reason }
+				trigger_event = { 
+					on_action = escape_from_prison_transfer
+				}
 			}
-			debug_log = "GM1: invalidated:travel_companion"
 		}
 	}
 }
 
-gm1_prisoner_travel_invalidated_effect = {
-	hidden_effect = {
-		remove_travel_variables_effect = yes
-		remove_prisoner_variables_effect = yes
+#------------------------------
+# interaction-related
+#------------------------------
+
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## PRISONER (character)
+## IMPRISONER (character)
+take_prisoner = {
+
+	### To the author at PDX who wrote this original line, 
+	### "- there is no god nor consistency when it comes to localization.", 
+	### You're goddamn right.
+
+	custom_description = {
+		text = "take_prisoner_tooltip_effect"
+		subject = $IMPRISONER$
+		object = $PRISONER$
 	}
-	debug_log = "GM1: Prisoner Got Invalidated."
 }
 
-remove_prisoner_variables_effect = {
-	hidden_effect = {
-		## Assigned in offer_prisoner_interaction.
+# PRISONER (character)
+# IMPRISONER (character)
+# NEW_IMPRISONER (character)
+transfer_prisoner_interaction_immediate_effect = {
+	$NEW_IMPRISONER$ = {
+		## Saves current gold from interaction send_option for referencial use
 		if = {
-			limit = { exists = var:interaction }
-			remove_variable = interaction
+			limit = {
+				OR = {
+					scope:exploitive_extortionate_current_gold ?= yes
+					scope:extortionate_current_gold ?= yes
+					scope:exploitive_current_gold ?= yes
+					scope:current_gold ?= yes
+				}
+			}
+			save_scope_value_as = {
+				name = barter_saved_gold_value
+				value = $NEW_IMPRISONER$.current_gold_value
+			}
 		}
-		## Assigned in gm1_prisoner_depart_effect.
+		else_if = {
+			limit = { scope:hook ?= yes }
+			use_hook = $IMPRISONER$
+		}
+	}
+
+	transfer_prisoner_interaction_attempt_effect = {
+		PRISONER = $PRISONER$
+		IMPRISONER = $IMPRISONER$
+	}
+
+	transfer_prisoner_interaction_attempt_effect = {
+		PRISONER = $PRISONER$
+		IMPRISONER = $NEW_IMPRISONER$
+	}
+
+	transfer_prisoner_interaction_escalate_rivalry_effect = {
+		PRISONER = $PRISONER$
+		NEW_IMPRISONER = $NEW_IMPRISONER$
+	}
+}
+
+# PRISONER (character)
+# IMPRISONER (character)
+transfer_prisoner_interaction_attempt_effect = {
+	disband_all_schemes_effect = {
+		WHO = $IMPRISONER$
+		TARGET = $PRISONER$
+	}
+
+	transfer_prisoner_interaction_stress_effect = { 
+		PRISONER = $PRISONER$
+		IMPRISONER = $IMPRISONER$
+	}
+
+	transfer_prisoner_interaction_dread_effect = { 
+		PRISONER = $PRISONER$
+		IMPRISONER = $IMPRISONER$
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## PRISONER (character)
+## IMPRISONER (character)
+transfer_prisoner_interaction_stress_effect = {
+	 $IMPRISONER$ = {
 		if = {
-			limit = { exists = var:current_imprisoner }
-			remove_variable = current_imprisoner
+			limit = { has_imprisonment_reason = $PRISONER$ }
+			stress_impact = {
+				compassionate = minor_stress_impact_gain
+				forgiving = minor_stress_impact_gain
+			}
 		}
+		else = {
+			stress_impact = {
+				just = medium_stress_impact_gain
+				compassionate = medium_stress_impact_gain
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
+## PRISONER (character)
+## IMPRISONER (character)
+transfer_prisoner_interaction_dread_effect = {
+	$IMPRISONER$ = {
 		if = {
-			limit = { exists = var:next_imprisoner }
-			remove_variable = next_imprisoner
+			limit = { NOT = { has_imprisonment_reason = $PRISONER$ } }
+			if = {
+				limit = {
+					$PRISONER$ = {
+						OR = {
+							is_spouse_of = $IMPRISONER$
+							is_close_family_of = $IMPRISONER$
+							tier_or_related_liege_tier_greater_or_equal_trigger = { TIER = tier_kingdom }
+						}
+					}
+				}
+				add_dread = medium_dread_gain
+			}
+			else_if = {
+				limit = {
+					$PRISONER$ = {
+						OR = {
+							tier_or_related_liege_tier_equal_trigger = { TIER = tier_duchy }
+							tier_or_related_liege_tier_equal_trigger = { TIER = tier_county }
+						}
+					}
+				}
+				add_dread = minor_dread_gain
+			}
 		}
-		## Assigned in gm1_invalidate_offer_prisoner_interaction_effect
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
+## PRISONER (character)
+## NEW_IMPRISONER (character)
+transfer_prisoner_interaction_escalate_rivalry_effect = {
+	$PRISONER$ = {
 		if = {
-			limit = { exists = var:invalidate_interaction }
-			remove_variable = invalidate_interaction
+			limit = {
+				NOT = { has_relation_rival = imprisoner }
+				OR = {
+					$NEW_IMPRISONER$ = { is_at_war_with = $PRISONER$ }
+					has_requested_excommunication_by = { WHO = imprisoner }
+					has_opinion_modifier = {
+						modifier = revoked_title
+						target = imprisoner
+					}
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_relation_potential_rival = imprisoner }
+					remove_relation_potential_rival = imprisoner
+				}
+			}
+			set_relation_rival = imprisoner
 		}
+		else = {
+			hidden_effect = {
+				progress_towards_rival_effect = {
+					CHARACTER = imprisoner
+					REASON = rival_imprisoned
+					OPINION = 0
+				}
+			}
+		}
+	}
+}
+
+# PRISONER (character)
+# IMPRISONER (character)
+# NEW_IMPRISONER (character)
+transfer_prisoner_interaction_effect = {
+	$NEW_IMPRISONER$ = {
+		## War
+		## FP3 Perk 
+		### Full Gold Amount
+		### Full Prestige Amount 
+		if = {
+			limit = { scope:exploitive_extortionate_gold ?= yes	}
+			pay_short_term_gold = {
+				gold = $PRISONER$.highly_increased_barter_cost_value
+				target = $IMPRISONER$
+			}
+			$IMPRISONER$ = { 
+				add_prestige = $PRISONER$.highly_increased_barter_cost_value
+			}
+		}
+		## War
+		## FP3 Perk 
+		### Partial Gold Amount
+		### Partial Prestige Amount 
+		if = {
+			limit = { scope:exploitive_extortionate_current_gold ?= yes	}
+			pay_short_term_gold = {
+				gold = scope:barter_saved_gold_value
+				target = $IMPRISONER$
+			}
+			$IMPRISONER$ = { 
+				add_prestige = scope:barter_saved_gold_value
+			}
+		}
+		## FP3 Perk 
+		### Full Gold Amount
+		### Full Prestige Amount 
+		if = {
+			limit = { scope:extortionate_gold ?= yes }
+			pay_short_term_gold = {
+				gold = $PRISONER$.slightly_increased_barter_cost_value
+				target = $IMPRISONER$
+			}
+			$IMPRISONER$ = { 
+				add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
+			}
+		}
+		## FP3 Perk 
+		### Partial Gold Amount
+		### Partial Prestige Amount 
+		if = {
+			limit = { scope:extortionate_current_gold ?= yes }
+			pay_short_term_gold = {
+				gold = scope:barter_saved_gold_value
+				target = $IMPRISONER$
+			}
+			$IMPRISONER$ = { 
+				add_prestige = scope:barter_saved_gold_value 
+			}
+		}
+		## War 
+		### Full Gold Amount
+		if = {
+			limit = { scope:exploitive_gold ?= yes }
+			pay_short_term_gold = {
+				gold = $PRISONER$.increased_barter_cost_value
+				target = $IMPRISONER$
+			}
+		}
+		## War 
+		### Partial Gold Amount
+		if = {
+			limit = { scope:exploitive_current_gold ?= yes }
+			pay_short_term_gold = {
+				gold = scope:barter_saved_gold_value
+				target = $IMPRISONER$
+			}
+		}
+		### Full Gold Amount
+		if = {
+			limit = { scope:gold ?= yes }
+			pay_short_term_gold = {
+				gold = $PRISONER$.barter_cost_value
+				target = $IMPRISONER$
+			}
+		}
+		### Partial Gold Amount
+		if = {
+			limit = { scope:current_gold ?= yes }
+			pay_short_term_gold = {
+				gold = scope:barter_saved_gold_value
+				target = $IMPRISONER$
+			}
+		}
+		### Strong Hook
+		if = {
+			limit = { scope:strong_hook ?= yes }
+			$IMPRISONER$ = {
+				add_hook = {
+					target = $NEW_IMPRISONER$
+					type = loyalty_hook
+				}
+			}
+		}
+		### Weak Hook
+		if = {
+			limit = { scope:favor ?= yes }
+			$IMPRISONER$ = {
+				add_hook = {
+					target = $NEW_IMPRISONER$
+					type = favor_hook
+				}
+			}
+		}
+	}
+
+	change_imprisoner_character_effect = { 
+		TARGET = $PRISONER$
+		IMPRISONER = $IMPRISONER$
+		NEW_IMPRISONER = $NEW_IMPRISONER$
 	}
 }

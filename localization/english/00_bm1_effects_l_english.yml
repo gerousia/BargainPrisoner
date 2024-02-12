@@ -1,0 +1,7 @@
+﻿##############################
+## BM1 effect_localization
+##############################
+
+l_english:
+
+ all_war_allies: "[THIS.GetCharacter.GetShortUINamePossessive|U] Allies in [war|E]"

@@ -1,27 +1,41 @@
 ﻿##############################
-## GM1 effect_localization
+## GM1 scripted_effects
 ##############################
 
 l_english:
-
- MUST_TRAVEL_TOWARDS_COURT: "#weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- RELEASES_PRISONER_TOOLTIP_EFFECT: "Releases [TARGET_CHARACTER.GetShortUIName]"
- MOVES_PRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Moves [prison|E]#! $MUST_TRAVEL_TOWARDS_COURT$"
- IMPRISON_PRISONER_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISON_EFFECT$#! $MUST_TRAVEL_TOWARDS_COURT$"
-
- TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_HOUSE_ARREST: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- TRANSFER_IMPRISONMENT_RELATIVES_EFFECT_TOOLTIP_DUNGEON: "All of [CHARACTER.GetShortUINamePossessive|V] [family|E] loses #N 30#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
-
- TRANSFER_IMPRISONMENT_AT_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon! #alert_trial' )] [CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] at [war|E] with [TARGET_CHARACTER.GetShortUINameNoFormat|U]#!"
- TRANSFER_IMPRISONMENT_WAR_LEADER_TOOLTIP_EFFECT: "@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
- TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 15#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 20#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
- TRANSFER_IMPRISONMENT_ALLIES_GAIN_TOOLTIP_EFFECT_WAR_LEADER: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] gains #P 40#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]" 
- TRANSFER_IMPRISONMENT_ALLIES_LOSE_TOOLTIP_EFFECT_WAR_LEADER: "All of [CHARACTER.GetShortUINamePossessive|V] [allies|E] loses #N 50#! [opinion|E] of [TARGET_CHARACTER.GetShortUIName]"
  
- TRANSFER_IMPRISONMENT_VASSAL_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon! #alert_trial' )] [TARGET_CHARACTER.GetTitledFirstName|U] is [Select_CString( CHARACTER.IsLocalPlayer, 'your', CHARACTER.GetShortUINamePossessiveNoFormat )] [vassal|E]#!"
- TRANSFER_IMPRISONMENT_HEAD_OF_FAITH_TOOLTIP_EFFECT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [Select_CString( CHARACTER.IsLocalPlayer, 'your', CHARACTER.GetShortUINamePossessiveNoFormat )] [head_of_faith|E]#!"
+ RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Releases [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ I_RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial You release [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ I_RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial You released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ CHARACTER_RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [CHARACTER.GetShortUIName] releases [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ CHARACTER_RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [CHARACTER.GetShortUIName] released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
 
- IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT: "@portrait_punishment_icon! #weak Crime — Rightful imprisonment#!"
- IS_ALLOWED_TO_TRANSFER_IMPRISONMENT_TOOLTIP_EFFECT_WAR: "@portrait_punishment_icon! #weak War — Just imprisonment#!"
+ ESCAPE_TOOLTIP_EFFECT: "Escapes [prison|E]"
+ ESCAPED_TOOLTIP_EFFECT: "Escaped [prison|E]"
+ I_ESCAPE_TOOLTIP_EFFECT: "You escape [prison|E]"
+ I_ESCAPED_TOOLTIP_EFFECT: "You escaped [prison|E]"
+ CHARACTER_ESCAPE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escapes [prison|E]"
+ CHARACTER_ESCAPED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escaped [prison|E]"
+
+ MOVE_TOOLTIP_EFFECT: "Moves [prison|E]"
+ MOVED_TOOLTIP_EFFECT: "Moved [prison|E]"
+ I_MOVE_TOOLTIP_EFFECT: "You move [prison|E]"
+ I_MOVED_TOOLTIP_EFFECT: "You moved [prison|E]"
+ CHARACTER_MOVE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] moves [prison|E]"
+ CHARACTER_MOVED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] moved [prison|E]"
+
+ IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ I_IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $I_IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ I_IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $I_IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ CHARACTER_IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $THEY_IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ CHARACTER_IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $THEY_IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+
+ CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] at [war|E] with [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
+ CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT: "@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
+ CHANGE_IMPRISONER_VASSAL_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat] [vassal|E]#!"
+ CHANGE_IMPRISONER_HEAD_OF_FAITH_TOOLTIP_EFFECT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat] [head_of_faith|E]#!"
+
+ IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT: "@portrait_punishment_icon! #weak Crime — Allows [CHARACTER.GetShortUIName] to rightfully imprison [TARGET_CHARACTER.GetShortUIName]#!"
+ IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT_WAR: "@portrait_punishment_icon! #weak War — Allows [CHARACTER.GetShortUIName] to justfiably imprison [TARGET_CHARACTER.GetShortUIName]#!"

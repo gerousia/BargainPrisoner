@@ -1,13 +1,30 @@
 ﻿##############################
+## BM1 scripted_effects list
+##############################
+
+# effects:
+## set_travel_target_effect 								- Assigns character a travel_target (character) variable for internal location reference.			
+## set_travel_target_destination_effect						- Assigns character a travel_target_destination (location) variable for internal location reference.
+## set_travel_target_destination_home_effect				- Determines character home_court and assigns as travel_target_destination (location) variable for internal location reference.
+## set_travel_companion_effect								- Assigns character a travel_companion (character) variable for internal character reference.
+## remove_travel_variables_effect							- Removes any existing travel-related variables: travel_target travel_target_destination travel_companion.
+## start_travel_home_depart_effect							- Determines character home_court (location) then initiates start_travel_plan towards it.
+ 
+# variable-list:
+## travel_target (character)
+## travel_target_destination (location)
+## travel_companion (character)
+
+##############################
 ## BM1 scripted_effects
 ##############################
 
-# variable-list:
-## travel_target
-## travel_target_destination
-## travel_companion
+#------------------------------
+# travel-related
+#------------------------------
 
-set_travel_target_variable_effect = {
+# TARGET (character)
+set_travel_target_effect = {
 	hidden_effect = {
 		set_variable = { 
 			name = travel_target
@@ -21,15 +38,16 @@ set_travel_target_variable_effect = {
 					exists = capital_province
 				}
 			}
-			set_travel_target_destination_variable_effect = { TARGET = $TARGET$.capital_province }
+			set_travel_target_destination_effect = { TARGET = $TARGET$.capital_province }
 		}
 		else = {
-			set_travel_target_destination_variable_effect = { TARGET = $TARGET$.location }
+			set_travel_target_destination_effect = { TARGET = $TARGET$.location }
 		}
 	}
 }
 
-set_travel_target_destination_variable_effect = {
+# TARGET (character)
+set_travel_target_destination_effect = {
 	hidden_effect = {
 		set_variable = { 
 			name = travel_target_destination
@@ -45,7 +63,7 @@ set_travel_target_destination_home_effect = {
 			limit = { is_imprisoned = yes }
 			if = {
 				limit = { NOT = { location = imprisoner.capital_province } }
-				set_travel_target_destination_variable_effect = { TARGET = imprisoner.capital_province }
+				set_travel_target_destination_effect = { TARGET = imprisoner.capital_province }
 			}
 		}
 		## If Not Imprisoned.
@@ -56,7 +74,7 @@ set_travel_target_destination_home_effect = {
 					is_landed = yes
 					exists = capital_province
 				}
-				set_travel_target_destination_variable_effect = { TARGET = capital_province }
+				set_travel_target_destination_effect = { TARGET = capital_province }
 			}
 			### Else Liege Home Court.
 			else_if = {
@@ -67,7 +85,7 @@ set_travel_target_destination_home_effect = {
 						exists = capital_province
 					}
 				}
-				set_travel_target_destination_variable_effect = { TARGET = liege.capital_province }
+				set_travel_target_destination_effect = { TARGET = liege.capital_province }
 			}
 			### Else Liege Current Location.
 			else_if = {
@@ -77,7 +95,7 @@ set_travel_target_destination_home_effect = {
 						exists = location
 					}
 				}
-				set_travel_target_destination_variable_effect = { TARGET = liege.location }
+				set_travel_target_destination_effect = { TARGET = liege.location }
 			}
 			### Else Family Member Home Court.
 			else_if = {
@@ -92,41 +110,36 @@ set_travel_target_destination_home_effect = {
 						is_alive = yes
 						is_landed = yes
 					}
-					root = { set_travel_target_destination_variable_effect = { TARGET = this.capital_province } }
+					root = { set_travel_target_destination_effect = { TARGET = this.capital_province } }
 				}
 			}
 			### Else Stay Put.
 			else = { 
-				set_travel_target_destination_variable_effect = { TARGET = location } 
+				set_travel_target_destination_effect = { TARGET = location } 
 			}
 		}
 	}
 }
 
-# ACTOR = character
-# TARGET = character
+# ACTOR (character)
+# TARGET (character)
 set_travel_companion_effect = {
 	hidden_effect = {
-		$TARGET$ ?= {
-			## Remove any existing travel companions of $TARGET$.
-			if = {
-				limit = { has_travel_companion = yes }
-				var:travel_companion = { remove_variable = travel_companion }
-			}
-			set_variable = { 
+		this = {
+			set_variable = {
 				name = travel_companion
-				value = $ACTOR$
+				value = $WITH$
+				years = 4
 			}
 		}
-		$ACTOR$ = {
-			set_variable = { 
+		$WITH$ ?= {
+			set_variable = {
 				name = travel_companion
-				value = $TARGET$
+				value = prev
+				years = 4
 			}
 		}
 	}
-	debug_log = "GM1: set_travel_companion_effect"
-	debug_log_scopes = yes
 }
 
 remove_travel_variables_effect = {
@@ -149,11 +162,14 @@ remove_travel_variables_effect = {
 start_travel_home_depart_effect = {
 	hidden_effect = {
 		set_travel_target_destination_home_effect = yes
-	}
-	start_travel_plan = {
-		destination = var:travel_target_destination
-		on_arrival_on_action = on_travel_arrive
-		on_arrival_destinations = last
-		return_trip = no
+		var:travel_target_destination ?= { 
+			save_temporary_scope_as = home_court 
+		}
+		start_travel_plan = {
+			destination = scope:home_court
+			on_arrival_on_action = on_travel_arrive
+			on_arrival_destinations = last
+			return_trip = no
+		}
 	}
 }
