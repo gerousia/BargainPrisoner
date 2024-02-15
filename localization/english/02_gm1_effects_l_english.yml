@@ -37,5 +37,7 @@ l_english:
  CHANGE_IMPRISONER_VASSAL_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat] [vassal|E]#!"
  CHANGE_IMPRISONER_HEAD_OF_FAITH_TOOLTIP_EFFECT: "@warning_icon! #X [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat] [head_of_faith|E]#!"
 
- IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT: "@portrait_punishment_icon! #weak Crime — Allows [CHARACTER.GetShortUIName] to rightfully imprison [TARGET_CHARACTER.GetShortUIName]#!"
- IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT_WAR: "@portrait_punishment_icon! #weak War — Allows [CHARACTER.GetShortUIName] to justfiably imprison [TARGET_CHARACTER.GetShortUIName]#!"
+ IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT: "@portrait_punishment_icon! #weak Crime — Rightful imprisonment#!"
+ IS_ALLOWED_TO_CHANGE_IMPRISONER_TOOLTIP_EFFECT_WAR: "@portrait_punishment_icon! #weak War — Rightful imprisonment#!"
+
+ all_war_allies: "[THIS.GetCharacter.GetShortUINamePossessive|U] Allies in [war|E]"
