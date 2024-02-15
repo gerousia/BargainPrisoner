@@ -1,0 +1,113 @@
+﻿##############################
+## GM1 events on_action
+##############################
+
+on_death = {
+	on_actions = { on_death_invalidate_transfer_prisoner_interaction }
+}
+
+on_death_invalidate_transfer_prisoner_interaction = {
+	effect = {
+		## Transfer Prisoner Interaction Invalidation 
+		### Escort Died
+		if = {
+			limit = { exists = var:travel_companion }
+			var:travel_companion = {
+				trigger_event = {
+					on_action = escape_from_prison_transfer
+				}
+				trigger_event = gm1_interaction.0500
+			}
+		}
+		
+		## Transfer Prisoner Interaction Invalidation 
+		### Prisoner Died
+		if = {
+			limit = { 
+				exists = var:under_transfer_prisoner_interaction_with 
+				exists = var:travel_escort
+			}
+			save_temporary_scope_as = prisoner
+
+			var:old_imprisoner = {
+				save_temporary_scope_as = sender
+			}
+
+			var:new_imprisoner = {
+				save_temporary_scope_as = receiver
+
+				add_opinion = {
+					modifier = failed_transfer_prisoner
+					target = scope:sender
+				}
+			}
+
+			var:travel_escort = {
+				save_temporary_scope_as = escort
+
+				current_travel_plan ?= {
+					cancel_travel_plan = yes
+				}
+			}
+
+			scope:sender = {
+				send_interface_toast = {
+					title = transfer_prisoner_interaction_invalidated_toast
+					left_icon = scope:prisoner
+					right_icon = scope:receiver
+	
+					show_as_tooltip = {
+						scope:prisoner= {
+							death = { death_reason = death_vanished }
+						} 
+					}
+				}
+			}
+	
+			scope:receiver = {
+				send_interface_toast = {
+					title = transfer_prisoner_interaction_invalidated_toast
+					left_icon = scope:prisoner
+					right_icon = scope:sender
+	
+					show_as_tooltip = {
+						scope:prisoner= {
+							death = { death_reason = death_vanished }
+						} 
+					}
+				}
+			}
+		}
+	}
+}
+
+######################
+
+on_invalidate_transfer_prisoner_interaction = {
+	events = {
+		gm1_interaction.0501 # flag:prisoner
+		gm1_interaction.0502 # flag:sender
+		gm1_interaction.0503 # flag:receiver
+		gm1_interaction.0504 # flag:escort
+	}
+}
+
+escape_from_prison_transfer = {
+	events = {
+		gm1_system.0001 # You attempt escape.
+	}
+}
+
+escape_from_prison_transfer_success = {
+	random_events = {
+		1 = gm1_system.0501 # You escaped!
+		100 = gm1_system.0502 # Your escort is dead!
+	}
+}
+
+escape_from_prison_transfer_failure = {
+	random_events = {
+		1 = gm1_system.1001 # You got caught!
+		100 = gm1_system.1002 # You got hurt!
+	}
+}

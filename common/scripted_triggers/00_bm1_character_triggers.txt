@@ -8,15 +8,8 @@
 # is_head_of_faith_of
 # is_being_tortured
 #
-# has_interaction_type
 # has_invalidate_interaction_reason_type
 # already_under_ongoing_interaction
-# already_under_ongoing_interaction_with
-#
-# has_travel_companion
-# has_travel_target
-# is_traveling_towards
-# is_traveling_towards_location
 
 has_requested_excommunication_by = {
 	exists = var:requested_my_excommunication
@@ -35,75 +28,5 @@ is_being_tortured = {
 	custom_description = {
 		text = "currently_being_tortured"
 		has_character_flag = is_being_tortured
-	}
-}
-
-#------------------------------
-# interaction-related
-#------------------------------
-
-# TYPE (flag)
-has_interaction_type = {
-	exists = var:under_interaction
-	var:under_interaction = $TYPE$ 
-}
-
-# TYPE (flag)
-has_invalidate_interaction_reason_type = {
-	exists = var:under_interaction # flag
-	exists = var:invalidate_interaction_reason # flag
-	var:invalidate_interaction_reason = $TYPE$
-}
-
-already_under_ongoing_interaction = {
-	custom_description = {
-		text = "already_under_ongoing_interaction_trigger"
-		OR = {
-			exists = var:under_interaction # flag
-			exists = var:under_interaction_with # character
-		}
-	}
-}
-
-# WHO (character)
-already_under_ongoing_interaction_with = {
-	custom_description = {
-		text = "already_under_ongoing_interaction_with_trigger"
-		object = $WHO$
-		exists = var:under_interaction_with
-		var:under_interaction_with = $WHO$
-	}
-}
-
-#------------------------------
-# travel-related
-#------------------------------
-
-has_travel_companion = {
-	exists = var:travel_companion # character
-}
-
-has_travel_target = {
-	OR = {
-		exists = var:travel_target # character
-		exists = var:travel_target_destination # location
-	}
-}
-
-# WHO (character)
-is_traveling_towards = {
-	custom_description = {
-		text = "is_traveling_towards_trigger"
-		object = $WHO$
-		var:travel_target = $WHO$
-	}
-}
-
-# DESTINATION (location)
-is_traveling_towards_location = {
-	custom_description = {
-		text = "is_traveling_towards_location_trigger"
-		object = $DESTINATION$
-		var:travel_target_destination = $DESTINATION$
 	}
 }

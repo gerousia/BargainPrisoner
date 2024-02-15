@@ -1,69 +1,45 @@
 ﻿##############################
-## BM1 scripted_effects list
-##############################
-
-# effects:
-## set_travel_target_effect 								- Assigns character a travel_target (character) variable for internal location reference.			
-## set_travel_target_destination_effect						- Assigns character a travel_target_destination (location) variable for internal location reference.
-## set_travel_target_destination_home_effect				- Determines character home_court and assigns as travel_target_destination (location) variable for internal location reference.
-## set_travel_companion_effect								- Assigns character a travel_companion (character) variable for internal character reference.
-## remove_travel_variables_effect							- Removes any existing travel-related variables: travel_target travel_target_destination travel_companion.
-## start_travel_home_depart_effect							- Determines character home_court (location) then initiates start_travel_plan towards it.
- 
-# variable-list:
-## travel_target (character)
-## travel_target_destination (location)
-## travel_companion (character)
-
-##############################
 ## BM1 scripted_effects
 ##############################
+#------------------------------
+# list
+#------------------------------
+# set_target_destination_effect
+# set_home_destination_effect
 
 #------------------------------
 # travel-related
 #------------------------------
 
 # TARGET (character)
-set_travel_target_effect = {
+# SCOPE_NAME (string)
+set_target_destination_effect = {
 	hidden_effect = {
-		set_variable = { 
-			name = travel_target
-			value = $TARGET$
-		}
-		if = {
-			limit = { 
-				$TARGET$ = {
+		$TARGET$ = {
+			if = {
+				limit = { 
 					is_alive = yes
 					is_landed = yes
 					exists = capital_province
 				}
+				$TARGET$.capital_province = { save_scope_as = $SCOPE_NAME$ }
 			}
-			set_travel_target_destination_effect = { TARGET = $TARGET$.capital_province }
-		}
-		else = {
-			set_travel_target_destination_effect = { TARGET = $TARGET$.location }
-		}
-	}
-}
-
-# TARGET (character)
-set_travel_target_destination_effect = {
-	hidden_effect = {
-		set_variable = { 
-			name = travel_target_destination
-			value = $TARGET$
+			else = {
+				$TARGET$.location = { save_scope_as = $SCOPE_NAME$ }
+			}
 		}
 	}
 }
 
-set_travel_target_destination_home_effect = {
+# SCOPE_NAME (string)
+set_home_destination_effect = {
 		hidden_effect = {	
 		## If Imprisoned.
 		if = {
 			limit = { is_imprisoned = yes }
 			if = {
 				limit = { NOT = { location = imprisoner.capital_province } }
-				set_travel_target_destination_effect = { TARGET = imprisoner.capital_province }
+				imprisoner.capital_province = { save_scope_as = $SCOPE_NAME$ } 
 			}
 		}
 		## If Not Imprisoned.
@@ -74,7 +50,7 @@ set_travel_target_destination_home_effect = {
 					is_landed = yes
 					exists = capital_province
 				}
-				set_travel_target_destination_effect = { TARGET = capital_province }
+				capital_province = { save_scope_as = $SCOPE_NAME$ } 
 			}
 			### Else Liege Home Court.
 			else_if = {
@@ -85,7 +61,7 @@ set_travel_target_destination_home_effect = {
 						exists = capital_province
 					}
 				}
-				set_travel_target_destination_effect = { TARGET = liege.capital_province }
+				liege.capital_province = { save_scope_as = $SCOPE_NAME$ } 
 			}
 			### Else Liege Current Location.
 			else_if = {
@@ -95,7 +71,7 @@ set_travel_target_destination_home_effect = {
 						exists = location
 					}
 				}
-				set_travel_target_destination_effect = { TARGET = liege.location }
+				liege.location = { save_scope_as = $SCOPE_NAME$ } 
 			}
 			### Else Family Member Home Court.
 			else_if = {
@@ -110,66 +86,13 @@ set_travel_target_destination_home_effect = {
 						is_alive = yes
 						is_landed = yes
 					}
-					root = { set_travel_target_destination_effect = { TARGET = this.capital_province } }
+					capital_province = { save_scope_as = $SCOPE_NAME$ } 
 				}
 			}
 			### Else Stay Put.
 			else = { 
-				set_travel_target_destination_effect = { TARGET = location } 
+				location = { save_scope_as = $SCOPE_NAME$ }  
 			}
-		}
-	}
-}
-
-# ACTOR (character)
-# TARGET (character)
-set_travel_companion_effect = {
-	hidden_effect = {
-		this = {
-			set_variable = {
-				name = travel_companion
-				value = $WITH$
-				years = 4
-			}
-		}
-		$WITH$ ?= {
-			set_variable = {
-				name = travel_companion
-				value = prev
-				years = 4
-			}
-		}
-	}
-}
-
-remove_travel_variables_effect = {
-	hidden_effect = {
-		if = {
-			limit = { exists = var:travel_target }
-			remove_variable = travel_target
-		}
-		if = {
-			limit = { exists = var:travel_target_destination }
-			remove_variable = travel_target_destination
-		}
-		if = {
-			limit = { exists = var:travel_companion }
-			remove_variable = travel_companion
-		}
-	}
-}
-
-start_travel_home_depart_effect = {
-	hidden_effect = {
-		set_travel_target_destination_home_effect = yes
-		var:travel_target_destination ?= { 
-			save_temporary_scope_as = home_court 
-		}
-		start_travel_plan = {
-			destination = scope:home_court
-			on_arrival_on_action = on_travel_arrive
-			on_arrival_destinations = last
-			return_trip = no
 		}
 	}
 }

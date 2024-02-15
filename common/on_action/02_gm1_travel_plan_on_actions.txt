@@ -1,90 +1,95 @@
 ﻿##############################
-## GM1 travel_plan on_actions
+## GM1 on_action
 ##############################
 
-# gm1_prisoner_depart_effect 
-## on_start_on_action
-on_prisoner_depart = {
+# on_start_on_action
+on_transfer_prisoner_company_depart = {
 	effect = {
-		var:travel_companion = {
-			save_temporary_scope_as = travel_companion
-		}
-		# Only the prisoner and their travel_companion is allowed in this travel plan.
-		current_travel_plan ?= {
-			set_travel_leader = scope:travel_companion
-			every_entourage_character = { 
-				limit = { NOT = { exists = var:travel_companion	} }
-				#remove_character = this
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			## Hacky way to add characters to an entourage for unlanded travel planners.
+			### Works for only 1 character.
+			if = { 
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					save_temporary_scope_as = temporary_companion
+				}
+				current_travel_plan ?= {
+					set_travel_leader = scope:temporary_companion
+				}
 			}
 		}
-		debug_log = "GM1: Set Travel Leader."
-		debug_log_scopes = yes
 	}
 }
 
-# gm1_prisoner_depart_effect
-## on_travel_planner_cancel_on_action
-on_prisoner_depart_travel_planner_exit = {
+# on_travel_planner_cancel_on_action                  
+on_transfer_prisoner_company_depart_travel_planner_exit = {
 	effect = {
-		gm1_prisoner_travel_invalidated_effect = yes
-		debug_log = "GM1: Travel Cancelled."
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			set_home_destination_effect = { SCOPE_NAME = home_court }
+			start_travel_plan = {
+				destination = scope:home_court
+				on_start_on_action = on_transfer_prisoner_company_depart
+				on_arrival_on_action = on_transfer_prisoner_company_arrive_remove_variables
+				on_arrival_destinations = last
+				return_trip = no
+			}
+		}
 	}
 }
 
-# gm1_prisoner_depart_effect
-## on_arrival_on_action
-on_prisoner_arrive = {
+# on_arrival_on_action
+on_transfer_prisoner_company_arrive = {
 	effect = {
-		## Validation Check.
-		gm1_invalidate_offer_prisoner_interaction_effect = yes
-		
-		## Invalidate.
-		if = {
-			limit = { exists = var:invalidate_interaction }
-			## Fire Toast Notifications.
-			trigger_event = gm1_interaction.0500
-			## Travel to...
-			set_travel_target_destination_home_effect = yes
-			### Prisoner didn't escape- to imprisoner court.
+		save_temporary_scope_as = escort
+
+		scope:escort = {
 			if = {
-				limit = { is_imprisoned = yes }
-				start_travel_plan = {
-					players_use_planner = no
-					destination = var:travel_target_destination
-					on_start_on_action = on_prisoner_depart
-					on_arrival_destinations = last
-					return_trip = no
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					save_temporary_scope_as = prisoner
+	
+					trigger_event = gm1_interaction.0500 # Determine if invalidated
+
+					if = {
+						limit = { NOT = { exists = var:invalidate_reason } }
+						change_imprisoner_character_effect = { 
+							TARGET = scope:prisoner
+							IMPRISONER = scope:prisoner.var:old_imprisoner
+							NEW_IMPRISONER = scope:prisoner.var:new_imprisoner
+						}
+						transfer_prisoner_interaction_bargain_effect = {
+							PRISONER = scope:prisoner
+							SENDER = scope:prisoner.var:old_imprisoner
+							RECEIVER = scope:prisoner.var:new_imprisoner
+						}
+						trigger_event = gm1_interaction.0100 # Notification Event
+					}
 				}
 			}
-			### Prisoner escaped- to home court.
-			else = {
-				start_travel_plan = {
-					players_use_planner = no
-					destination = var:travel_target_destination
-					on_arrival_destinations = last
-					return_trip = no
+			trigger_event = {
+				on_action = on_transfer_prisoner_company_arrive_remove_variables
+			}
+		}
+	}
+}
+
+# on_arrival_on_action
+on_transfer_prisoner_company_arrive_remove_variables = {
+	effect = {
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			if = {
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					remove_all_transfer_prisoner_company_variables_effect = yes
 				}
 			}
-			## Remove flags/variables related to the companion.
-			var:travel_companion ?= { remove_travel_variables_effect = yes }
+			remove_all_transfer_prisoner_company_variables_effect = yes
 		}
-		## But If everything goes well...
-		else = {
-			var:next_imprisoner = {
-				#trigger_event = { 
-				#	id = tp_prisoner_system.0001
-				#	days = 1 
-				#}
-			}
-			### If the prisoner's companion is still around, let them travel back to their liege.
-			var:travel_companion ?= { start_travel_home_depart_effect = yes }
-		}
-		## Remove flags/variables related to the prisoners.
-		remove_travel_variables_effect = yes 
-		remove_prisoner_variables_effect = yes
-		## Opinion Modifiers/Events related to prisoner transfer below
-		# - - - - -
-		debug_log = "GM1: Prisoner Arrived at Target."
-		debug_log_scopes = yes
 	}
 }
