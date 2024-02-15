@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -372,6 +372,15 @@ offer_prisoner_interaction = {
 		scope:actor = {
 			trigger_event = gm1_interaction.0012 
 		}
+
+		## Prevent concurrencies
+		scope:secondary_actor = {
+			if = {
+				limit = { has_character_flag = under_transfer_prisoner_interaction  }
+				remove_character_flag = under_transfer_prisoner_interaction
+			}
+		}
+	
 	}
 
 	ai_targets = {
@@ -1226,6 +1235,14 @@ demand_prisoner_interaction = {
 		## Notification Event.
 		scope:actor = {
 			trigger_event = gm1_interaction.0022 
+		}
+
+		## Prevent concurrencies
+		scope:secondary_recipient = {
+			if = {
+				limit = { has_character_flag = under_transfer_prisoner_interaction }
+				remove_character_flag = under_transfer_prisoner_interaction
+			}
 		}
 	}
 

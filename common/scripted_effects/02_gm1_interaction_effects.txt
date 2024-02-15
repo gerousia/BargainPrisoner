@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -294,6 +294,12 @@ transfer_prisoner_interaction_bargain_effect = {
 					type = favor_hook
 				}
 			}
+		}
+	}
+	$PRISONER$ = {
+		if = {
+			limit = { has_character_flag = under_transfer_prisoner_interaction }
+			remove_character_flag = under_transfer_prisoner_interaction
 		}
 	}
 }
