@@ -116,7 +116,7 @@ interaction_tier_check_value = {
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost
 barter_cost = {
 	value = ransom_cost
-	multiply = 0.8 # Make it worth slightly less than ransoming
+	multiply = 0.8 # Make it worth less than ransoming
 }
 
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost_value
@@ -126,9 +126,8 @@ barter_cost_value = {
 	# FP2 DLC - Some cultures are better at ransoming than others.
 	if = {
 		limit = {
-			imprisoner ?= {
-				culture = { has_cultural_parameter = can_demand_higher_ransoms_from_lower_tiers }
-			}
+			exists = imprisoner
+			imprisoner.culture = { has_cultural_parameter = can_demand_higher_ransoms_from_lower_tiers }
 			# Kings and emperors are already worth more, so we just boost landless and ducal-tier or below.
 			OR = {
 				NOT = { exists = liege }
@@ -150,7 +149,7 @@ slightly_increased_barter_cost_value = {
 increased_barter_cost_value = {
 	value = {
 		add = barter_cost_value
-		multiply = 1.5
+		multiply = 2
 	}
 }
 
