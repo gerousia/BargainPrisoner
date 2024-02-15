@@ -4,19 +4,12 @@
 
 l_english:
  
- RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Releases [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial Released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- I_RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial You release [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- I_RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial You released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- CHARACTER_RELEASE_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [CHARACTER.GetShortUIName] releases [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- CHARACTER_RELEASED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [CHARACTER.GetShortUIName] released [TARGET_CHARACTER.GetShortUIName]#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
-
- ESCAPE_TOOLTIP_EFFECT: "Escapes [prison|E]"
- ESCAPED_TOOLTIP_EFFECT: "Escaped [prison|E]"
- I_ESCAPE_TOOLTIP_EFFECT: "You escape [prison|E]"
- I_ESCAPED_TOOLTIP_EFFECT: "You escaped [prison|E]"
- CHARACTER_ESCAPE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escapes [prison|E]"
- CHARACTER_ESCAPED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escaped [prison|E]"
+ RELEASE_TOOLTIP_EFFECT: "Releases [TARGET_CHARACTER.GetShortUIName]#!"
+ RELEASED_TOOLTIP_EFFECT: "Released [TARGET_CHARACTER.GetShortUIName]#!"
+ I_RELEASE_TOOLTIP_EFFECT: "You release [TARGET_CHARACTER.GetShortUIName]#!"
+ I_RELEASED_TOOLTIP_EFFECT: "You released [TARGET_CHARACTER.GetShortUIName]#!"
+ CHARACTER_RELEASE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] releases [TARGET_CHARACTER.GetShortUIName]#!"
+ CHARACTER_RELEASED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] released [TARGET_CHARACTER.GetShortUIName]#!"
 
  MOVE_TOOLTIP_EFFECT: "Moves [prison|E]"
  MOVED_TOOLTIP_EFFECT: "Moved [prison|E]"
@@ -25,12 +18,12 @@ l_english:
  CHARACTER_MOVE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] moves [prison|E]"
  CHARACTER_MOVED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] moved [prison|E]"
 
- IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- I_IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $I_IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- I_IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $I_IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- CHARACTER_IMPRISON_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $THEY_IMPRISON_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
- CHARACTER_IMPRISONED_TOOLTIP_EFFECT: "@alert_icon! #alert_trial $THEY_IMPRISONED_EFFECT$#! #weak — Must first [travel|E] to [ruler|E]#E 's#! court#!"
+ IMPRISON_TOOLTIP_EFFECT: "$IMPRISON_EFFECT$#!"
+ IMPRISONED_TOOLTIP_EFFECT: "$IMPRISONED_EFFECT$#!"
+ I_IMPRISON_TOOLTIP_EFFECT: "$I_IMPRISON_EFFECT$#!"
+ I_IMPRISONED_TOOLTIP_EFFECT: "$I_IMPRISONED_EFFECT$#!"
+ CHARACTER_IMPRISON_TOOLTIP_EFFECT: "$THEY_IMPRISON_EFFECT$#!"
+ CHARACTER_IMPRISONED_TOOLTIP_EFFECT: "$THEY_IMPRISONED_EFFECT$#!"
 
  CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] at [war|E] with [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
  CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT: "@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
