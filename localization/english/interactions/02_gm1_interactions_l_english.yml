@@ -11,7 +11,8 @@ l_english:
 # INTERACTION
 ## offer_prisoner_interaction
  offer_prisoner_interaction: "Offer Prisoner"
- offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] one of your [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\nConcedes any [imprisonment|E] reasons against the prisoner."
+ offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] one of your [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\n$offer_prisoner_interaction_desc_1$"
+ offer_prisoner_interaction_desc_1: "Concedes any [imprisonment|E] reasons against the prisoner."
  offer_prisoner_interaction_notification: "Offered Prisoner"
  offer_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  actor_secondary_offer_prisoner_interaction: "[prisoner|E]"
@@ -20,7 +21,8 @@ l_english:
 
 ## demand_prisoner_interaction
  demand_prisoner_interaction: "Demand Prisoner"
- demand_prisoner_interaction_desc: "Demand [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\nForce demand [direct_vassals|E] for [prisoners|E]."
+ demand_prisoner_interaction_desc: "Demand [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\n$demand_prisoner_interaction_desc_1$"
+ demand_prisoner_interaction_desc_1: "Will enforce demand [prisoners|E] from [direct_vassals|E]."
  demand_prisoner_interaction_notification: "Demanded Prisoner"
  demand_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  recipient_secondary_demand_prisoner_interaction: "[prisoner|E]"
