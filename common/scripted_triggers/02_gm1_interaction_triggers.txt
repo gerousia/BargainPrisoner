@@ -27,11 +27,17 @@ gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
 		PRISONER = this
 		REGENT = this.var:imprisoned_by_diarch
 	}
+}
+
+gm1_valid_for_transfer_prisoner_interaction_trigger = {
 	## Must not be under any ongoing interaction.
-	already_under_ongoing_interaction = no
+	custom_description = {
+		text = "already_under_ongoing_transfer_prisoner_interaction_trigger"
+		NOT = { exists = var:under_transfer_prisoner_interaction_with }
+	}
 	## Must be at imprisoner capital.
 	custom_description = {
-		text = "is_at_imprisoner_capital"
+		text = "is_at_capital_prison_trigger"
 		object = imprisoner
 		is_at_location = imprisoner.capital_province
 	}
