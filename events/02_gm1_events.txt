@@ -159,7 +159,7 @@ gm1_interaction.0026 = {
 				
 				show_as_tooltip = {
 					receive_prisoner = {
-						RECEIVER = scope:recipient
+						RECEIVER = scope:actor
 						PRISONER = scope:secondary_recipient
 					}
 
@@ -182,7 +182,7 @@ gm1_interaction.0026 = {
 					
 					show_as_tooltip = {
 						receive_prisoner = {
-							RECEIVER = scope:recipient
+							RECEIVER = scope:actor
 							PRISONER = scope:secondary_recipient
 						}
 
@@ -204,7 +204,7 @@ gm1_interaction.0026 = {
 					
 					show_as_tooltip = {
 						receive_prisoner = {
-							RECEIVER = scope:recipient
+							RECEIVER = scope:actor
 							PRISONER = scope:secondary_recipient
 						}
 					}
