@@ -1,0 +1,32 @@
+﻿##############################
+## BM1 scripted_triggers
+##############################
+#------------------------------
+# list
+#------------------------------
+# has_requested_excommunication_by
+# is_head_of_faith_of
+# is_being_tortured
+#
+# has_invalidate_interaction_reason_type
+# already_under_ongoing_interaction
+
+has_requested_excommunication_by = {
+	exists = var:requested_my_excommunication
+	var:requested_my_excommunication = $WHO$
+}
+
+# WHO (character)
+is_head_of_faith_of = {
+	$WHO$ = {
+		exists = faith.religious_head
+		faith.religious_head = prev
+	}
+}
+
+is_being_tortured = {
+	custom_description = {
+		text = "currently_being_tortured"
+		has_character_flag = is_being_tortured
+	}
+}

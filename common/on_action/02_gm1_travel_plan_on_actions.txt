@@ -1,0 +1,95 @@
+﻿##############################
+## GM1 on_action
+##############################
+
+# on_start_on_action
+on_transfer_prisoner_company_depart = {
+	effect = {
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			## Hacky way to add characters to an entourage for unlanded travel planners.
+			### Works for only 1 character.
+			if = { 
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					save_temporary_scope_as = temporary_companion
+				}
+				current_travel_plan ?= {
+					set_travel_leader = scope:temporary_companion
+				}
+			}
+		}
+	}
+}
+
+# on_travel_planner_cancel_on_action                  
+on_transfer_prisoner_company_depart_travel_planner_exit = {
+	effect = {
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			set_home_destination_effect = { SCOPE_NAME = home_court }
+			start_travel_plan = {
+				destination = scope:home_court
+				on_start_on_action = on_transfer_prisoner_company_depart
+				on_arrival_on_action = on_transfer_prisoner_company_arrive_remove_variables
+				on_arrival_destinations = last
+				return_trip = no
+			}
+		}
+	}
+}
+
+# on_arrival_on_action
+on_transfer_prisoner_company_arrive = {
+	effect = {
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			if = {
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					save_temporary_scope_as = prisoner
+	
+					trigger_event = gm1_interaction.0500 # Determine if invalidated
+
+					if = {
+						limit = { NOT = { exists = var:invalidate_reason } }
+						change_imprisoner_character_effect = { 
+							TARGET = scope:prisoner
+							IMPRISONER = scope:prisoner.var:old_imprisoner
+							NEW_IMPRISONER = scope:prisoner.var:new_imprisoner
+						}
+						transfer_prisoner_interaction_bargain_effect = {
+							PRISONER = scope:prisoner
+							SENDER = scope:prisoner.var:old_imprisoner
+							RECEIVER = scope:prisoner.var:new_imprisoner
+						}
+						trigger_event = gm1_interaction.0100 # Notification Event
+					}
+				}
+			}
+			trigger_event = {
+				on_action = on_transfer_prisoner_company_arrive_remove_variables
+			}
+		}
+	}
+}
+
+# on_arrival_on_action
+on_transfer_prisoner_company_arrive_remove_variables = {
+	effect = {
+		save_temporary_scope_as = escort
+
+		scope:escort = {
+			if = {
+				limit = { exists = var:travel_companion }
+				var:travel_companion = {
+					remove_all_transfer_prisoner_company_variables_effect = yes
+				}
+			}
+			remove_all_transfer_prisoner_company_variables_effect = yes
+		}
+	}
+}
