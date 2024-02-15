@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 interactions
 ##############################
 
@@ -28,29 +28,6 @@ l_english:
  recipient_secondary_demand_prisoner_interaction: "[prisoner|E]"
  DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I must demand you send your [prisoner|E], [secondary_recipient.GetTitledFirstName], to my court as my own [prisoner|E]."
  DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
-
-## exchange_prisoner_interaction
- exchange_prisoner_interaction: "Exchange Prisoner"
- exchange_prisoner_interaction_desc: "Bargain [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for one of your own [prisoners|E]."
- exchange_prisoner_interaction_notification: "Exchange Prisoner"
- exchange_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
- actor_secondary_exchange_prisoner_interaction: "Your [prisoner|E]"
- recipient_secondary_exchange_prisoner_interaction: "Their [prisoner|E]"
- EXCHANGE_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I propose we exchange my [prisoner|E], [secondary_actor.GetTitledFirstName], and your [prisoner|E], [secondary_recipient.GetTitledFirstName], as part of a bargain."
- EXCHANGE_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to exchange" 
-
-# IMPORTANT ACTIONS
- #action_can_offer_prisoner: "@hostage! You can Offer a Prisoner"
- #action_can_offer_prisoner_label: "@hostage! You can Offer a Prisoner to [recipient.GetUINameNoTooltip]"
- #action_can_offer_prisoner_desc: "[recipient.GetUINameNoTooltip] would accept your Offer of a [prisoner|E].\n\n$hostage_benefit_tt$"
- #action_can_offer_prisoner_click: "#I Click to find a suitable [prisoner|E]#!"
- #action_can_offer_prisoner_combined_group_name: "@hostage! You can Offer a Prisoner"
- #action_can_offer_prisoner_combined_group_label: "@hostage! You can Offer Prisoners"
- #action_can_offer_prisoner_combined_group_description: "Several neighboring [rulers|E], fellow [vassals|E], or [powerful_vassals|E] would accept your Offer of a [prisoner|E].\n\n$hostage_benefit_tt$"
- #action_can_offer_prisoner_combined_label: "[recipient.GetUINameNoTooltip]"
- #action_can_offer_prisoner_combined_unimportant: "@warning_icon! #X Potential targets have no [casus_bellis|E] against you or already have a [truce|E]#!"
- #action_can_offer_prisoner_unimportant: "@warning_icon! #X [recipient.GetShortUIName] has no [casus_bellis|E] against you or already have a [truce|E]#!"
- #hostage_benefit_tt: "#help Hostages may deter or neutralize threats, allowing you to focus your attention elsewhere, and grant monthly [prestige_i|E][prestige|E] to the [warden|E].#!"
 
 # AI REASONS
  INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
