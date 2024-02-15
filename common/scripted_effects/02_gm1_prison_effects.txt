@@ -10,7 +10,6 @@
 # change_imprisoner_war_opinion_effect
 # change_imprisoner_vassal_effect
 # change_imprisoner_head_of_faith_effect
-# change_imprisoner_escape_character_effect
 
 # TARGET (character)
 # IMPRISONER (character)
@@ -508,109 +507,6 @@ change_imprisoner_head_of_faith_effect = {
 				add_piety_level = -1
 				add_piety = medium_piety_loss
 			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_prison_effects.txt/escape_from_prison_effect
-## TARGET (character)
-## NEW_IMPRISONER (character)
-change_imprisoner_escape_character_effect = {
-	$TARGET$.imprisoner = {
-		if = {
-			limit = {
-				OR = {
-					has_revoke_title_reason = $TARGET$
-					has_banish_reason = $TARGET$
-					has_execute_reason = $TARGET$
-				}
-			}
-			add_opinion = {
-				target = $TARGET$
-				modifier = escaped_from_prison_crime
-			}
-		}
-		else = {
-			add_opinion = {
-				target = $TARGET$
-				modifier = escaped_from_prison_opinion
-			}
-		}
-	}
-
-	$NEW_IMPRISONER$ = {
-		if = {
-			limit = {
-				OR = {
-					has_revoke_title_reason = $TARGET$
-					has_banish_reason = $TARGET$
-					has_execute_reason = $TARGET$
-				}
-			}
-			add_opinion = {
-				target = root
-				modifier = escaped_from_prison_crime
-			}
-		}
-		else = {
-			add_opinion = {
-				target = root
-				modifier = escaped_from_prison_opinion
-			}
-		}
-		
-		add_opinion = {
-			target = $TARGET$.imprisoner
-			modifier = failed_transfer_prisoner
-		}
-	}
-
-
-	$TARGET$ = {
-		if = {
-			limit = { is_imprisoned = yes }
-
-			location = {
-				save_scope_as = wilderness_scope
-			}
-
-			create_character_memory = {
-				type = escaped_from_prison_memory
-				
-				participants = {
-					imprisoner = imprisoner
-				}
-			}
-
-			add_character_flag = {
-				flag = escaped_from_prison_flag
-				days = 1
-			}
-	
-			add_character_flag = {
-				flag = block_for_prison_release_notification
-				days = 1
-			}
-
-			custom_description = {
-				text = "escape_tooltip_effect"
-				release_from_prison = yes
-			}
-
-			hidden_effect = {
-				remove_decision_cooldown = escape_from_prison_decision
-			}
-
-			if = {
-				limit = { has_character_modifier = allowed_to_go_outside }
-				remove_character_modifier = allowed_to_go_outside
-			}
-
-			if = {
-				limit = { has_character_modifier = moldy_gruel_diet }
-				remove_character_modifier = moldy_gruel_diet
-			}
-	
 		}
 	}
 }
