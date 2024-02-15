@@ -1,0 +1,616 @@
+﻿##############################
+## GM1 scripted_effects
+##############################
+#------------------------------
+# list
+#------------------------------
+# change_imprisoner_character_effect
+# change_imprisoner_release_character_effect
+# change_imprisoner_imprison_character_effect
+# change_imprisoner_war_opinion_effect
+# change_imprisoner_vassal_effect
+# change_imprisoner_head_of_faith_effect
+# change_imprisoner_escape_character_effect
+
+# TARGET (character)
+# IMPRISONER (character)
+# NEW_IMPRISONER (character)
+change_imprisoner_character_effect = {
+	$TARGET$ = {
+		create_character_memory = {
+			type = change_imprisoner_prisoner_memory
+			participants = {
+				old_imprisoner = $IMPRISONER$
+				new_imprisoner = $NEW_IMPRISONER$
+			}
+		}
+	}
+
+	$IMPRISONER$ = {
+		create_character_memory = {
+			type = change_imprisoner_old_imprisoner_memory
+			participants = {
+				prisoner = $TARGET$
+				new_imprisoner = $NEW_IMPRISONER$
+			}
+		}
+	}
+
+	$NEW_IMPRISONER$ = {
+		create_character_memory = {
+			type = change_imprisoner_new_imprisoner_memory
+			participants = {
+				prisoner = $TARGET$
+				old_imprisoner = $IMPRISONER$
+			}
+		}
+	}
+
+	change_imprisoner_release_character_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $IMPRISONER$
+	}
+
+	change_imprisoner_imprison_character_effect = {
+		TARGET = $TARGET$
+		NEW_IMPRISONER = $NEW_IMPRISONER$
+	}
+
+	$TARGET$ = {
+		## Prisoner's Opinion
+		### They are at risk of rightful execution due to differing faith
+		if = {
+			limit = { NOT = { faith = $NEW_IMPRISONER$.faith } }
+			add_opinion = {
+				target = $IMPRISONER$
+				modifier = transferred_me_different_faith
+			}
+		}
+		### They'd rather not be with their previous imprisoner if they are a PoS
+		else_if = {
+			limit = {
+				NOT = { $NEW_IMPRISONER$ = { is_at_war_with = $TARGET$ } }
+				NOT = { has_any_bad_relationship_with_character_trigger = { CHARACTER = $IMPRISONER$ } }
+				OR = {
+					has_character_modifier = recently_tortured
+					has_character_modifier = recently_blinded
+					has_character_modifier = recently_castrated
+					$IMPRISONER$ = {
+						NOR = { 
+							has_trait = sadistic
+							has_trait = callous
+							has_trait = arbitrary
+							has_trait = wrathful
+							has_trait = vengeful
+							has_trait = deceitful
+						} 
+					}
+				}
+			}
+			add_opinion = {
+				target = $IMPRISONER$
+				modifier = transferred_me
+			}
+		}
+
+		## Prisoner's family member opinion
+		every_close_or_extended_family_member = {
+			limit = { 
+				NOT = { $IMPRISONER$ = this }
+				NOT = { $NEW_IMPRISONER$ = this }
+			}
+			add_to_temporary_list = prisoner_family_list
+		}
+
+		if = {
+			limit = {
+				any_in_list = {
+					list = prisoner_family_list
+					count > 0
+				}
+			}
+			
+			every_in_list = {
+				list = prisoner_family_list
+				custom = all_close_family_and_spouses
+
+				add_opinion = {
+					target = $IMPRISONER$
+					modifier = transferred_family_member
+				}
+
+				if = {
+					limit = { $TARGET$ = { is_in_prison_type = house_arrest } }
+					add_opinion = {
+						target = $NEW_IMPRISONER$
+						modifier = imprisoned_family_member
+					}
+				}
+				else_if = {
+					limit = { $TARGET$ = { is_in_prison_type = dungeon } }
+					add_opinion = {
+						target = $NEW_IMPRISONER$
+						modifier = imprisoned_family_member_dungeon
+					}
+				}
+			}
+		}
+	}
+
+	## Optional Penalties - Enabled Default
+	#if = {
+	#	limit = { NOT = { has_game_rule = change_imprisoner_penalties_enabled } }
+	change_imprisoner_vassal_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $IMPRISONER$
+	}
+
+	change_imprisoner_vassal_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $NEW_IMPRISONER$
+	}
+
+	change_imprisoner_head_of_faith_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $IMPRISONER$
+	}
+
+	change_imprisoner_head_of_faith_effect = {
+		TARGET = $TARGET$
+		IMPRISONER = $NEW_IMPRISONER$
+	}
+
+	change_imprisoner_war_opinion_effect = {
+		TARGET = $TARGET$
+		OLD_IMPRISONER = $IMPRISONER$
+		NEW_IMPRISONER = $NEW_IMPRISONER$
+	}
+#}
+}
+
+# TARGET (character)
+# IMPRISONER (character)
+change_imprisoner_release_character_effect = {
+	$TARGET$ = {
+		if = {
+			limit = { has_character_modifier = allowed_to_go_outside }
+			remove_character_modifier = allowed_to_go_outside
+		}
+
+		if = {
+			limit = { has_character_modifier = moldy_gruel_diet }
+			remove_character_modifier = moldy_gruel_diet
+		}
+
+		## We won't change the original vanilla on_release_from_prison in on_action
+		## Instead we'll make use of the existing escaped_from_prison_flag
+		## * Remove when changed or if there's a better way to implement this
+
+		## What technically happens when you "escaped_from_prison"?
+		## - Prevents release_from_prison_memory from being created
+		## - Changes imprisoned_me to imprisoned_me_past opinion modifier
+		
+		add_character_flag = {
+			flag = escaped_from_prison_flag
+			days = 1
+		}
+
+		add_character_flag = {
+			flag = block_for_prison_release_notification
+			days = 1
+		}
+
+		if = {
+			limit = { $IMPRISONER$ = { has_imprisonment_reason = $TARGET$ } }
+			consume_all_criminal_reasons_effect = { 
+				LIEGE = $IMPRISONER$
+				CRIMINAL = $TARGET$ 
+			}
+		}
+
+		if = {
+			limit = {
+				has_relation_lover = $IMPRISONER$
+				NOT = { has_relation_rival = $IMPRISONER$ }
+			}
+			trigger_event = {
+				id = lover.0101
+				days = { 14 30 }
+			}
+		}
+
+		custom_description = { 
+			text = "move_tooltip_effect" 
+		}
+		
+		custom_description = {
+			text = "release_tooltip_effect"
+			subject = $IMPRISONER$
+			object = this
+			release_from_prison = yes
+			remove_character_flag = escaped_from_prison_flag
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## TARGET (character)
+## NEW_IMPRISONER (character)
+change_imprisoner_imprison_character_effect = {
+	$TARGET$ = {
+		if = {
+			limit = {
+				exists = liege
+				OR = {
+					is_landed = yes
+					is_close_or_extended_family_of = liege
+					is_spouse_of = liege
+				}
+			}
+			$NEW_IMPRISONER$ = {
+				custom_description = {
+					text = "imprison_tooltip_effect"
+					object = $TARGET$
+					imprison = {
+						target = $TARGET$
+						type = house_arrest
+					}
+				}
+			}
+		}
+		else = {
+			$NEW_IMPRISONER$ = {
+				custom_description = {
+					text = "imprison_tooltip_effect"
+					object = $TARGET$
+					imprison = {
+						target = $TARGET$
+						type = dungeon
+					}
+				}
+			}
+		}
+
+		if = {
+			limit = {
+				has_relation_lover = $NEW_IMPRISONER$
+				NOT = { has_relation_rival = $NEW_IMPRISONER$ }
+			}
+			trigger_event = {
+				id = lover.0101
+				days = { 14 30 }
+			}
+		}
+
+		add_opinion = {
+			target = $NEW_IMPRISONER$
+			modifier = imprisoned_me
+		}
+	}
+}
+
+# TARGET (character)
+# OLD_IMPRISONER (character)
+# NEW_IMPRISONER (character)
+change_imprisoner_war_opinion_effect = {
+	$OLD_IMPRISONER$ = {
+		if = {
+			limit = { is_at_war_with = $TARGET$	}
+			custom_description = {
+				text = "change_imprisoner_war_tooltip_effect" # tooltip for sadistic roleplayers
+				object = $TARGET$
+			}
+		}
+	}
+
+	$TARGET$ = {
+		## determine target war participants
+		every_character_war = {
+			limit = { is_participant = $NEW_IMPRISONER$ }
+			every_war_participant = {
+				limit = {
+					NOT = { $TARGET$ = this }
+					NOT = { $OLD_IMPRISONER$ = this } 
+					NOT = { $NEW_IMPRISONER$ = this } 
+				}
+				if = {
+					limit = { 
+						is_allied_in_war = $TARGET$ 
+						NOT = { is_allied_in_war = $NEW_IMPRISONER$ }
+					}
+					add_to_temporary_list = war_ally_list
+				}
+				else_if = {
+					limit = { 
+						NOT = { is_allied_in_war = $TARGET$ }
+						is_allied_in_war = $NEW_IMPRISONER$ 
+					}
+					add_to_temporary_list = war_enemy_list
+				}
+			}
+		}
+	}
+	
+	if = { 
+		limit = { $TARGET$ = { is_at_war_with = $NEW_IMPRISONER$ } }
+
+		custom_description = {
+			text = "change_imprisoner_war_tooltip_effect"
+			subject = $TARGET$
+			object = $NEW_IMPRISONER$
+		}
+
+		custom_description = {
+			text = "change_imprisoner_war_tooltip_effect"
+			subject = $NEW_IMPRISONER$
+			object = $TARGET$
+		}
+
+		if = {
+			limit = { $TARGET$ = { any_character_war = { is_war_leader = $TARGET$ } } }
+
+			custom_description = {
+				text = "change_imprisoner_war_leader_tooltip_effect"
+				subject = $TARGET$
+			}
+
+			$TARGET$ = {
+				add_opinion = {
+					target = $OLD_IMPRISONER$
+					modifier = supported_my_enemy_opinion
+					opinion = -50
+				}
+			}
+			$NEW_IMPRISONER$ = {
+				add_opinion = {
+					target = $OLD_IMPRISONER$
+					modifier = supported_my_war_opinion
+					opinion = 40
+				}
+			}
+		}
+		else = {
+			$TARGET$ = {
+				add_opinion = {
+					target = $OLD_IMPRISONER$
+					modifier = supported_my_enemy_opinion
+				}
+			}
+			$NEW_IMPRISONER$ = {
+				add_opinion = {
+					target = $OLD_IMPRISONER$
+					modifier = supported_my_war_opinion
+				}
+			}
+		}
+
+		$TARGET$ = {
+			## target allies' opinion towards previous imprisoner
+			if = {
+				limit = { any_in_list = { list = war_ally_list count > 0 } }
+				every_in_list = {
+					list = war_ally_list
+					custom = all_war_allies
+					if = {
+						limit = { $TARGET$ = { any_character_war = { is_war_leader = $TARGET$ } } }
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_enemy_opinion
+							opinion = -50
+						}
+					}
+					else = {
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_enemy_opinion
+						}
+					}
+				}
+			}
+		}
+
+		$NEW_IMPRISONER$ = {
+			## target enemies` opinion towards previous imprisoner
+			if = {
+				limit = { any_in_list = { list = war_enemy_list count > 0 } }
+				every_in_list = {
+					list = war_enemy_list
+					custom = all_war_allies
+					if = {
+						limit = { $TARGET$ = { any_character_war = { is_war_leader = $TARGET$ } } }
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_war_opinion
+							opinion = 40
+						}
+					}
+					else = {
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_war_opinion
+						}
+					}		
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_tyranny_effect
+## TARGET (character)
+## IMPRISONER (character)
+change_imprisoner_vassal_effect = {
+	$IMPRISONER$ = {
+		if = {
+			limit = { $TARGET$ = { is_vassal_of = prev } }
+
+			custom_description = {
+				text = "change_imprisoner_vassal_tooltip_effect"
+				subject = $IMPRISONER$
+				object = $TARGET$
+			}
+
+			if = {
+				limit = { has_imprisonment_reason = $TARGET$ }
+				custom_description = { 
+					text = "is_allowed_to_change_imprisoner_tooltip_effect"
+					object = $TARGET$
+				}
+			}
+			else_if = {
+				limit = { 
+					is_at_war_with = $TARGET$ 
+					NOT = { is_allied_in_war = $TARGET$ }
+				}
+				custom_description = {
+					text = "is_allowed_to_change_imprisoner_tooltip_effect_war"
+					object = $TARGET$
+				}
+			}
+			else = { 
+				add_tyranny = imprisonment_tyranny_gain
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_HoF_consequences_effect
+## TARGET (character)
+## IMPRISONER (character)
+change_imprisoner_head_of_faith_effect = {		
+	$IMPRISONER$ = {
+		if = {
+			limit = { $TARGET$ = { is_head_of_faith_of = { WHO = $IMPRISONER$ } } }
+
+			custom_description = {
+				text = "change_imprisoner_head_of_faith_tooltip_effect"
+				object = $TARGET$
+			}
+
+			if = {
+				limit = { has_imprisonment_reason = $TARGET$ }
+				custom_description = { 
+					text = "is_allowed_to_change_imprisoner_tooltip_effect" 
+					object = $TARGET$
+				}
+			}
+			else_if = {
+				limit = { 
+					is_at_war_with = $TARGET$ 
+					NOT = { is_allied_in_war = $TARGET$ }
+				}
+				custom_description = {
+					text = "is_allowed_to_change_imprisoner_tooltip_effect_war" 
+					object = $TARGET$
+				}
+			}
+			else = { 
+				add_piety_level = -1
+				add_piety = medium_piety_loss
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/escape_from_prison_effect
+## TARGET (character)
+## NEW_IMPRISONER (character)
+change_imprisoner_escape_character_effect = {
+	$TARGET$.imprisoner = {
+		if = {
+			limit = {
+				OR = {
+					has_revoke_title_reason = $TARGET$
+					has_banish_reason = $TARGET$
+					has_execute_reason = $TARGET$
+				}
+			}
+			add_opinion = {
+				target = $TARGET$
+				modifier = escaped_from_prison_crime
+			}
+		}
+		else = {
+			add_opinion = {
+				target = $TARGET$
+				modifier = escaped_from_prison_opinion
+			}
+		}
+	}
+
+	$NEW_IMPRISONER$ = {
+		if = {
+			limit = {
+				OR = {
+					has_revoke_title_reason = $TARGET$
+					has_banish_reason = $TARGET$
+					has_execute_reason = $TARGET$
+				}
+			}
+			add_opinion = {
+				target = root
+				modifier = escaped_from_prison_crime
+			}
+		}
+		else = {
+			add_opinion = {
+				target = root
+				modifier = escaped_from_prison_opinion
+			}
+		}
+		
+		add_opinion = {
+			target = $TARGET$.imprisoner
+			modifier = failed_transfer_prisoner
+		}
+	}
+
+
+	$TARGET$ = {
+		if = {
+			limit = { is_imprisoned = yes }
+
+			location = {
+				save_scope_as = wilderness_scope
+			}
+
+			create_character_memory = {
+				type = escaped_from_prison_memory
+				
+				participants = {
+					imprisoner = imprisoner
+				}
+			}
+
+			add_character_flag = {
+				flag = escaped_from_prison_flag
+				days = 1
+			}
+	
+			add_character_flag = {
+				flag = block_for_prison_release_notification
+				days = 1
+			}
+
+			custom_description = {
+				text = "escape_tooltip_effect"
+				release_from_prison = yes
+			}
+
+			hidden_effect = {
+				remove_decision_cooldown = escape_from_prison_decision
+			}
+
+			if = {
+				limit = { has_character_modifier = allowed_to_go_outside }
+				remove_character_modifier = allowed_to_go_outside
+			}
+
+			if = {
+				limit = { has_character_modifier = moldy_gruel_diet }
+				remove_character_modifier = moldy_gruel_diet
+			}
+	
+		}
+	}
+}

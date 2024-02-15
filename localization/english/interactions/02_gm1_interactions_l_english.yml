@@ -1,0 +1,162 @@
+﻿##############################
+## GM1 interactions
+##############################
+
+# based on:
+## ./localization/english/interactions/hostage_interaction_l_english.yml
+## ./localization/english/interactions_l_english.yml
+
+l_english:
+
+# INTERACTION
+## offer_prisoner_interaction
+ offer_prisoner_interaction: "Offer Prisoner"
+ offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] one of your [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\nConcedes any [imprisonment|E] reasons against the prisoner."
+ offer_prisoner_interaction_notification: "Offered Prisoner"
+ offer_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
+ actor_secondary_offer_prisoner_interaction: "[prisoner|E]"
+ OFFER_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "For the sake of trade, I offer my [prisoner|E], [secondary_actor.GetTitledFirstName], to keep as your own [prisoner|E]."
+ OFFER_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to offer" 
+
+## demand_prisoner_interaction
+ demand_prisoner_interaction: "Demand Prisoner"
+ demand_prisoner_interaction_desc: "Demand [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\nForce demand [direct_vassals|E] for [prisoners|E]."
+ demand_prisoner_interaction_notification: "Demanded Prisoner"
+ demand_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
+ recipient_secondary_demand_prisoner_interaction: "[prisoner|E]"
+ DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I must demand you send your [prisoner|E], [secondary_recipient.GetTitledFirstName], to my court as my own [prisoner|E]."
+ DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
+
+## exchange_prisoner_interaction
+ exchange_prisoner_interaction: "Exchange Prisoner"
+ exchange_prisoner_interaction_desc: "Bargain [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for one of your own [prisoners|E]."
+ exchange_prisoner_interaction_notification: "Exchange Prisoner"
+ exchange_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
+ actor_secondary_exchange_prisoner_interaction: "Your [prisoner|E]"
+ recipient_secondary_exchange_prisoner_interaction: "Their [prisoner|E]"
+ EXCHANGE_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I propose we exchange my [prisoner|E], [secondary_actor.GetTitledFirstName], and your [prisoner|E], [secondary_recipient.GetTitledFirstName], as part of a bargain."
+ EXCHANGE_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to exchange" 
+
+# IMPORTANT ACTIONS
+ #action_can_offer_prisoner: "@hostage! You can Offer a Prisoner"
+ #action_can_offer_prisoner_label: "@hostage! You can Offer a Prisoner to [recipient.GetUINameNoTooltip]"
+ #action_can_offer_prisoner_desc: "[recipient.GetUINameNoTooltip] would accept your Offer of a [prisoner|E].\n\n$hostage_benefit_tt$"
+ #action_can_offer_prisoner_click: "#I Click to find a suitable [prisoner|E]#!"
+ #action_can_offer_prisoner_combined_group_name: "@hostage! You can Offer a Prisoner"
+ #action_can_offer_prisoner_combined_group_label: "@hostage! You can Offer Prisoners"
+ #action_can_offer_prisoner_combined_group_description: "Several neighboring [rulers|E], fellow [vassals|E], or [powerful_vassals|E] would accept your Offer of a [prisoner|E].\n\n$hostage_benefit_tt$"
+ #action_can_offer_prisoner_combined_label: "[recipient.GetUINameNoTooltip]"
+ #action_can_offer_prisoner_combined_unimportant: "@warning_icon! #X Potential targets have no [casus_bellis|E] against you or already have a [truce|E]#!"
+ #action_can_offer_prisoner_unimportant: "@warning_icon! #X [recipient.GetShortUIName] has no [casus_bellis|E] against you or already have a [truce|E]#!"
+ #hostage_benefit_tt: "#help Hostages may deter or neutralize threats, allowing you to focus your attention elsewhere, and grant monthly [prestige_i|E][prestige|E] to the [warden|E].#!"
+
+# AI REASONS
+ INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE: "[secondary_recipient.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
+
+ INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_ACTOR: "You are at war with [prisoner|E]: $VALUE|+0$"
+ INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT: "[recipient.GetSheHe|U] is at war with [prisoner|E]: $VALUE|+0$"
+
+ INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY: "[prisoner|E] [faith|E] is [faith_astray|E]: $VALUE|0+=$"
+ INTERACTION_AI_REASON_PRISONER_FAITH_HOSTILE: "[prisoner|E] [faith|E] is [faith_hostile|E]: $VALUE|0+=$"
+ INTERACTION_AI_REASON_PRISONER_FAITH_EVIL: "[prisoner|E] [faith|E] is [faith_evil|E]: $VALUE|0+=$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND: "[prisoner|E] is [receiver.GetHerHis] [friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND: "[prisoner|E] is [receiver.GetHerHis] [best_friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_LOVER: "[prisoner|E] is [receiver.GetHerHis] [lover|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE: "[prisoner|E] is [receiver.GetHerHis] [soulmate|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL: "[prisoner|E] is [receiver.GetHerHis] [rival|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS: "[prisoner|E] is [receiver.GetHerHis] [nemesis|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_DYNASTY_SAME_DYNASTY: "Shares [dynasty] with [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_INTIMIDATED: "[intimidated_i][intimidated|E] by [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_COWED: "[terrified_i][cowed|E] of [prisoner|E]: $VALUE|=+0$"
+
+# EFFECT
+ I_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes your [prisoner|E]"
+ I_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became your [prisoner|E]"
+ CHARACTER_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+ CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+
+ I_SEND_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with your [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ I_SENT_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with your [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ CHARACTER_SEND_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with [CHARACTER.GetShortUINamePossessive|V] [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ CHARACTER_SENT_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with [CHARACTER.GetShortUINamePossessive|V] [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+
+# TRIGGER
+ ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "Is already under an ongoing transaction"
+ I_AM_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "You are already under an ongoing transaction"
+ CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "[CHARACTER.GetShortUIName|V] is already under an ongoing transaction"
+
+ ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER: "Is already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+ I_AM_ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER: "You are already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+ CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER: "[CHARACTER.GetShortUIName|V] is already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+
+ IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "Is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ I_AM_NOT_AT_CAPITAL_PRISON_TRIGGER: "You are currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ CHARACTER_IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "[CHARACTER.GetShortUIName|V] is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+
+ DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "Does #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
+ I_DO_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "You do #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
+ CHARACTER_DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "[CHARACTER.GetShortUIName] does #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
+
+# NOTIFICATION
+ msg_transfer_prisoner_interaction_title: "Prisoner Transferred!"
+ transfer_prisoner_interaction_invalidated_toast: "Transfer Imprisonment Invalidated"
+
+# EVENT
+ PRISONER_ESCAPED_TT: "[prisoner.GetTitledFirstName] escaped during [travel|E]"
+
+## The recipient accepts offer prisoner interaction.
+ gm1_interaction.0011.desc_1: "I would gladly bargain for your prisoner, [secondary_actor.GetTitledFirstName], as my own."
+ gm1_interaction.0011.desc_2: "\n\nI look forward to [secondary_actor.GetHerHis] arrival in [recipient.GetCapitalLocation.GetNameNoTooltip]."
+ gm1_interaction.0011.a: "Very good."
+ 
+## The recipient declines offer prisoner interaction.
+ gm1_interaction.0012.desc: "I see no benefit to be gained in bargaining for your prisoner, [secondary_actor.GetTitledFirstName], as my own at this time."
+ gm1_interaction.0012.a: "Foolish."
+
+## The recipient accepts demand prisoner interaction.
+ gm1_interaction.0021.desc_1: "I see no choice but to accept your demand to bargain for my prisoner, [secondary_recipient.GetTitledFirstName], as your own."
+ gm1_interaction.0021.desc_2: "\n\n[secondary_recipient.GetSheHe|U] will depart with an escort for [actor.GetCapitalLocation.GetNameNoTooltip] immediately."
+ gm1_interaction.0021.a: "Excellent."
+
+## The recipient declines demand prisoner interaction.
+ gm1_interaction.0022.desc_a: "I can only reject your tactless demand to bargain for my prisoner, [secondary_recipient.GetTitledFirstName], as your own."
+ gm1_interaction.0022.desc_b: "I'm afraid I must still keep my prisoner, [secondary_recipient.GetTitledFirstName], in [recipient.GetCapitalLocation.GetNameNoTooltip] for a little while longer."
+ gm1_interaction.0022.a: "It's like that, is it?"
+
+## The recipient accepts exchange prisoner interaction.
+ gm1_interaction.0031.desc_1: "I must accept your proposal to exchange my prisoner, [secondary_recipient.GetTitledFirstName], for your prisoner, [secondary_actor.GetTitledFirstName], as part of a bargain."
+ gm1_interaction.0031.desc_2: "\n\n[secondary_recipient.GetSheHe|U] will depart with an escort for [actor.GetCapitalLocation.GetNameNoTooltip] immediately."
+ gm1_interaction.0031.desc_3: "\n\nI look forward for [secondary_actor.GetTitledFirstName] arrival in [recipient.GetCapitalLocation.GetNameNoTooltip]."
+ gm1_interaction.0031.a: "Perfect."
+
+## The recipient declines exchange prisoner interaction.
+ gm1_interaction.0032.desc: "Please cease your attempts to broach a bargain between us; I cannot agree to a prisoner exchange with you at this time."
+ gm1_interaction.0032.a: "So be it."
+ gm1_interaction.0032.b: "That boor..."
+
+##############################
+
+## The sender's prisoner arrives at the target receiver's court.
+ ## This is the sender's perspective.
+ gm1_interaction.0111.desc_1: "Your prisoner, [prisoner.GetTitledFirstName] has safely arrived in [receiver.GetPrimaryTitle.GetNameNoTierNoTooltip]."
+ gm1_interaction.0111.desc_2: "\n\nConsider our bargain approved."
+ gm1_interaction.0111.a: "Very good."
+
+ ## This is the receiver's perspective.
+ gm1_interaction.0121.desc_1: "I have been informed by [escort.GetTitledFirstName] that [prisoner.GetTitledFirstName] has safely arrived at your court."
+ gm1_interaction.0121.desc_2: "\n\nI trust that you will uphold your end of our agreement."
+ gm1_interaction.0121.a: "Excellent."
+
+### The receiver receives a character_event.
+ gm1_interaction.0122.title: "Justice"
+ gm1_interaction.0122.intro: "At last! My prisoner, [prisoner.GetTitledFirstName], has finally arrived from [sender.GetPrimaryTitle.GetNameNoTierNoTooltip]."
+ ### The receiver is at war with the prisoner.
+ gm1_interaction.0122.desc.war_1: "This knave is at my mercy."
+ gm1_interaction.0122.desc.war_2: "[prisoner.GetSheHe|U] must surrender immediately!"
+ ### The receiver is rivals with the prisoner.
+ gm1_interaction.0122.desc.rival: "\n\nHonestly, if #EMP anyone#! is likely guilty of anything, it is you, you [receiver.Custom('InsultAdjective')], [receiver.Custom('InsultAdjective')], [receiver.Custom('InsultAdjective')] [receiver.Custom('InsultNoun')]!"
+ ### The receiver dislikes the prisoner.
+ gm1_interaction.0122.desc.negative_opinion: "\n\nPerhaps if I respected your opinion a little, I would give credence to your thoughts. Sadly, I do not."
+ gm1_interaction.0122.outro: "\n\nI will make sure you that next time you'll think before you act."
+ gm1_interaction.0122.a: "What a fool..."
