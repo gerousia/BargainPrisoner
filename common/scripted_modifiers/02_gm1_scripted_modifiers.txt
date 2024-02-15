@@ -479,6 +479,7 @@ gm1_transfer_prisoner_interaction_ai_trait_modifier = {
 #------------------------------
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
+# based on ./common/scripted_modifiers/00_hostile_scheme_scripted_modifiers.txt/hostile_murder_agent_base_join_chance_modifier
 ## RECEIVER (character)
 ## PRISONER (character)
 gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
@@ -525,6 +526,26 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 			multiply = -1
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY
+	}
+
+	modifier = {
+		$PRISONER$ = { is_head_of_faith_of = { WHO = $RECEIVER$ } }
+		add = {
+			value = -100
+			if = {
+				limit = { $RECEIVER$ = { has_imprisonment_reason = $PRISONER$ } }
+				divide = 4
+			}
+			if = {
+				limit = { $RECEIVER$ = { has_trait = zealous } }
+				multiply = 2
+			}
+			else_if = {
+				limit = { $RECEIVER$ = { has_trait = arbitrary } }
+				multiply = 0
+			}
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_HEAD_OF_FAITH
 	}
 }
 
