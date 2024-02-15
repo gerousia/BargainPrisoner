@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -8,12 +8,8 @@
 # transfer_prisoner_interaction_stress_effect
 # transfer_prisoner_interaction_dread_effect
 # transfer_prisoner_interaction_escalate_rivalry_effect
-# disband_all_schemes_effect
 # transfer_prisoner_interaction_bargain_effect
-#
-# transfer_prisoner_company_depart_effect
-# transfer_prisoner_company_invalidate_effect
-# remove_all_transfer_prisoner_company_variables_effect
+# disband_all_schemes_effect
 
 #------------------------------
 # interaction-related
@@ -23,124 +19,33 @@
 # IMPRISONER (character)
 # NEW_IMPRISONER (character)
 transfer_prisoner_interaction_effect = {
-	hidden_effect = {
-		$RECEIVER$ = {
-			## Saves current gold from interaction send_option for referencial use later in transfer_prisoner_interaction_bargain_effect
-			if = {
-				limit = {
-					OR = {
-						scope:exploitive_extortionate_current_gold ?= yes
-						scope:extortionate_current_gold ?= yes
-						scope:exploitive_current_gold ?= yes
-						scope:current_gold ?= yes
-					}
-				}
-				save_scope_value_as = {
-					name = barter_saved_gold_value
-					value = $RECEIVER$.current_gold_value
+	$RECEIVER$ = {
+		if = {
+			limit = {
+				OR = {
+					scope:exploitive_extortionate_current_gold ?= yes
+					scope:extortionate_current_gold ?= yes
+					scope:exploitive_current_gold ?= yes
+					scope:current_gold ?= yes
 				}
 			}
-			else_if = {
-				limit = { scope:hook ?= yes }
-				use_hook = $SENDER$
+			save_scope_value_as = {
+				name = barter_saved_gold_value
+				value = $RECEIVER$.current_gold_value
 			}
 		}
+		else_if = {
+			limit = { scope:hook ?= yes }
+			use_hook = $SENDER$
+		}
+	}
+
+	change_imprisoner_character_effect = { 
+		TARGET = $PRISONER$
+		IMPRISONER = $SENDER$
+		NEW_IMPRISONER = $RECEIVER$
+	}
 	
-		$SENDER$ = {
-			if = {
-				limit = {
-					any_court_position_holder = {
-						count >= 1
-						type = bodyguard_court_position
-						is_available = yes
-						NOT = { exists = var:travel_companion }
-					}
-				}
-				random_court_position_holder = {
-					type = bodyguard_court_position
-					limit = {
-						is_available = yes
-						NOT = { exists = var:travel_companion }
-					}
-					save_temporary_scope_as = temporary_escort
-				}
-			}
-			else_if = {
-				limit = { is_ai = yes }
-				if = {
-					limit = { 
-						any_courtier_or_guest = {
-							count >= 1
-							can_be_employed_as = bodyguard_court_position
-						}
-					}
-					ordered_courtier_or_guest = {
-						limit = { can_be_employed_as = bodyguard_court_position }
-						order_by = prowess
-						save_temporary_scope_as = temporary_escort
-					}
-				}
-				else = {
-					create_character = {
-						gender_female_chance = root_soldier_female_chance
-						location = $SENDER$.capital_province
-						template = soldier_friend_character
-						dynasty = generate
-						save_temporary_scope_as = temporary_escort
-					}
-				}
-	
-				if = {
-					limit = { can_employ_court_position_type = bodyguard_court_position }
-					appoint_court_position = {
-						recipient = scope:temporary_escort
-						court_position = bodyguard_court_position
-					}
-				}
-			}
-		}
-	}
-
-	if = {
-		limit = {
-			OR = {
-				has_game_rule = gm1_enable_travel 
-				AND = {
-					has_game_rule = gm1_ai_disable_travel
-					is_ai = no
-				}
-			}
-		}
-		## Show interaction window information
-		show_as_tooltip = {
-			change_imprisoner_character_effect = { 
-				TARGET = $PRISONER$
-				IMPRISONER = $SENDER$
-				NEW_IMPRISONER = $RECEIVER$
-			}
-
-			transfer_prisoner_interaction_bargain_effect = {
-				PRISONER = $PRISONER$
-				SENDER = $SENDER$
-				RECEIVER = $RECEIVER$
-			}
-		}
-
-		## Prisoner starts traveling towards their next imprisoner's court
-		transfer_prisoner_company_depart_effect = {
-			PRISONER = $PRISONER$
-			SENDER = $SENDER$
-			RECEIVER = $RECEIVER$
-			ESCORT = scope:temporary_escort
-		}
-	}
-	else = {
-		change_imprisoner_character_effect = { 
-			TARGET = $PRISONER$
-			IMPRISONER = $SENDER$
-			NEW_IMPRISONER = $RECEIVER$
-	}
-
 	## Apply immediate effects towards the prisoner's current imprisoner
 	transfer_prisoner_interaction_dread_effect = { 
 		PRISONER = $PRISONER$
@@ -406,183 +311,6 @@ disband_all_schemes_effect = {
 					end_scheme = yes
 				}
 			}
-		}
-	}
-}
-
-
-#------------------------------
-# travel-related
-#------------------------------
-
-# transfer_prisoner_interaction
-## PRISONER (character)
-## SENDER (character)
-## RECEIVER (character)
-transfer_prisoner_company_depart_effect = {
-	$PRISONER$ = {
-		## set old_imprisoner
-		set_variable = {
-			name = old_imprisoner
-			value = $SENDER$
-			years = 3 
-		}
-
-		## set new_imprisoner
-		set_variable = {
-			name = new_imprisoner
-			value = $RECEIVER$
-			years = 3 
-		}
-
-		## set travel_escort
-		set_variable = {
-			name = travel_escort
-			value = $ESCORT$
-			years = 3
-		}
-
-		## set interaction contract
-		set_variable = {
-			name = under_transfer_prisoner_interaction_with
-			value = $RECEIVER$
-			years = 3 
-		}
-	}
-
-	$ESCORT$ = {
-		## set travel_companion
-		set_variable = {
-			name = travel_companion
-			value = $PRISONER$
-			years = 3
-		}
-
-		set_target_destination_effect = { 
-			TARGET = $RECEIVER$
-			SCOPE_NAME = target_destination
-		}
-
-		start_travel_plan = {
-			players_use_planner = no
-			destination = scope:target_destination
-			on_start_on_action = on_transfer_prisoner_company_depart
-			on_travel_planner_cancel_on_action = on_transfer_prisoner_company_depart_travel_planner_exit
-			on_arrival_on_action = on_transfer_prisoner_company_arrive
-			on_arrival_destinations = all_but_last
-			return_trip = yes
-		}
-	}
-}
-
-# on_prisoner_arrive
-## flag:prisoner
-## flag:sender
-## flag:receiver
-## flag:escort
-transfer_prisoner_company_invalidate_effect = {
-	## There must be something that happened to the prisoner
-	if = {
-		limit = {
-			#is_alive = no
-			is_imprisoned = no
-		}
-		set_variable = {
-			name = invalidate_reason
-			value = flag:prisoner
-		}
-		debug_log = "GM1: invalidate flag:sender"
-	}
-	## There must be something that happened to the prisoner's sender 
-	else_if = {
-		limit = {
-			var:old_imprisoner = {
-				OR = {
-					is_alive = no
-					is_landed = no
-					# is_imprisoned = yes
-				}
-			}
-		}
-		set_variable = {
-			name = invalidate_reason
-			value = flag:sender
-		}
-		debug_log = "GM1: invalidate flag:sender"
-	}
-	## There must be something that happened to the prisoner's receiver
-	else_if = {
-		limit = {
-			var:new_imprisoner = {
-				OR = {
-					is_alive = no
-					is_landed = no
-					# is_imprisoned = yes
-				}
-			}
-		}
-		set_variable = {
-			name = invalidate_reason
-			value = flag:receiver
-		}
-		debug_log = "GM1: invalidate flag:receiver"
-	}
-	## There must be something that happened to the prisoner's escort
-	else_if = {
-		limit = {
-			var:travel_escort = {
-				OR = {
-					#is_alive = no
-					is_landed = yes
-					is_imprisoned = yes
-					NOT = { has_court_position = bodyguard_court_position }
-				}
-			}
-		}
-		set_variable = {
-			name = invalidate_reason
-			value = flag:escort
-		}
-		debug_log = "GM1: invalidate flag:escort"
-	}
-}
-
-remove_all_transfer_prisoner_company_variables_effect = {
-	hidden_effect = {		
-		## Assigned in transfer_prisoner_company_depart_effect
-		if = {
-			limit = { exists = var:old_imprisoner }
-			remove_variable = old_imprisoner
-		}
-
-		## Assigned in transfer_prisoner_company_depart_effect
-		if = {
-			limit = { exists = var:new_imprisoner }
-			remove_variable = new_imprisoner
-		}
-
-		## Assigned in transfer_prisoner_company_depart_effect
-		if = {
-			limit = { exists = var:travel_escort }
-			remove_variable = travel_escort
-		}
-
-		## Assigned in transfer_prisoner_company_depart_effect 
-		if = {
-			limit = { exists = var:travel_companion }
-			remove_variable = travel_companion
-		}
-
-		## Assigned in transfer_prisoner_company_depart_effect
-		if = {
-			limit = { exists = var:under_transfer_prisoner_interaction_with }
-			remove_variable = under_transfer_prisoner_interaction_with
-		}
-
-		## Assigned in on_transfer_prisoner_company_arrive
-		if = {
-			limit = { exists = var:invalidate_reason }
-			remove_variable = invalidate_reason
 		}
 	}
 }
