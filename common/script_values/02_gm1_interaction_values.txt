@@ -237,7 +237,7 @@ interaction_prisoner_value = {
 		add = {
 			value = 15
 
-			#### They can't wage war against their prisoner
+			#### They can't wage war against their own prisoner
 			if = {
 				limit = { NOT = { is_at_war_with = scope:prisoner } }
 				multiply = -1
@@ -267,11 +267,6 @@ interaction_prisoner_value = {
 					add = {
 						value = 5
 
-						#### They can't wage war against their prisoner
-						if = {
-							limit = { NOT = { is_at_war_with = scope:prisoner } }
-							multiply = -1
-						}
 						#### Strong claims are worth more
 						if = {
 							limit = {
