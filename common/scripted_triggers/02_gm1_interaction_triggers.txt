@@ -30,16 +30,16 @@ gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
 }
 
 gm1_valid_for_transfer_prisoner_interaction_trigger = {
-	## Must not be under any ongoing interaction.
-	custom_description = {
-		text = "already_under_ongoing_transfer_prisoner_interaction_trigger"
-		NOT = { exists = var:under_transfer_prisoner_interaction_with }
-	}
 	## Must be at imprisoner capital.
 	custom_description = {
 		text = "is_at_capital_prison_trigger"
 		object = imprisoner
 		is_at_location = imprisoner.capital_province
+	}
+	## Must not be under any ongoing interaction.
+	custom_description = {
+		text = "already_under_ongoing_transfer_prisoner_interaction_trigger"
+		NOT = { has_character_flag = under_transfer_prisoner_interaction }
 	}
 	## Must not currently be tortured.
 	is_being_tortured = no
