@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -786,24 +786,17 @@ demand_prisoner_interaction = {
 	}
 
 	auto_accept = {
-		## Always accepts demands from their liege unless they have a Hook on them
-		trigger_if = {
-			limit = { 
-				#NOT = { scope:recipient = { has_hook = scope:actor } } 
-				scope:recipient = { is_vassal_of = scope:actor } # For jank localization issues
-			}
-			scope:recipient = { is_vassal_of = scope:actor }
-		}
 		## Always accepts against Strong Hook
-		trigger_else = {
+		trigger_if = {
+			limit = { scope:hook ?= yes }
 			custom_description = {
 				text = "spending_hook"
 				subject = scope:actor
 				object = scope:recipient
-				scope:hook ?= yes
-				scope:actor = { has_strong_usable_hook = scope:recipient }
 			}
 		}
+		## Always accepts demands from their liege unless they have a Hook on them
+		trigger_else = { scope:recipient = { is_vassal_of = scope:actor } }
 	}
 
 	can_send = {
@@ -888,7 +881,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -918,7 +911,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -947,7 +940,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -977,7 +970,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -1008,7 +1001,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -1040,7 +1033,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -1071,7 +1064,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -1103,7 +1096,7 @@ demand_prisoner_interaction = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
 				limit = { scope:hook = yes }
-				NOT = { scope:actor = { has_strong_usable_hook = scope:recipient } }
+				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
 
@@ -1172,11 +1165,7 @@ demand_prisoner_interaction = {
 	## Hook can be used to force this through
 	## We don't force-force this on/for the player
 	send_option = {
-		is_shown = {
-			scope:recipient = {
-				NOT = { is_vassal_of = scope:actor }
-			}
-			
+		is_shown = {			
 			scope:actor = {
 				has_usable_hook = scope:recipient
 			}
@@ -1255,22 +1244,7 @@ demand_prisoner_interaction = {
 	}
 
 	on_auto_accept = {
-		scope:actor = {
-			if = {
-				limit = {
-					scope:hook = yes
-					has_strong_usable_hook = scope:recipient
-				}
-				use_hook = scope:recipient
-			}
-		}
-
-		scope:recipient = {
-			add_opinion = {
-				target = scope:actor
-				modifier = demanded_transfer_prisoner
-			}
-		}
+		## { scope:hook = yes } is moved within on_accept since this is pretty much useless for showing tooltip
 	}
 
 	ai_targets = {

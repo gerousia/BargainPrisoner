@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -16,8 +16,8 @@
 #------------------------------
 
 # PRISONER (character)
-# IMPRISONER (character)
-# NEW_IMPRISONER (character)
+# SENDER (character)
+# RECEIVER (character)
 transfer_prisoner_interaction_effect = {
 	$RECEIVER$ = {
 		if = {
@@ -33,10 +33,6 @@ transfer_prisoner_interaction_effect = {
 				name = barter_saved_gold_value
 				value = $RECEIVER$.current_gold_value
 			}
-		}
-		else_if = {
-			limit = { scope:hook ?= yes }
-			use_hook = $SENDER$
 		}
 	}
 
@@ -296,6 +292,32 @@ transfer_prisoner_interaction_bargain_effect = {
 			}
 		}
 	}
+
+	$SENDER$ = {
+		### Forced Auto-Accept
+		if = {
+			limit = { scope:hook ?= yes }
+			if = {
+				limit = {
+					NOT = { is_vassal_of = $RECEIVER$ }
+					NOT = { $RECEIVER$ = { has_strong_hook = $SENDER$ } }
+				}
+				add_opinion = {
+					target = $RECEIVER$
+					modifier = demanded_transfer_prisoner
+				}
+			}
+			$RECEIVER$ = { use_hook = $SENDER$ }
+		}
+		else_if = {
+			limit = { is_vassal_of = $RECEIVER$ }
+			add_opinion = {
+				target = $RECEIVER$
+				modifier = demanded_transfer_prisoner
+			}
+		}
+	}
+
 	$PRISONER$ = {
 		if = {
 			limit = { has_character_flag = under_transfer_prisoner_interaction }
