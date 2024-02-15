@@ -296,7 +296,7 @@ change_imprisoner_war_opinion_effect = {
 	$OLD_IMPRISONER$ = {
 		if = {
 			limit = { is_at_war_with = $TARGET$	}
-			custom_description_no_bullet = {
+			custom_description = {
 				text = "change_imprisoner_war_tooltip_effect" # tooltip for sadistic roleplayers
 				object = $TARGET$
 			}
@@ -334,13 +334,13 @@ change_imprisoner_war_opinion_effect = {
 	if = { 
 		limit = { $TARGET$ = { is_at_war_with = $NEW_IMPRISONER$ } }
 
-		custom_description_no_bullet = {
+		custom_description = {
 			text = "change_imprisoner_war_tooltip_effect"
 			subject = $TARGET$
 			object = $NEW_IMPRISONER$
 		}
 
-		custom_description_no_bullet = {
+		custom_description = {
 			text = "change_imprisoner_war_tooltip_effect"
 			subject = $NEW_IMPRISONER$
 			object = $TARGET$
@@ -349,7 +349,7 @@ change_imprisoner_war_opinion_effect = {
 		if = {
 			limit = { $TARGET$ = { any_character_war = { is_war_leader = $TARGET$ } } }
 
-			custom_description_no_bullet = {
+			custom_description = {
 				text = "change_imprisoner_war_leader_tooltip_effect"
 				subject = $TARGET$
 			}
@@ -444,7 +444,7 @@ change_imprisoner_vassal_effect = {
 		if = {
 			limit = { $TARGET$ = { is_vassal_of = prev } }
 
-			custom_description_no_bullet = {
+			custom_description = {
 				text = "change_imprisoner_vassal_tooltip_effect"
 				subject = $IMPRISONER$
 				object = $TARGET$
@@ -452,7 +452,7 @@ change_imprisoner_vassal_effect = {
 
 			if = {
 				limit = { has_imprisonment_reason = $TARGET$ }
-				custom_description_no_bullet = { 
+				custom_description = { 
 					text = "is_allowed_to_change_imprisoner_tooltip_effect"
 					object = $TARGET$
 				}
@@ -462,15 +462,13 @@ change_imprisoner_vassal_effect = {
 					is_at_war_with = $TARGET$ 
 					NOT = { is_allied_in_war = $TARGET$ }
 				}
-				custom_description_no_bullet = {
+				custom_description = {
 					text = "is_allowed_to_change_imprisoner_tooltip_effect_war"
 					object = $TARGET$
 				}
 			}
 			else = { 
-				add_tyranny_no_bullet = {
-					VALUE = imprisonment_tyranny_gain
-				}
+				add_tyranny = imprisonment_tyranny_gain
 			}
 		}
 	}
@@ -484,14 +482,14 @@ change_imprisoner_head_of_faith_effect = {
 		if = {
 			limit = { $TARGET$ = { is_head_of_faith_of = { WHO = $IMPRISONER$ } } }
 
-			custom_description_no_bullet = {
+			custom_description = {
 				text = "change_imprisoner_head_of_faith_tooltip_effect"
 				object = $TARGET$
 			}
 
 			if = {
 				limit = { has_imprisonment_reason = $TARGET$ }
-				custom_description_no_bullet = { 
+				custom_description = { 
 					text = "is_allowed_to_change_imprisoner_tooltip_effect" 
 					object = $TARGET$
 				}
@@ -501,7 +499,7 @@ change_imprisoner_head_of_faith_effect = {
 					is_at_war_with = $TARGET$ 
 					NOT = { is_allied_in_war = $TARGET$ }
 				}
-				custom_description_no_bullet = {
+				custom_description = {
 					text = "is_allowed_to_change_imprisoner_tooltip_effect_war" 
 					object = $TARGET$
 				}
