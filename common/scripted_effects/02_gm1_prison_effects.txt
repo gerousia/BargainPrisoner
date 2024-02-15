@@ -71,9 +71,6 @@ change_imprisoner_character_effect = {
 				NOT = { $NEW_IMPRISONER$ = { is_at_war_with = $TARGET$ } }
 				NOT = { has_any_bad_relationship_with_character_trigger = { CHARACTER = $IMPRISONER$ } }
 				OR = {
-					has_character_modifier = recently_tortured
-					has_character_modifier = recently_blinded
-					has_character_modifier = recently_castrated
 					$IMPRISONER$ = {
 						NOR = { 
 							has_trait = sadistic
