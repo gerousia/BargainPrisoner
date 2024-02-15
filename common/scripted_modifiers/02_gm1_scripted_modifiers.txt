@@ -37,7 +37,7 @@ gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
 			$SENDER$.liege = $RECEIVER$
 		}
 		add = {
-			value = 20
+			value = -20
 			multiply = {
 				value = $SENDER$.highest_held_title_tier
 				subtract = $RECEIVER$.highest_held_title_tier
@@ -55,7 +55,7 @@ gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
 			$SENDER$.liege = $RECEIVER$
 		}
 		add = {
-			value = -20
+			value = 20
 			multiply = {
 				value = $RECEIVER$.highest_held_title_tier
 				subtract = $SENDER$.highest_held_title_tier
