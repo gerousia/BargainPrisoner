@@ -37,52 +37,11 @@ offer_prisoner_interaction = {
 		## Must be available.
 		## Must not be imprisoned.
 		## Must have prisoners
-		## Must not have any prisoners already under interaction.
-		## Must employ a bodyguard.
-		## Must have at least 1 available bodyguard.
 		## Must be at peace with the Recipient.
 		scope:actor = { 
 			is_busy_in_events_localised = yes
-				is_imprisoned = no 
-				has_prisoners = yes
-
-			trigger_if = {
-				limit = { has_prisoners = yes }
-				custom_description = {
-					text = "already_under_ongoing_transfer_interaction_with_trigger"
-					object = scope:recipient
-					any_prisoner = {
-						count = 0
-						exists = var:under_transfer_prisoner_interaction_with
-						var:under_transfer_prisoner_interaction_with = scope:recipient
-					}
-				}
-			}
-			
-			trigger_if = {
-				limit = {
-					OR = {
-						has_game_rule = gm1_enable_travel 
-						AND = {
-							has_game_rule = gm1_ai_disable_travel
-							is_ai = no
-						}
-					}
-				}
-				employs_court_position = bodyguard_court_position
-				trigger_if = {
-					limit = { employs_court_position = bodyguard_court_position }
-					custom_description = {
-						text = "has_any_available_bodyguard_trigger"
-						any_court_position_holder = {
-							count >= 1
-							type = bodyguard_court_position
-							is_available = yes
-							NOT = { exists = var:travel_companion }
-						}
-					}
-				}
-			}
+			is_imprisoned = no 
+			has_prisoners = yes
 		}
 		
 		# Recipient
@@ -362,14 +321,18 @@ offer_prisoner_interaction = {
 	send_options_exclusive = no
 
 	on_send = {
-		if = {
-			limit = { scope:recipient = { is_ai = no } }
-			hidden_effect = {
-				scope:secondary_actor = {
+		hidden_effect = {
+			scope:secondary_actor = {
+				if = {
+					limit = { scope:recipient = { is_ai = no } }
 					add_character_flag = {
 						flag = offered_prisoner_already
 						years = 3
 					}
+				}
+				add_character_flag = {
+					flag = under_transfer_prisoner_interaction
+					months = 1
 				}
 			}
 		}
@@ -383,19 +346,7 @@ offer_prisoner_interaction = {
 		}
 
 		scope:actor = {
-			if = {
-				limit = {
-					OR = {
-						has_game_rule = gm1_enable_travel 
-						AND = {
-							has_game_rule = gm1_ai_disable_travel
-							is_ai = no
-						}
-					}
-				}
-				trigger_event = gm1_interaction.0011
-			}
-			else = { trigger_event = gm1_interaction.0016 }
+			trigger_event = gm1_interaction.0016
 		}
 
 		## Clan Unity.
@@ -789,47 +740,6 @@ demand_prisoner_interaction = {
 			is_busy_in_events_localised = yes
 			is_imprisoned = no
 			has_prisoners = yes
-
-			trigger_if = {
-				limit = { has_prisoners = yes }
-				custom_description = {
-					text = "already_under_ongoing_transfer_interaction_with_trigger"
-					object = scope:actor
-					any_prisoner = {
-						count = 0
-						exists = var:under_transfer_prisoner_interaction_with
-						var:under_transfer_prisoner_interaction_with ?= scope:actor
-					}
-				}
-			}
-
-			trigger_if = {
-				limit = {
-					OR = {
-						has_game_rule = gm1_enable_travel 
-						AND = {
-							has_game_rule = gm1_ai_disable_travel
-							is_ai = no
-						}
-					}
-				}
-				trigger_if = {
-					limit = { is_ai = no }
-					employs_court_position = bodyguard_court_position
-					trigger_if = {
-						limit = { employs_court_position = bodyguard_court_position }
-						custom_description = {
-							text = "has_any_available_bodyguard_trigger"
-							any_court_position_holder = {
-								count >= 1
-								type = bodyguard_court_position
-								is_available = yes
-								NOT = { exists = var:travel_companion }
-							}
-						}
-					}
-				}
-			}
 		}
 		
 		# Actor
@@ -1275,19 +1185,7 @@ demand_prisoner_interaction = {
 		}
 
 		scope:actor = {
-			if = {
-				limit = { 
-					OR = {
-						has_game_rule = gm1_enable_travel 
-						AND = {
-							has_game_rule = gm1_ai_disable_travel
-							is_ai = no
-						}
-					}
-				}
-				trigger_event = gm1_interaction.0021
-			}
-			else = { trigger_event = gm1_interaction.0026 }
+			trigger_event = gm1_interaction.0026
 		}
 
 		## Clan Unity.
