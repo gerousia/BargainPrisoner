@@ -1,16 +1,6 @@
 ﻿##############################
 ## GM1 opinion_modifiers
 ##############################
-#------------------------------
-# list
-#------------------------------
-# demanded_transfer_prisoner
-# refused_transfer_prisoner
-# failed_transfer_prisoner
-# transferred_me_attempt
-# transferred_me
-# transferred_me_different_faith
-# transferred_family_member
 
 # Values based on ./common/opinion_modifiers/00_prison_opinions.txt/demanded_recruitment
 demanded_transfer_prisoner = {
@@ -23,21 +13,6 @@ demanded_transfer_prisoner = {
 refused_transfer_prisoner = {
 	opinion = -15
 	monthly_change = 0.1
-	decaying = yes
-}
-
-# Values based on ./common/opinion_modifiers/05_dlc_bp2_opinions.txt/hostage_died_opinion
-failed_transfer_prisoner = {
-	opinion = -25
-	monthly_change = 0.1
-	decaying = yes
-	stacking = yes # Added.
-}
-
-# Values based on ./common/opinion_modifiers/00_crime_and_prison_opinions.txt/attempted_imprisonment_opinion
-transferred_me_attempt = {
-	opinion = -30
-	years = 15
 	decaying = yes
 }
 
