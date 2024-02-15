@@ -2,26 +2,44 @@
 ## GM1 scripted_triggers
 ##############################
 
-already_under_ongoing_transfer_prisoner_interaction_trigger = {
-	global_not = ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
-	first_not = I_AM_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
-	third_not = CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
-}
-
-already_under_ongoing_transfer_interaction_with_trigger = {
-	global_not = ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER
-	first_not = I_AM_ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER
-	third_not = CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_INTERACTION_WITH_TRIGGER
-}
-
 is_at_capital_prison_trigger = {
 	global_not = IS_NOT_AT_CAPITAL_PRISON_TRIGGER
 	first_not = I_AM_NOT_AT_CAPITAL_PRISON_TRIGGER
 	third_not = CHARACTER_IS_NOT_AT_CAPITAL_PRISON_TRIGGER
 }
 
-has_any_available_bodyguard_trigger = {
-	global_not = DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER
-	first_not = I_DO_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER
-	third_not = CHARACTER_DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER
+
+already_under_ongoing_transfer_prisoner_interaction_trigger = {
+	global_not = ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
+	first_not = I_AM_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
+	third_not = CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
+}
+
+# PDX bug - remove when fixed
+
+has_prisoners = {
+	global = HAS_PRISONERS_TRIGGER
+	first = I_HAVE_PRISONERS_TRIGGER
+	third = THEY_HAVE_PRISONERS_TRIGGER
+	global_not = HAS_NO_PRISONERS_TRIGGER
+	first_not = I_HAVE_NO_PRISONERS_TRIGGER
+	third_not = THEY_HAVE_NO_PRISONERS_TRIGGER
+}
+
+any_prisoner = {
+	global = ANY_PRISONER
+	first = ANY_PRISONER_FIRST
+	third = ANY_PRISONER_THIRD
+}
+
+any_prisoner_all = {
+	global = ALL_PRISONER
+	first = ALL_PRISONER_FIRST
+	third = ALL_PRISONER_THIRD
+}
+
+any_prisoner_count = {
+	global = COUNT_EQ_PRISONER
+	first = COUNT_EQ_PRISONER_FIRST
+	third = COUNT_EQ_PRISONER_THIRD
 }
