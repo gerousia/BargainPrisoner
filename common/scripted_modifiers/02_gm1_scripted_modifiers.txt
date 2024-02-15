@@ -76,11 +76,14 @@ gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
 			$SENDER$.interaction_current_strength_ninety_percent_value > $RECEIVER$.current_military_strength
 			$SENDER$.current_military_strength < $RECEIVER$.interaction_current_strength_ninety_percent_value
 		}
-		add = 10
+		add = {
+			value = 10
+			multiply = -1 # inverted
+		}
 		desc = INTERACTION_AI_REASON_SIMILAR_MILITARY_STRENGTH
 	}
 
-	### They are less powerful
+	### They are less powerful in Military Strength
 	modifier = {
 		$SENDER$.interaction_current_strength_ninety_percent_value > $RECEIVER$.current_military_strength
 		add = {
@@ -91,14 +94,17 @@ gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
 			}
 			# 1828 / 1382 = 1.32
 			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = 50 # 0.32 * 50 = 16
+			multiply = {
+				value = 50 # 0.32 * 50 = 16
+				multiply = -1 # inverted
+			}
 			max = 50
 			min = -50
 		}
 		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
 	}
 
-	### They are more powerful
+	### They are more powerful in Military Strength
 	modifier = {
 		$SENDER$.current_military_strength < $RECEIVER$.interaction_current_strength_ninety_percent_value
 		add = {
@@ -109,14 +115,17 @@ gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
 			}
 			# 1828 / 1382 = 1.32
 			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = -50 # 0.32 * -50 = -16
+			multiply = {
+				value = -50 # 0.32 * -50 = -16
+				multiply = -1 # inverted
+			}
 			max = 50
 			min = -50
 		}
 		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
 	}
 
-	### Both allies' power
+	### Both allies' power in Military Strength
 	modifier = {
 		#### Some allies must exist
 		OR = {
@@ -146,7 +155,10 @@ gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
 			}
 			# 1828 / 1382 = 1.32
 			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = 100 # 0.32 * 100 = 32
+			multiply = {
+				value = 100 # 0.32 * 100 = 32
+				multiply = -1 # inverted
+			}
 			divide = 2 # 32 / 2 = 16
 			max = 25
 			min = -25
