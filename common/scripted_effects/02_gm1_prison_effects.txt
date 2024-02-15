@@ -136,9 +136,6 @@ change_imprisoner_character_effect = {
 		}
 	}
 
-	## Optional Penalties - Enabled Default
-	#if = {
-	#	limit = { NOT = { has_game_rule = change_imprisoner_penalties_enabled } }
 	change_imprisoner_vassal_effect = {
 		TARGET = $TARGET$
 		IMPRISONER = $IMPRISONER$
