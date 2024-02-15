@@ -2,131 +2,255 @@
 ## VANILLA INTERACTION FEATURES:
 ##############################
 
-  scopes:
-    - recipient
-    - actor
+  HOSTAGE:
+    
+    Scopes:
+      - primary_actor = offerer / hostage_sender / actor / warden
+      - recipient = reciever / hostage_taker
+      - secondary_actor = hostage
+      - secondary_recipient = #2
 
-  imprison_interaction:
-    - Cost:
-        - prestige (certain diarchy situations)
-    - ai_potential:
-        - NOT = has_realm_law_flag = cannot_imprison
-        - is_imprisoned = no
-    send_option:
-        - has_usable_hook
-    on_accept:
-      - Stress Modifiers:
-          - actor:
-              - has_imprisonment_reason:
-                  - compassionate = minor_stress_impact_gain
-                  - forgiving = minor_stress_impact_gain
-              - just = medium_stress_impact_gain
-              - compassionate = medium_stress_impact_gain
-    on_decline:
-      - if vassal:
-          - is_landed
-          - is_a_faction_member:
-              - start war
-              - join retaliation_faction faction
-      - if baron or unlanded:
-          - flags:
-              - escaped_imprisonment_from
-              - is_landed:
-                  - deposed
-              - is_hostage
-    Clan Unity:
-      - major_unity_loss
+    offer_hostage_interaction:
+      flags:
+        - is_busy_in_events_localised
+        - is_at_war_with
+        - goverment_is_theocracy
+        - any_warden_hostage
+        - hostage_travelling_to_warden
+        - ai_should_not_offer_hostage
+        - bp2_valid_to_offer_as_hostage_trigger
+        - under_offer_as_hostage_flag
+        - ai_should_not_offer_hostage
+        - government_has_flag
 
-  move_to_dungeon_interaction:
-    flags:
-      - is_imprisoned_by
-      - is_in_prison_type = house_arrest
-      - is_busy_in_events
-      - is_being_tortured
-    Opinion Modifiers:
-      - every_close_or_extended_family_member:
-          - family_moved_to_dungeon_opinion
-    Clan Unity:
-      - medium_unity_loss
-    auto_accept: yes
-    on_accept:
-      - add_character_modifier = allowed_to_go_outside
-      - add_character_modifier = moldy_gruel_diet
+      on_send:
+        - add_character_flag = under_offer_as_hostage_flag
+        - add_character_flag = ai_should_not_offer_hostage
 
-  move_to_house_arrest_interaction:
-    flags:
-      - has_character_modifier = allowed_to_go_outside
-      - has_character_modifier = moldy_gruel_diet
-      - is_in_prison_type = dungeon
-    Stress Modifiers:
-      - actor:
-          - sadistic = medium_stress_impact_gain
-          - vengeful = medium_stress_impact_gain
-    Opinion Modifiers:
-      - every_close_or_extended_family_member:
-          - move_to_house_arrest_opinion
-    on_accept:
-      - remove_character_modifier = allowed_to_go_outside
-      - remove_character_modifier = moldy_gruel_diet
+      on_accept:
+        - hostasge_depart_effect
+        - government_has_flag = government_is_clan
+          - Clan Unity:
+            - medium_unity_loss
+        
+      on_decline:
+        - remove_character_flag = under_offer_as_hostage_flag
 
-  ransom_interaction:
-    flags:
-      - use_diplomatic_range = no
-      - is_busy_in_events_localised = yes #Payer
-      - is_busy_in_events_localised = yes #Prisoner
-      - is_being_tortured
-      - is_imprisoned_by_diarch
-      - charcter_ransom_refused_by_player
-      - has_dynasty_perk = fp1_pillage_legacy_3
-      - is_lowborn
-      - mass_action
-    send_option:
-      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_OPTION"
-      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
-      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_GOLD_OPTION"
-      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
-      - can_add_hook "RANSOM_FAVOR_OPTION"
-    on_accept:
-      - remove_character_modifier = allowed_to_go_outside
-      - remove_character_modifier = moldy_gruel_diet
-    on_decline:
-      - add_character_flag = character_ransom_refused_by_player
+      auto_accept:
+        - has_strong_hook
 
-  pay_ransom_interaction:
-    flags:
-      - liege
-      - is_close_family_of
-      - dynasty
-      - any_spouse
-      - has_relation_lover
-      - has_relation_friend
-    send_option:
-      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
-      - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
-      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_GOLD_PAY_OPTION"
-      - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_CURRENT_PAY_GOLD_OPTION"
-      - can_add_hook "RANSOM_OWE_FAVOR_OPTION"
-      - has_usable_hook SCHEME_HOOK
-    on_accept (mostly stress modifiers):
-      - random courtiers:
-          - Stress Modifiers:
-              - compassionate = minor_stress_impact_loss
-              - generous = medium_stress_impact_loss
-      - vassal, consort, close family, dynasty, spouse, lover, or friend:
-          - Stress modifiers:
-              - compassionate = medium_stress_impact_loss
-              - generous = minor_stress_impact_loss
-              - just = minor_stress_impact_loss
-      - lover:
-          - Stress modifiers:
-              - lustful = major_stress_impact_loss
-      - family:
-          - Stress modifiers:
-              - family_first = miniscule_stress_impact_loss
+      can_be_blocked:
+        - has_strong_hook (recipient to actor)
+
+      on_blocked_effect:
+        - remove_hook (recipient to actor)
+
+      send_option:
+        - has_usable_hook (actor to recipient)
+
+    demand_hostage_interaction:
+      flags:
+        - is_busy_in_events_localised
+        - is_at_war_with
+        - goverment_is_theocracy
+        - any_warden_hostage
+        - hostage_travelling_to_warden
+        - ai_should_not_demand_hostage
+        - bp2_valid_to_demand_as_hostage_trigger
+        - ai_should_not_demand_hostage
+        - under_offer_as_hostage_flag
+        - ai_should_not_offer_hostage
+        - NOT = { has_trait = disloyal } / has_trait = loyal
+        - is_vassal_of
+        - add_tyranny
+        - government_has_flag
+      
+      on_send:
+        - add_character_flag = under_offer_as_hostage_flag
+        - add_character_flag = flag_hostile_actions_disabled_delay
+        - add_character_flag = ai_should_not_demand_hostage
+
+      on_accept:
+        - is_vassal_of = actor
+          - add_tyranny = minor_tyranny_gain
+        - government_has_flag = government_is_clan
+          - Clan Unity:
+            - minor_unity_loss 
+
+      on_decline:
+        - is_vassal_of = actor
+          - Opinion Modifier:
+            - liege_demanded_hostage_opinion
+          - add_tyranny = minor_tyranny_gain
+        - remove_character_flag = under_offer_as_hostage_flag
+
+      auto_accept:
+        - has_strong_hook
+
+      can_be_blocked:
+        - has_strong_hook (recipient to actor)
+
+      on_blocked_effect:
+        - remove_hook (recipient to actor)
+
+      send_option:
+        - has_usable_hook (actor to recipient)
+
+      exchange_hostage_interaction:
+        flags:
+          - is_busy_in_events_localised
+          - is_at_war_with
+          - goverment_is_theocracy
+          - any_warden_hostage
+          - hostage_travelling_to_warden
+          - ai_should_not_demand_hostage
+          - bp2_valid_to_offer_as_hostage_trigger
+          - ai_should_not_offer_hostage
+          - under_offer_as_hostage_flag
+          - ai_should_not_offer_hostage
+
+        on_send:
+          - add_character_flag = under_offer_as_hostage_flag
+
+        on_accept:
+          - government_has_flag = government_is_clan
+              - Clan Unity:
+                - medium_unity_loss
+
+        on_decline:
+          - remove_character_flag = under_offer_as_hostage_flag
+
+  PRISONER:
+
+    MAIN REFERENCE:
+      - hostage_depart_effect
+
+    Scopes:
+      - recipient
+      - secondary_recipient
+      - actor
+
+    imprison_interaction:
+      - Cost:
+          - prestige (certain diarchy situations)
+      - ai_potential:
+          - NOT = has_realm_law_flag = cannot_imprison
+          - is_imprisoned = no
+      send_option:
+          - has_usable_hook
+      on_accept:
+        - Stress Modifiers:
+            - actor:
+                - has_imprisonment_reason:
+                    - compassionate = minor_stress_impact_gain
+                    - forgiving = minor_stress_impact_gain
+                - just = medium_stress_impact_gain
+                - compassionate = medium_stress_impact_gain
+      on_decline:
+        - if vassal:
+            - is_landed
+            - is_a_faction_member:
+                - start war
+                - join retaliation_faction faction
+        - if baron or unlanded:
+            - flags:
+                - escaped_imprisonment_from
+                - is_landed:
+                    - deposed
+                - is_hostage
       Clan Unity:
-        - medium_unity_gain
+        - major_unity_loss
+
+    move_to_dungeon_interaction:
+      flags:
+        - is_imprisoned_by
+        - is_in_prison_type = house_arrest
+        - is_busy_in_events
+        - is_being_tortured
+      Opinion Modifiers:
+        - every_close_or_extended_family_member:
+            - family_moved_to_dungeon_opinion
+      Clan Unity:
+        - medium_unity_loss
+      auto_accept: yes
+      on_accept:
+        - add_character_modifier = allowed_to_go_outside
+        - add_character_modifier = moldy_gruel_diet
+
+    move_to_house_arrest_interaction:
+      flags:
+        - has_character_modifier = allowed_to_go_outside
+        - has_character_modifier = moldy_gruel_diet
+        - is_in_prison_type = dungeon
+      Stress Modifiers:
+        - actor:
+            - sadistic = medium_stress_impact_gain
+            - vengeful = medium_stress_impact_gain
+      Opinion Modifiers:
+        - every_close_or_extended_family_member:
+            - move_to_house_arrest_opinion
+      on_accept:
+        - remove_character_modifier = allowed_to_go_outside
+        - remove_character_modifier = moldy_gruel_diet
+
+    ransom_interaction:
+      flags:
+        - use_diplomatic_range = no
+        - is_busy_in_events_localised = yes #Payer
+        - is_busy_in_events_localised = yes #Prisoner
+        - is_being_tortured
+        - is_imprisoned_by_diarch
+        - charcter_ransom_refused_by_player
+        - has_dynasty_perk = fp1_pillage_legacy_3
+        - is_lowborn
+        - mass_action
+      send_option:
+        - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_OPTION"
+        - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
+        - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_GOLD_OPTION"
+        - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_EXTORTIONATE_CURRENT_GOLD_OPTION"
+        - can_add_hook "RANSOM_FAVOR_OPTION"
+      on_accept:
+        - remove_character_modifier = allowed_to_go_outside
+        - remove_character_modifier = moldy_gruel_diet
       on_decline:
         - add_character_flag = character_ransom_refused_by_player
+
+    pay_ransom_interaction:
+      flags:
+        - liege
+        - is_close_family_of
+        - dynasty
+        - any_spouse
+        - has_relation_lover
+        - has_relation_friend
+      send_option:
+        - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
+        - has_dynasty_perk = fp1_pillage_legacy_3 "RANSOM_EXTORTIONATE_CURRENT_GOLD_IMPRISONED_PERSPECTIVE_OPTION"
+        - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_GOLD_PAY_OPTION"
+        - NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } "RANSOM_CURRENT_PAY_GOLD_OPTION"
+        - can_add_hook "RANSOM_OWE_FAVOR_OPTION"
+        - has_usable_hook SCHEME_HOOK
+      on_accept (mostly stress modifiers):
+        - random courtiers:
+            - Stress Modifiers:
+                - compassionate = minor_stress_impact_loss
+                - generous = medium_stress_impact_loss
+        - vassal, consort, close family, dynasty, spouse, lover, or friend:
+            - Stress modifiers:
+                - compassionate = medium_stress_impact_loss
+                - generous = minor_stress_impact_loss
+                - just = minor_stress_impact_loss
+        - lover:
+            - Stress modifiers:
+                - lustful = major_stress_impact_loss
+        - family:
+            - Stress modifiers:
+                - family_first = miniscule_stress_impact_loss
+        Clan Unity:
+          - medium_unity_gain
+        on_decline:
+          - add_character_flag = character_ransom_refused_by_player
 
 ##############################
 ## MOD FEATURES:
@@ -162,7 +286,7 @@
     - another player
     - other ai
 
-  - Buy prisoner for:
+  - offer_prisoner_interaction: (Offer prisoner for)
     - gold (similar to ransom)
     - recipient gets weak hook
     - has_usable_hook
@@ -170,12 +294,17 @@
         - renounce claim?
         - another prisoner?
 
-  - Sell prisoner for:
+  - demand_prisoner_interaction: (Demand prisoner for)
     - gold (similar to ransom)/huge gold (war leader)
     - can_add_hook = weak_hook/strong_hook (war leader)
     - other possibilities:
         - renounce claim?
         - another prisoner?
+
+  - exchange_prisoner_interaction: (Exchange prisoner for)
+
+  NEW EFFECT:
+    - prisoner_depart_effect
 
   Opinion Modifiers:
     - Prisoner to the Captor:
@@ -197,6 +326,14 @@
         - Traded liege to enemy
     - Prisoner Family Members:
         - every_close_or_extended_family_member
+
+  ADDITIONAL FEATURES:
+    - Prisoner_notification
+    - Travel Bodyguard System
+      - Events related to travelling
+        - prisoner possibility of escaping
+      - Player potentially be the bodyguard during travel?
+        - Travel system similar to activity travels
 
   Why use this feature?
     - As a liege, more control over your vassals
