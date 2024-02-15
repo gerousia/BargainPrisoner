@@ -40,8 +40,8 @@ offer_prisoner_interaction = {
 		## Must be at peace with the Recipient.
 		scope:actor = { 
 			is_busy_in_events_localised = yes
-			is_imprisoned = no 
-			has_prisoners = yes
+			is_imprisoned = no
+			has_prisoners = yes 
 		}
 		
 		# Recipient
@@ -733,13 +733,16 @@ demand_prisoner_interaction = {
 
 		# Recipient
 		## Must be available.
-		## Must not be imprisoned.
 		## Must have prisoners.
 		## Must not have any prisoners already under interaction.
 		scope:recipient = {
 			is_busy_in_events_localised = yes
-			is_imprisoned = no
-			has_prisoners = yes
+			
+			### Specialized Redirected Demand Imprisonment
+			trigger_if = {
+				limit = { is_imprisoned = no }
+				has_prisoners = yes
+			}
 		}
 		
 		# Actor
@@ -816,6 +819,19 @@ demand_prisoner_interaction = {
 			NAND = {
 				scope:hook = yes
 				scope:actor = { has_strong_hook = scope:recipient }
+			}
+		}
+	}
+
+	redirect = {
+		scope:recipient = {
+			if = {
+				limit = { is_imprisoned = yes }
+				save_scope_as = secondary_recipient
+
+				imprisoner ?= {
+					save_scope_as = recipient
+				}
 			}
 		}
 	}
