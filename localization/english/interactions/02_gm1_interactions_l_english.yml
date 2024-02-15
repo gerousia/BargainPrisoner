@@ -57,6 +57,7 @@ l_english:
  INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_ACTOR: "You are at war with [prisoner|E]: $VALUE|+0$"
  INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT: "[recipient.GetSheHe|U] is at war with [prisoner|E]: $VALUE|+0$"
 
+ INTERACTION_AI_REASON_PRISONER_HEAD_OF_FAITH: "[prisoner|E] is their [head_of_faith|E]: $VALUE|+0=$"
  INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY: "[prisoner|E] [faith|E] is [faith_astray|E]: $VALUE|0+=$"
  INTERACTION_AI_REASON_PRISONER_FAITH_HOSTILE: "[prisoner|E] [faith|E] is [faith_hostile|E]: $VALUE|0+=$"
  INTERACTION_AI_REASON_PRISONER_FAITH_EVIL: "[prisoner|E] [faith|E] is [faith_evil|E]: $VALUE|0+=$"
