@@ -29,25 +29,42 @@ Download the mod through the Steam Workshop, or alternatively, download it from 
 ```bash
   ~.\Documents\Paradox Interactive\Crusader Kings III\mod
 ```
+
+
 ## 🔗 Compatibility
 - ✅ Save Game Compatible
 - ✅ Mod Compatible
 - ✅ Iron-man Compatible
 - ✅ Achievement Compatible
+
+
 ## 📹 Demo
 
 Insert gif or link to demo
 
 
+## 🗺️ Roadmap
+I have temporarily removed these features to ensure compatibility with other mods:
+- Prisoner Traveling System
+- Events Related to Travel System
+- Travel System Game Rules
+- Exchange Prisoner Interaction
+
+I may consider reintroducing them once the new DLC is released or if some of you guys want to try it, however.
+
 ## ❓ FAQ
 
 #### ❔ Why do they cost less than the ransom interaction?
 
-For balance reasons, this mechanic is way too powerful. Unless you have other mods that interact with imprisonment, the AI lacks a genuine incentive to accept it, aside from being at war. Consequently, they wouldn't really benefit from its use; they would promptly ransom prisoners as soon as they can.
+> For balance reasons, this mechanic is way too powerful. I did implement something that will reward you more if you interact with the appropriate ruler.
+> Unless you have other mods that interact with imprisonment, the AI lacks a genuine incentive to accept prisoners, aside from being at war. Consequently, they wouldn't really benefit from its use; they would promptly ransom prisoners as soon as they can.
 
-I did implement something that will reward you more if you interact with the appropriate ruler.
+#### ❔ How did you come up with these values?
+
+> These balance values strictly are derived from existing numbers related to hostile, vassal, and hostage interactions.
+> Notes are provided above each modifier within the code, indicating the source of the values. However, if there are no such notes, it is solely a decision made by me.
 
 #### ❔ Isn't there a mod similar to this already?
 
-Yes, however, it lacks some features that I desire or that I plan to implement in the future. It's also highly customizable if you ever wish to add or modify something yourself.
+> Yes, however, it lacks some features that I desire or that I plan to implement in the future. Since everything is written from scratch, it is also highly customizable should you ever wish to add, modify, or maintain it yourself.
 
