@@ -1,3 +1,6 @@
+<div align="center">
+  <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/thumbnail.png" alt="banner" width="60%" height="60%">
+</div>
 
 # CK3: Prisoners and Jailors
 
@@ -43,9 +46,9 @@ Download the mod through the Steam Workshop, or alternatively, download it from 
 <details>
   <summary></summary>
   <div align="center">
-    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_4.gif" alt="Preview" width="80%" height="80%">
-    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_1.png" alt="Preview" width="80%" height="80%">
-    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_2.png" alt="Preview" width="80%" height="80%">
+    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_4.gif" alt="preview" width="80%" height="80%">
+    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_1.png" alt="preview" width="80%" height="80%">
+    <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/ck3_2.png" alt="preview" width="80%" height="80%">
   </div>
 </details>
 
