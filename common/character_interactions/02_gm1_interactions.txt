@@ -339,14 +339,15 @@ offer_prisoner_interaction = {
 	}
 
 	on_accept = {
+		## Notification Event.
+		scope:actor = {
+			trigger_event = gm1_interaction.0016
+		}
+
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_actor
 			SENDER = scope:actor
 			RECEIVER = scope:recipient
-		}
-
-		scope:actor = {
-			trigger_event = gm1_interaction.0016
 		}
 
 		## Clan Unity.
@@ -1192,14 +1193,15 @@ demand_prisoner_interaction = {
 	}
 
 	on_accept = {
+		## Notification Event.
+		scope:actor = {
+			trigger_event = gm1_interaction.0026
+		}
+		
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_recipient
 			SENDER = scope:recipient
 			RECEIVER = scope:actor
-		}
-
-		scope:actor = {
-			trigger_event = gm1_interaction.0026
 		}
 
 		## Clan Unity.
