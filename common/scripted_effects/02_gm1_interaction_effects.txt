@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -19,16 +19,16 @@
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_effect = {
-	$RECEIVER$ = {
-		if = {
-			limit = {
-				OR = {
-					scope:exploitive_extortionate_current_gold ?= yes
-					scope:extortionate_current_gold ?= yes
-					scope:exploitive_current_gold ?= yes
-					scope:current_gold ?= yes
-				}
+	if = {
+		limit = {
+			OR = {
+				scope:exploitive_extortionate_current_gold ?= yes
+				scope:extortionate_current_gold ?= yes
+				scope:exploitive_current_gold ?= yes
+				scope:current_gold ?= yes
 			}
+		}
+		$RECEIVER$ = {
 			save_scope_value_as = {
 				name = barter_saved_gold_value
 				value = $RECEIVER$.current_gold_value
@@ -176,121 +176,148 @@ transfer_prisoner_interaction_escalate_rivalry_effect = {
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_bargain_effect = {
-	$RECEIVER$ = {
-		## War
-		## FP3 Perk 
-		### Full Gold Amount
-		### Full Prestige Amount 
-		if = {
-			limit = { scope:exploitive_extortionate_gold ?= yes	}
+	## War
+	## FP3 Perk 
+	### Full Gold Amount
+	### Full Prestige Amount 
+	if = {
+		limit = { scope:exploitive_extortionate_gold ?= yes	}
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.highly_increased_barter_cost_value
 				target = $SENDER$
 			}
-			$SENDER$ = { 
-				add_prestige = $PRISONER$.highly_increased_barter_cost_value
-			}
 		}
-		## War
-		## FP3 Perk 
-		### Partial Gold Amount
-		### Partial Prestige Amount 
-		if = {
-			limit = { scope:exploitive_extortionate_current_gold ?= yes	}
+		$SENDER$ = { 
+			add_prestige = $PRISONER$.highly_increased_barter_cost_value
+		}
+	}
+
+	## War
+	## FP3 Perk 
+	### Partial Gold Amount
+	### Partial Prestige Amount 
+	if = {
+		limit = { scope:exploitive_extortionate_current_gold ?= yes	}
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = scope:barter_saved_gold_value
 				target = $SENDER$
 			}
-			$SENDER$ = { 
-				add_prestige = scope:barter_saved_gold_value
-			}
 		}
-		## FP3 Perk 
-		### Full Gold Amount
-		### Full Prestige Amount 
-		if = {
-			limit = { scope:extortionate_gold ?= yes }
+		$SENDER$ = { 
+			add_prestige = scope:barter_saved_gold_value
+		}
+	}
+
+	## FP3 Perk 
+	### Full Gold Amount
+	### Full Prestige Amount 
+	if = {
+		limit = { scope:extortionate_gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.slightly_increased_barter_cost_value
 				target = $SENDER$
 			}
-			$SENDER$ = { 
-				add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
-			}
 		}
-		## FP3 Perk 
-		### Partial Gold Amount
-		### Partial Prestige Amount 
-		if = {
-			limit = { scope:extortionate_current_gold ?= yes }
+		$SENDER$ = { 
+			add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
+		}
+	}
+
+	## FP3 Perk 
+	### Partial Gold Amount
+	### Partial Prestige Amount 
+	if = {
+		limit = { scope:extortionate_current_gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = scope:barter_saved_gold_value
 				target = $SENDER$
 			}
-			$SENDER$ = { 
-				add_prestige = scope:barter_saved_gold_value 
-			}
 		}
-		## War 
-		### Full Gold Amount
-		if = {
-			limit = { scope:exploitive_gold ?= yes }
+		$SENDER$ = { 
+			add_prestige = scope:barter_saved_gold_value 
+		}
+	}
+
+	## War 
+	### Full Gold Amount
+	if = {
+		limit = { scope:exploitive_gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.increased_barter_cost_value
 				target = $SENDER$
 			}
 		}
-		## War 
-		### Partial Gold Amount
-		if = {
-			limit = { scope:exploitive_current_gold ?= yes }
+	}
+
+	## War 
+	### Partial Gold Amount
+	if = {
+		limit = { scope:exploitive_current_gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = scope:barter_saved_gold_value
 				target = $SENDER$
 			}
 		}
-		### Full Gold Amount
-		if = {
-			limit = { scope:gold ?= yes }
+	}
+
+	## Default
+	### Full Gold Amount
+	if = {
+		limit = { scope:gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.barter_cost_value
 				target = $SENDER$
 			}
 		}
-		### Partial Gold Amount
-		if = {
-			limit = { scope:current_gold ?= yes }
+	}
+
+	## Default
+	### Partial Gold Amount
+	if = {
+		limit = { scope:current_gold ?= yes }
+		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = scope:barter_saved_gold_value
 				target = $SENDER$
 			}
 		}
-		### Strong Hook
-		if = {
-			limit = { scope:strong_hook ?= yes }
-			$SENDER$ = {
-				add_hook = {
-					target = $RECEIVER$
-					type = loyalty_hook
-				}
-			}
-		}
-		### Weak Hook
-		if = {
-			limit = { scope:favor ?= yes }
-			$SENDER$ = {
-				add_hook = {
-					target = $RECEIVER$
-					type = favor_hook
-				}
+	}
+
+	## Default
+	### Strong Hook
+	if = {
+		limit = { scope:strong_hook ?= yes }
+		$SENDER$ = {
+			add_hook = {
+				target = $RECEIVER$
+				type = loyalty_hook
 			}
 		}
 	}
 
-	$SENDER$ = {
-		### Forced Auto-Accept
-		if = {
-			limit = { scope:hook ?= yes }
+	## Default
+	### Weak Hook
+	if = {
+		limit = { scope:favor ?= yes }
+		$SENDER$ = {
+			add_hook = {
+				target = $RECEIVER$
+				type = favor_hook
+			}
+		}
+	}
+
+	## Auto-accept
+	if = {
+		limit = { scope:hook ?= yes }
+		$SENDER$ = {
 			if = {
 				limit = {
 					NOT = { is_vassal_of = $RECEIVER$ }
@@ -301,17 +328,21 @@ transfer_prisoner_interaction_bargain_effect = {
 					modifier = demanded_transfer_prisoner
 				}
 			}
-			$RECEIVER$ = { use_hook = $SENDER$ }
 		}
-		else_if = {
-			limit = { is_vassal_of = $RECEIVER$ }
-			add_opinion = {
-				target = $RECEIVER$
-				modifier = demanded_transfer_prisoner
+		$RECEIVER$ = { use_hook = $SENDER$ }
+	}
+	else = {
+		$SENDER$ = {
+			if = {
+				limit = { is_vassal_of = $RECEIVER$ }
+				add_opinion = {
+					target = $RECEIVER$
+					modifier = demanded_transfer_prisoner
+				}
 			}
 		}
 	}
-
+	
 	$PRISONER$ = {
 		if = {
 			limit = { has_character_flag = under_transfer_prisoner_interaction }

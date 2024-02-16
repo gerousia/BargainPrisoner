@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -887,7 +887,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -917,7 +917,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -946,7 +946,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -976,7 +976,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -1007,7 +1007,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -1039,7 +1039,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -1070,7 +1070,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -1102,7 +1102,7 @@ demand_prisoner_interaction = {
 		is_valid = {
 			## Cannot be used in tandem with other options to avoid Gold cheese
 			trigger_if = {
-				limit = { scope:hook = yes }
+				limit = { scope:hook ?= yes }
 				NOT = { scope:actor = { has_usable_hook = scope:recipient } }
 			}
 		}
@@ -1198,7 +1198,7 @@ demand_prisoner_interaction = {
 		}
 	}
 
-	on_accept = {
+	on_accept = {		
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_recipient
 			SENDER = scope:recipient
@@ -1209,7 +1209,7 @@ demand_prisoner_interaction = {
 		scope:actor = {
 			trigger_event = gm1_interaction.0026
 		}
-		
+
 		transfer_prisoner_interaction_bargain_effect = {
 			PRISONER = scope:secondary_recipient
 			SENDER = scope:recipient
