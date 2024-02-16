@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/thumbnail.png" alt="banner" width="60%" height="60%">
+  <img src="https://github.com/gerousia/BargainPrisoner/blob/main/thumbnail.png" alt="banner" width="40%" height="40%">
 </div>
 
 # CK3: Prisoners and Jailors
