@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -77,12 +77,6 @@ transfer_prisoner_interaction_effect = {
 	disband_all_schemes_effect = {
 		WHO = $RECEIVER$
 		TARGET = $PRISONER$
-	}
-
-	transfer_prisoner_interaction_bargain_effect = {
-		PRISONER = $PRISONER$
-		SENDER = $SENDER$
-		RECEIVER = $RECEIVER$
 	}
 }
 
