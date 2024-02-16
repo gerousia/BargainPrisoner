@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/gerousia/BargainPrisoner/blob/main/sample/images/thumbnail.png" alt="banner" width="60%" height="60%">
+  <img src="https://github.com/gerousia/BargainPrisoner/blob/main/thumbnail.png" alt="banner" width="40%" height="40%">
 </div>
 
 # CK3: Prisoners and Jailors
@@ -18,7 +18,12 @@ With that said, these balance values strictly derive from existing numbers perta
 ## 🔧 Mod Features
 
 - 🤴 Offer Prisoner Interaction
+  - Give Prisoners for Free 
+  - Bargain Prisoners for Gold or a Favor
 - 👸 Demand Prisoner Interaction
+  - Force Demand Prisoners from your Vassals
+  - Force Demand Prisoners from rulers if you have a hook
+  - Demand Prisoners for Gold or a Favor
 - ⛓️ Mechanism for replacing Prisoner Jailors
 - 🪙 Prisoner Gold Value Logic
 - 🤖 AI Scripted Modifier Logic
