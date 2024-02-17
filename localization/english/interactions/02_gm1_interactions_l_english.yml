@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 interactions
 ##############################
 
@@ -40,12 +40,12 @@ l_english:
  INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY: "[prisoner|E] [faith|E] is [faith_astray|E]: $VALUE|0+=$"
  INTERACTION_AI_REASON_PRISONER_FAITH_HOSTILE: "[prisoner|E] [faith|E] is [faith_hostile|E]: $VALUE|0+=$"
  INTERACTION_AI_REASON_PRISONER_FAITH_EVIL: "[prisoner|E] [faith|E] is [faith_evil|E]: $VALUE|0+=$"
- INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND: "[prisoner|E] is [receiver.GetHerHis] [friend|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND: "[prisoner|E] is [receiver.GetHerHis] [best_friend|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_LOVER: "[prisoner|E] is [receiver.GetHerHis] [lover|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE: "[prisoner|E] is [receiver.GetHerHis] [soulmate|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL: "[prisoner|E] is [receiver.GetHerHis] [rival|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS: "[prisoner|E] is [receiver.GetHerHis] [nemesis|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND: "[prisoner|E] is [recipient.GetHerHis] [friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND: "[prisoner|E] is [recipient.GetHerHis] [best_friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_LOVER: "[prisoner|E] is [recipient.GetHerHis] [lover|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE: "[prisoner|E] is [recipient.GetHerHis] [soulmate|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL: "[prisoner|E] is [recipient.GetHerHis] [rival|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS: "[prisoner|E] is [recipient.GetHerHis] [nemesis|E]: $VALUE|=+0$"
  INTERACTION_AI_REASON_PRISONER_DYNASTY_SAME_DYNASTY: "Shares [dynasty] with [prisoner|E]: $VALUE|=+0$"
  INTERACTION_AI_REASON_PRISONER_INTIMIDATED: "[intimidated_i][intimidated|E] by [prisoner|E]: $VALUE|=+0$"
  INTERACTION_AI_REASON_PRISONER_COWED: "[terrified_i][cowed|E] of [prisoner|E]: $VALUE|=+0$"
