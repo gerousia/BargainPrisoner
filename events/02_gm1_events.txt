@@ -1,4 +1,4 @@
-﻿namespace = gm1_interaction
+namespace = gm1_interaction
 
 ##############################
 ## GM1 interaction_events
@@ -223,7 +223,6 @@ gm1_interaction.0026 = {
 gm1_interaction.0022 = {
 	type = letter_event
 	opening = {
-		desc = char_interaction.0001.opening
 		desc = char_interaction.0001.opening
 	}
 	desc = {
