@@ -1,4 +1,4 @@
-namespace = gm1_interaction
+﻿namespace = gm1_interaction
 
 ##############################
 ## GM1 interaction_events
@@ -235,6 +235,12 @@ gm1_interaction.0022 = {
 	sender = {
 		character = scope:recipient
 		animation = dismissal
+	}
+
+	immediate = {
+		create_character_rescuable_effect = {
+			TARGET = scope:secondary_recipient
+		}
 	}
 
 	option = {

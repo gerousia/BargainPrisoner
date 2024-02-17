@@ -1,0 +1,15 @@
+﻿##############################
+## GM1 interactions
+##############################
+
+#------------------------------
+# rescue_and_vengeance
+#------------------------------
+
+l_english:
+ GAIN_A_RESCUE_CB: "Gains a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
+ GAINED_A_RESCUE_CB: "Gained a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
+ I_GAIN_A_RESCUE_CB: "You gain a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
+ I_GAINED_A_RESCUE_CB: "You gained a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
+ CHARACTER_GAIN_A_RESCUE_CB: "[CHARACTER.GetShortUIName] gains a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
+ CHARACTER_GAINED_A_RESCUE_CB: "[CHARACTER.GetShortUIName] gained a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
