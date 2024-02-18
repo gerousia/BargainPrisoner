@@ -18,7 +18,7 @@ offer_prisoner_interaction = {
 	notification_text = OFFER_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT
 	prompt = OFFER_PRISONER_INTERACTION_SELECT_TARGET
 
-	cooldown_against_recipient = { days = 0 }
+	cooldown_against_recipient = { years = 3 }
 
 	is_shown = {
 		# Cannot target oneself.
@@ -732,7 +732,7 @@ demand_prisoner_interaction = {
 	notification_text = DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT
 	prompt = DEMAND_PRISONER_INTERACTION_SELECT_TARGET
 
-	cooldown_against_recipient = { days = 0 }
+	cooldown_against_recipient = { years = 3 }
 
 	is_shown = {
 		# Cannot target oneself.
