@@ -8,11 +8,6 @@
 
 # TARGET (character)
 create_character_rescuable_effect = {
-	#custom_description = {
-	#	text = "gain_rescue_cb_effect"
-	#	object = $TARGET$
-	#}
-
 	add_to_variable_list = {
 		name = rv_declined_prisoner_list
 		target = $TARGET$
