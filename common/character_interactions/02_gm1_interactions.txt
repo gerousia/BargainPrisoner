@@ -1467,17 +1467,9 @@ demand_prisoner_interaction = {
 		## These rulers shouldn't be carefree in giving away prisoners.
 		base = 0
 
+		## They are at war with the prisoner
 		modifier = {
 			is_at_war_with = scope:secondary_recipient
-			NOT = {
-				any_character_war = {
-					any_war_participant = {
-						scope:actor = this
-						is_allied_in_war = scope:recipient
-						NOT = { is_allied_in_war = scope:secondary_recipient }
-					}
-				}
-			}
 			add = 300
 		}
 	}
