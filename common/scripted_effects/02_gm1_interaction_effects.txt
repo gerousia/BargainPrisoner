@@ -44,13 +44,13 @@ transfer_prisoner_interaction_effect = {
 	
 	## Apply immediate effects towards the prisoner's current imprisoner
 	transfer_prisoner_interaction_dread_effect = { 
-		PRISONER = $PRISONER$
 		IMPRISONER = $SENDER$
+		PRISONER = $PRISONER$
 	}
 
 	transfer_prisoner_interaction_stress_effect = { 
-		PRISONER = $PRISONER$
 		IMPRISONER = $SENDER$
+		PRISONER = $PRISONER$
 	}
 
 	disband_all_schemes_effect = {
@@ -71,6 +71,7 @@ transfer_prisoner_interaction_effect = {
 
 	transfer_prisoner_interaction_escalate_rivalry_effect = {
 		PRISONER = $PRISONER$
+		OLD_IMPRISONER = $SENDER$
 		NEW_IMPRISONER = $RECEIVER$
 	}
 
@@ -81,8 +82,8 @@ transfer_prisoner_interaction_effect = {
 }
 
 # based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## PRISONER (character)
 ## IMPRISONER (character)
+## PRISONER (character)
 transfer_prisoner_interaction_stress_effect = {
 	 $IMPRISONER$ = {
 		if = {
@@ -102,8 +103,8 @@ transfer_prisoner_interaction_stress_effect = {
 }
 
 # based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
-## PRISONER (character)
 ## IMPRISONER (character)
+## PRISONER (character)
 transfer_prisoner_interaction_dread_effect = {
 	$IMPRISONER$ = {
 		if = {
@@ -136,34 +137,35 @@ transfer_prisoner_interaction_dread_effect = {
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
-## PRISONER (character)
+## OLD_IMPRISONER(character)
 ## NEW_IMPRISONER (character)
+## PRISONER (character)
 transfer_prisoner_interaction_escalate_rivalry_effect = {
 	$PRISONER$ = {
 		if = {
 			limit = {
-				NOT = { has_relation_rival = imprisoner }
+				NOT = { has_relation_rival = $OLD_IMPRISONER$ }
 				OR = {
 					$NEW_IMPRISONER$ = { is_at_war_with = $PRISONER$ }
-					has_requested_excommunication_by = { WHO = imprisoner }
+					has_requested_excommunication_by = { WHO = $OLD_IMPRISONER$ }
 					has_opinion_modifier = {
 						modifier = revoked_title
-						target = imprisoner
+						target = $OLD_IMPRISONER$
 					}
 				}
 			}
 			hidden_effect = {
 				if = {
-					limit = { has_relation_potential_rival = imprisoner }
-					remove_relation_potential_rival = imprisoner
+					limit = { has_relation_potential_rival = $OLD_IMPRISONER$ }
+					remove_relation_potential_rival = $OLD_IMPRISONER$
 				}
 			}
-			set_relation_rival = imprisoner
+			set_relation_rival = $OLD_IMPRISONER$
 		}
 		else = {
 			hidden_effect = {
 				progress_towards_rival_effect = {
-					CHARACTER = imprisoner
+					CHARACTER = $OLD_IMPRISONER$
 					REASON = rival_imprisoned
 					OPINION = 0
 				}
