@@ -126,7 +126,7 @@ barter_cost_value = {
 	# FP2 DLC - Some cultures are better at ransoming than others.
 	if = {
 		limit = {
-			exists = imprisoner
+			is_imprisoned = yes
 			imprisoner.culture = { has_cultural_parameter = can_demand_higher_ransoms_from_lower_tiers }
 			# Kings and emperors are already worth more, so we just boost landless and ducal-tier or below.
 			OR = {

@@ -364,7 +364,7 @@ offer_prisoner_interaction = {
 					house = scope:recipient.house
 				}
 				add_clan_unity_interaction_effect = {
-					CHARACTER = this
+					CHARACTER = scope:actor
 					TARGET = scope:recipient
 					VALUE = medium_unity_loss
 					DESC = clan_unity_hostage.desc
@@ -1224,7 +1224,7 @@ demand_prisoner_interaction = {
 					house = scope:recipient.house
 				}
 				add_clan_unity_interaction_effect = {
-					CHARACTER = this
+					CHARACTER = scope:actor
 					TARGET = scope:recipient
 					VALUE = medium_unity_loss
 					DESC = clan_unity_hostage.desc

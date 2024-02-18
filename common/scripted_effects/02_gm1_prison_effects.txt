@@ -51,34 +51,6 @@ change_imprisoner_character_effect = {
 	scope:imprisonment_target = {
 		custom_description = { 
 			text = "move_tooltip_effect"
-
-			if = {
-				limit = { has_character_modifier = allowed_to_go_outside }
-				remove_character_modifier = allowed_to_go_outside
-			}
-	
-			if = {
-				limit = { has_character_modifier = moldy_gruel_diet }
-				remove_character_modifier = moldy_gruel_diet
-			}
-
-			## We won't change the original vanilla on_release_from_prison in on_action
-			## Instead we'll make use of the existing escaped_from_prison_flag
-			## * Remove when changed or if there's a better way to implement this
-
-			## What technically happens when you "escaped_from_prison"?
-			## - Prevents release_from_prison_memory from being created
-			## - Changes imprisoned_me to imprisoned_me_past opinion modifier
-
-			add_character_flag = {
-				flag = escaped_from_prison_flag
-				days = 1
-			}
-	
-			add_character_flag = {
-				flag = block_for_prison_release_notification
-				days = 1
-			}
 	
 			if = {
 				limit = { scope:old_imprisoner = { has_imprisonment_reason = prev } }
@@ -94,8 +66,39 @@ change_imprisoner_character_effect = {
 			subject = scope:old_imprisoner
 			object = this
 
-			release_from_prison = yes
-			remove_character_flag = escaped_from_prison_flag
+			if = {
+				limit = { is_imprisoned_by = scope:old_imprisoner }
+				if = {
+					limit = { has_character_modifier = allowed_to_go_outside }
+					remove_character_modifier = allowed_to_go_outside
+				}
+		
+				if = {
+					limit = { has_character_modifier = moldy_gruel_diet }
+					remove_character_modifier = moldy_gruel_diet
+				}
+	
+				## We won't change the original vanilla on_release_from_prison in on_action
+				## Instead we'll make use of the existing escaped_from_prison_flag
+				## * Remove when changed or if there's a better way to implement this
+	
+				## What technically happens when you "escaped_from_prison"?
+				## - Prevents release_from_prison_memory from being created
+				## - Changes imprisoned_me to imprisoned_me_past opinion modifier
+	
+				add_character_flag = {
+					flag = escaped_from_prison_flag
+					days = 1
+				}
+		
+				add_character_flag = {
+					flag = block_for_prison_release_notification
+					days = 1
+				}
+
+				release_from_prison = yes
+				remove_character_flag = escaped_from_prison_flag
+			}
 		}
 
 		custom_description = {
@@ -104,26 +107,30 @@ change_imprisoner_character_effect = {
 			object = this
 
 			if = {
-				limit = {
-					exists = liege
-					OR = {
-						is_landed = yes
-						is_close_or_extended_family_of = liege
-						is_spouse_of = liege
+				limit = { is_imprisoned = no }
+
+				if = {
+					limit = {
+						exists = liege
+						OR = {
+							is_landed = yes
+							is_close_or_extended_family_of = liege
+							is_spouse_of = liege
+						}
+					}
+					scope:new_imprisoner = {
+						imprison = {
+							target = prev
+							type = house_arrest
+						}
 					}
 				}
-				scope:new_imprisoner = {
-					imprison = {
-						target = prev
-						type = house_arrest
-					}
-				}
-			}
-			else = {
-				scope:new_imprisoner = {
-					imprison = {
-						target = prev
-						type = dungeon
+				else = {
+					scope:new_imprisoner = {
+						imprison = {
+							target = prev
+							type = dungeon
+						}
 					}
 				}
 			}
