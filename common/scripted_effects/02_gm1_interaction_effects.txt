@@ -333,7 +333,8 @@ transfer_prisoner_interaction_bargain_effect = {
 		}
 		$RECEIVER$ = { use_hook = $SENDER$ }
 	}
-	else = {
+	else_if = {
+		limit = { scope:hook ?= no }
 		$SENDER$ = {
 			if = {
 				limit = { is_vassal_of = $RECEIVER$ }
