@@ -1,0 +1,98 @@
+﻿##############################
+## BM1 scripted_effects
+##############################
+#------------------------------
+# list
+#------------------------------
+# set_target_destination_effect
+# set_home_destination_effect
+
+#------------------------------
+# travel-related
+#------------------------------
+
+# TARGET (character)
+# SCOPE_NAME (string)
+set_target_destination_effect = {
+	hidden_effect = {
+		$TARGET$ = {
+			if = {
+				limit = { 
+					is_alive = yes
+					is_landed = yes
+					exists = capital_province
+				}
+				$TARGET$.capital_province = { save_scope_as = $SCOPE_NAME$ }
+			}
+			else = {
+				$TARGET$.location = { save_scope_as = $SCOPE_NAME$ }
+			}
+		}
+	}
+}
+
+# SCOPE_NAME (string)
+set_home_destination_effect = {
+	hidden_effect = {	
+		## The root scope is imprisoned
+		if = {
+			limit = { is_imprisoned = yes }
+			if = {
+				limit = { NOT = { location = imprisoner.capital_province } }
+				imprisoner.capital_province = { save_scope_as = $SCOPE_NAME$ } 
+			}
+		}
+		## The root scope is not imprisoned
+		else = {
+			### is landed
+			if = {
+				limit = { 
+					is_landed = yes
+					exists = capital_province
+				}
+				capital_province = { save_scope_as = $SCOPE_NAME$ } 
+			}
+			### their liege's home court
+			else_if = {
+				limit = { 
+					liege = {
+						is_alive = yes
+						is_landed = yes
+						exists = capital_province
+					}
+				}
+				liege.capital_province = { save_scope_as = $SCOPE_NAME$ } 
+			}
+			### their liege's current location
+			else_if = {
+				limit = {
+					liege = {
+						is_alive = yes
+						exists = location
+					}
+				}
+				liege.location = { save_scope_as = $SCOPE_NAME$ } 
+			}
+			### their random family member's home court
+			else_if = {
+				limit = {
+					any_close_family_member = {
+						is_alive = yes
+						is_landed = yes
+					}
+				}
+				random_close_family_member = {
+					limit = {
+						is_alive = yes
+						is_landed = yes
+					}
+					capital_province = { save_scope_as = $SCOPE_NAME$ } 
+				}
+			}
+			### their current lucation
+			else = { 
+				location = { save_scope_as = $SCOPE_NAME$ }  
+			}
+		}
+	}
+}
