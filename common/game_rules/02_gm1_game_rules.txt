@@ -1,0 +1,18 @@
+﻿##############################
+## GM1 game_rules
+##############################
+
+bargain_prisoner = {
+
+	categories = {
+		game_modes
+	}
+
+	default = gm1_ai_disable_travel
+
+	gm1_enable_travel = { }
+
+	gm1_disable_travel = { }
+
+	gm1_ai_disable_travel = { }
+}
