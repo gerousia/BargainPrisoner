@@ -4,8 +4,8 @@
 #------------------------------
 # list
 #------------------------------
-# set_target_destination_effect
-# set_home_destination_effect
+# set_travel_target_destination_effect
+# set_travel_home_destination_effect
 
 #------------------------------
 # travel-related
@@ -13,7 +13,7 @@
 
 # TARGET (character)
 # SCOPE_NAME (string)
-set_target_destination_effect = {
+set_travel_target_destination_effect = {
 	hidden_effect = {
 		$TARGET$ = {
 			if = {
@@ -32,7 +32,7 @@ set_target_destination_effect = {
 }
 
 # SCOPE_NAME (string)
-set_home_destination_effect = {
+set_travel_home_destination_effect = {
 	hidden_effect = {	
 		## The root scope is imprisoned
 		if = {
