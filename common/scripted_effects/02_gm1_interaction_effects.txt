@@ -48,23 +48,6 @@ receive_prisoner = {
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_effect = {
-	if = {
-		limit = {
-			OR = {
-				scope:exploitive_extortionate_current_gold ?= yes
-				scope:extortionate_current_gold ?= yes
-				scope:exploitive_current_gold ?= yes
-				scope:current_gold ?= yes
-			}
-		}
-		$RECEIVER$ = {
-			save_scope_value_as = {
-				name = barter_saved_gold_value
-				value = $RECEIVER$.current_gold_value
-			}
-		}
-	}
-	
 	## Apply immediate effects towards the prisoner's current imprisoner
 	transfer_prisoner_interaction_dread_effect = { 
 		IMPRISONER = $SENDER$
@@ -103,6 +86,53 @@ transfer_prisoner_interaction_effect = {
 		TARGET = $PRISONER$
 	}
 
+	## Selected send_options
+	if = {
+		limit = {
+			OR = {
+				scope:exploitive_extortionate_current_gold ?= yes
+				scope:extortionate_current_gold ?= yes
+				scope:exploitive_current_gold ?= yes
+				scope:current_gold ?= yes
+			}
+		}
+		$RECEIVER$ = {
+			save_scope_value_as = {
+				name = barter_saved_gold_value
+				value = $RECEIVER$.current_gold_value
+			}
+		}
+	}
+	else_if = {
+		limit = { scope:hook ?= yes }
+		$SENDER$ = {
+			if = {
+				limit = {
+					NOT = { is_vassal_of = $RECEIVER$ }
+					NOT = { $RECEIVER$ = { has_strong_hook = $SENDER$ } }
+				}
+				add_opinion = {
+					target = $RECEIVER$
+					modifier = demanded_transfer_prisoner
+				}
+			}
+		}
+		$RECEIVER$ = { use_hook = $SENDER$ }
+	}
+	else_if = {
+		limit = { scope:hook ?= no }
+		$SENDER$ = {
+			if = {
+				limit = { is_vassal_of = $RECEIVER$ }
+				add_opinion = {
+					target = $RECEIVER$
+					modifier = demanded_transfer_prisoner
+				}
+			}
+		}
+	}
+
+	## What the interaction window will show before accepting
 	show_as_tooltip = {
 		change_imprisoner_character_effect = { 
 			TARGET = $PRISONER$
@@ -117,6 +147,7 @@ transfer_prisoner_interaction_effect = {
 		}
 	}
 
+	## What will actually happen after accepting the interaction
 	if = {
 		limit = {
 			OR = {
@@ -460,36 +491,6 @@ transfer_prisoner_interaction_bargain_effect = {
 			add_hook = {
 				target = $RECEIVER$
 				type = favor_hook
-			}
-		}
-	}
-
-	## Auto-accept
-	if = {
-		limit = { scope:hook ?= yes }
-		$SENDER$ = {
-			if = {
-				limit = {
-					NOT = { is_vassal_of = $RECEIVER$ }
-					NOT = { $RECEIVER$ = { has_strong_hook = $SENDER$ } }
-				}
-				add_opinion = {
-					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
-				}
-			}
-		}
-		$RECEIVER$ = { use_hook = $SENDER$ }
-	}
-	else_if = {
-		limit = { scope:hook ?= no }
-		$SENDER$ = {
-			if = {
-				limit = { is_vassal_of = $RECEIVER$ }
-				add_opinion = {
-					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
-				}
 			}
 		}
 	}
