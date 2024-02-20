@@ -1,23 +1,8 @@
 ﻿namespace = gm1_interaction
 
 ##############################
-## GM1 interaction_events
+## GM1 events
 ##############################
-
-### To the author at PDX who wrote this original line, 
-### "- there is no god nor consistency when it comes to localization.", 
-### You're goddamn right.
-	
-# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
-## RECEIVER (character)
-## PRISONER (character)
-scripted_effect receive_prisoner = {
-	custom_description = {
-		text = "receive_prisoner_tooltip_effect"
-		subject = $RECEIVER$
-		object = $PRISONER$
-	}
-}
 
 #------------------------------
 # Offer Transfer Prisoner Interaction
@@ -26,6 +11,121 @@ scripted_effect receive_prisoner = {
 
 # based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0330
 ## Offer Prisoner: Accepted
+### has_game_rule = gm1_enable_travel
+gm1_interaction.0011 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = {
+		desc = gm1_interaction.0011.desc_1
+		desc = gm1_interaction.0011.desc_2
+	}
+		
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_neutral
+			title = offer_prisoner_interaction_notification
+			left_icon = scope:secondary_actor
+			right_icon = scope:recipient
+			
+			show_as_tooltip = {	
+				send_prisoner = {
+					SENDER = scope:actor
+					PRISONER = scope:secondary_actor
+				}
+				
+				transfer_prisoner_interaction_stress_effect = { 
+					PRISONER = scope:secondary_actor
+					IMPRISONER = scope:actor
+				}
+			
+				transfer_prisoner_interaction_dread_effect = { 
+					PRISONER = scope:secondary_actor
+					IMPRISONER = scope:actor
+				}
+		
+				transfer_prisoner_interaction_escalate_rivalry_effect = {
+					PRISONER = scope:secondary_actor
+					OLD_IMPRISONER = scope:actor
+					NEW_IMPRISONER = scope:recipient
+				}
+			}
+		}
+
+		hidden_effect = {
+			scope:recipient = {
+				send_interface_message = {
+					type = event_prison_good
+					title = offer_prisoner_interaction_notification
+					left_icon = scope:secondary_actor
+					right_icon = scope:actor
+					
+					show_as_tooltip = {
+						send_prisoner = {
+							SENDER = scope:actor
+							PRISONER = scope:secondary_actor
+						}
+
+						transfer_prisoner_interaction_stress_effect = { 
+							PRISONER = scope:secondary_actor
+							IMPRISONER = scope:recipient
+						}
+					
+						transfer_prisoner_interaction_dread_effect = { 
+							PRISONER = scope:secondary_actor
+							IMPRISONER = scope:recipient
+						}
+					}
+				}
+			}
+	
+			scope:secondary_actor = {
+				send_interface_message = {
+					type = event_prison_bad
+					title = offer_prisoner_interaction_notification
+					left_icon = scope:actor
+					right_icon = scope:recipient
+					
+					show_as_tooltip = {
+						send_prisoner = {
+							SENDER = scope:actor
+							PRISONER = scope:secondary_actor
+						}
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = gm1_interaction.0011.a
+	}
+
+	after = {
+		show_as_tooltip = {
+			receive_prisoner = {
+				RECEIVER = scope:recipient
+				PRISONER = scope:secondary_actor
+			}
+
+			transfer_prisoner_interaction_bargain_effect = {
+				PRISONER = scope:secondary_actor
+				SENDER = scope:actor
+				RECEIVER = scope:recipient
+			}
+		}
+	}
+}
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0330
+## Offer Prisoner: Accepted
+### has_game_rule = gm1_disable_travel
 gm1_interaction.0016 = {
 	type = letter_event
 	opening = {
@@ -134,6 +234,123 @@ gm1_interaction.0012 = {
 
 # based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0331
 ## Demand Prisoner: Accepted
+### has_game_rule = gm1_enable_travel
+gm1_interaction.0021 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = {
+		desc = gm1_interaction.0021.desc_1
+		desc = gm1_interaction.0021.desc_2
+	}
+		
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
+
+	immediate = {
+		scope:actor = {
+			send_interface_message = {
+				type = event_prison_good
+				title = demand_prisoner_interaction_notification
+				left_icon = scope:secondary_recipient
+				right_icon = scope:recipient
+				
+				show_as_tooltip = {
+					send_prisoner = {
+						SENDER = scope:recipient
+						PRISONER = scope:secondary_recipient
+					}
+
+					transfer_prisoner_interaction_stress_effect = { 
+						PRISONER = scope:secondary_recipient
+						IMPRISONER = scope:actor
+					}
+				
+					transfer_prisoner_interaction_dread_effect = { 
+						PRISONER = scope:secondary_recipient
+						IMPRISONER = scope:actor
+					}
+				}
+			}
+		}
+
+		hidden_effect = {
+			scope:recipient = {
+				send_interface_message = {
+					type = event_prison_neutral
+					title = demand_prisoner_interaction_notification
+					left_icon = scope:secondary_recipient
+					right_icon = scope:actor
+					
+					show_as_tooltip = {
+						send_prisoner = {
+							SENDER = scope:recipient
+							PRISONER = scope:secondary_recipient
+						}
+
+						transfer_prisoner_interaction_stress_effect = { 
+							PRISONER = scope:secondary_recipient
+							IMPRISONER = scope:recipient
+						}
+					
+						transfer_prisoner_interaction_dread_effect = { 
+							PRISONER = scope:secondary_recipient
+							IMPRISONER = scope:recipient
+						}
+
+						transfer_prisoner_interaction_escalate_rivalry_effect = {
+							PRISONER = scope:secondary_recipient
+							OLD_IMPRISONER = scope:recipient
+							NEW_IMPRISONER = scope:actor
+						}
+					}					
+				}
+			}
+	
+			scope:secondary_recipient = {
+				send_interface_message = {
+					type = event_prison_bad
+					title = demand_prisoner_interaction_notification
+					left_icon = scope:actor
+					right_icon = scope:recipient
+					
+					show_as_tooltip = {
+						send_prisoner = {
+							SENDER = scope:recipient
+							PRISONER = scope:secondary_recipient
+						}
+					}
+				}
+			}
+		}
+	}
+
+	option = {
+		name = gm1_interaction.0021.a
+	}
+
+	after = {
+		show_as_tooltip = {
+			receive_prisoner = {
+				RECEIVER = scope:recipient
+				PRISONER = scope:secondary_recipient
+			}
+
+			transfer_prisoner_interaction_bargain_effect = {
+				PRISONER = scope:secondary_recipient
+				SENDER = scope:recipient
+				RECEIVER = scope:actor
+			}
+		}
+	}
+}
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0331
+## Demand Prisoner: Accepted
+### has_game_rule = gm1_disable_travel
 gm1_interaction.0026 = {
 	type = letter_event
 	opening = {
