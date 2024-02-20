@@ -1,0 +1,14 @@
+﻿is_busy_in_events_localised = {
+	custom_description = {
+		text = "yearly_1010_abducted"
+		NOT = { has_character_flag = yearly_1010_abducted }
+	}
+	custom_description = {
+		text = "yearly_1010_abductor"
+		NOT = { has_character_flag = yearly_1010_abductor }
+	}
+	custom_description = {
+		text = "already_under_ongoing_interaction_trigger"
+		NOT = { exists = var:under_transfer_prisoner_interaction_with }
+	}
+}
