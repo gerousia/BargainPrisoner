@@ -1,15 +1,44 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
 # list
 #------------------------------
+# send_prisoner
+# receiver_prisoner
+#
 # transfer_prisoner_interaction_effect
 # transfer_prisoner_interaction_stress_effect
 # transfer_prisoner_interaction_dread_effect
 # transfer_prisoner_interaction_escalate_rivalry_effect
 # transfer_prisoner_interaction_bargain_effect
 # disband_all_schemes_effect
+
+### To the author at PDX who wrote this original line, 
+### "- there is no god nor consistency when it comes to localization.", 
+### You're goddamn right.
+
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## SENDER (character)
+## PRISONER (character)
+send_prisoner = {
+	custom_description = {
+		text = "send_prisoner_tooltip_effect"
+		subject = $SENDER$
+		object = $PRISONER$
+	}
+}
+
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## RECEIVER (character)
+## PRISONER (character)
+receive_prisoner = {
+	custom_description = {
+		text = "receive_prisoner_tooltip_effect"
+		subject = $RECEIVER$
+		object = $PRISONER$
+	}
+}
 
 #------------------------------
 # interaction-related
