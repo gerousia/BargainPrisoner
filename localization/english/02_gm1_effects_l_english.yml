@@ -25,6 +25,13 @@ l_english:
  CHARACTER_IMPRISON_TOOLTIP_EFFECT: "$THEY_IMPRISON_EFFECT$#!"
  CHARACTER_IMPRISONED_TOOLTIP_EFFECT: "$THEY_IMPRISONED_EFFECT$#!"
 
+ ESCAPE_TOOLTIP_EFFECT: "Escapes [prison|E]"
+ ESCAPED_TOOLTIP_EFFECT: "Escaped [prison|E]"
+ I_ESCAPE_TOOLTIP_EFFECT: "You escape [prison|E]"
+ I_ESCAPED_TOOLTIP_EFFECT: "You escaped [prison|E]"
+ CHARACTER_ESCAPE_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escapes [prison|E]"
+ CHARACTER_ESCAPED_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName] escaped [prison|E]"
+
  CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] at [war|E] with [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
  CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT: "@warning_icon! #X [CHARACTER.GetShortUINameNoFormat|U] is a [war_leader|E]#!"
  CHANGE_IMPRISONER_VASSAL_TOOLTIP_EFFECT: "@alert_icon! #alert_trial [TARGET_CHARACTER.GetTitledFirstName|U] is [CHARACTER.GetShortUINamePossessiveNoFormat] [vassal|E]#!"

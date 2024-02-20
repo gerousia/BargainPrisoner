@@ -15,6 +15,15 @@ receive_prisoner_tooltip_effect = {
 	third_past = CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT
 }
 
+send_prisoner_tooltip_effect = {
+	global = CHARACTER_SEND_PRISONER_TOOLTIP_EFFECT
+	first = I_SEND_PRISONER_TOOLTIP_EFFECT
+	third = CHARACTER_SEND_PRISONER_TOOLTIP_EFFECT
+	global_past = CHARACTER_SENT_PRISONER_TOOLTIP_EFFECT
+	first_past = I_SENT_PRISONER_TOOLTIP_EFFECT
+	third_past = CHARACTER_SENT_PRISONER_TOOLTIP_EFFECT
+}
+
 #------------------------------
 # prison-effects-related
 #------------------------------
@@ -44,6 +53,15 @@ imprison_tooltip_effect = {
 	global_past = IMPRISONED_TOOLTIP_EFFECT
 	first_past = I_IMPRISONED_TOOLTIP_EFFECT
 	third_past = CHARACTER_IMPRISONED_TOOLTIP_EFFECT
+}
+
+escape_tooltip_effect = {
+	global = ESCAPE_TOOLTIP_EFFECT
+	first = I_ESCAPE_TOOLTIP_EFFECT
+	third = CHARACTER_ESCAPE_TOOLTIP_EFFECT
+	global_past = ESCAPED_TOOLTIP_EFFECT
+	first_past = I_ESCAPED_TOOLTIP_EFFECT
+	third_past = CHARACTER_ESCAPED_TOOLTIP_EFFECT
 }
 
 change_imprisoner_war_tooltip_effect = {

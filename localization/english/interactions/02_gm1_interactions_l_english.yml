@@ -56,17 +56,34 @@ l_english:
  CHARACTER_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
  CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
 
+ I_SEND_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with your [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ I_SENT_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with your [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ CHARACTER_SEND_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with [CHARACTER.GetShortUINamePossessive|V] [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+ CHARACTER_SENT_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetTitledFirstName|V] [travels|E] with [CHARACTER.GetShortUINamePossessive|V] [CHARACTER.Custom2( 'RelationToMeShort', TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter )], [TARGET_CHARACTER.MakeScope.Var( 'travel_escort' ).GetCharacter.GetFullName|V], towards [TARGET_CHARACTER.MakeScope.Var( 'new_imprisoner' ).GetCharacter.GetCapitalLocation.GetNameNoTooltip]"
+
 # TRIGGER
  IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "Is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
  I_AM_NOT_AT_CAPITAL_PRISON_TRIGGER: "You are currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
  CHARACTER_IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "[CHARACTER.GetShortUIName|V] is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
 
- ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "Is already under an ongoing transaction"
- I_AM_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "You are already under an ongoing transaction"
- CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "[CHARACTER.GetShortUIName|V] is already under an ongoing transaction"
+ ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER: "Is already under an ongoing transaction"
+ I_AM_ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER: "You are already under an ongoing transaction"
+ CHARACTER_IS_ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER: "[CHARACTER.GetShortUIName|V] is already under an ongoing transaction"
+
+ ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER: "Is already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+ I_AM_ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER: "You are already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+ CHARACTER_IS_ALREADY_UNDER_ONGOING_INTERACTION_WITH_TRIGGER: "[CHARACTER.GetShortUIName|V] is already in a transaction with [TARGET_CHARACTER.GetShortUIName|V]"
+
+ DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "Does #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
+ I_DO_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "You do #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
+ CHARACTER_DOES_NOT_HAVE_ANY_AVAILABLE_BODYGUARD_TRIGGER: "[CHARACTER.GetShortUIName] does #bold not#! have any available [GetCourtPositionType('bodyguard_court_position').GetName()|E]"
 
 # NOTIFICATION
  msg_transfer_prisoner_interaction_title: "Prisoner Transferred!"
+ transfer_prisoner_interaction_invalidated_toast: "Transfer Imprisonment Invalidated"
+
+# EVENT
+ PRISONER_ESCAPED_TT: "[prisoner.GetTitledFirstName] escaped during [travel|E]"
 
 ## The recipient accepts offer prisoner interaction.
  gm1_interaction.0011.desc_1: "I would gladly bargain for your prisoner, [secondary_actor.GetTitledFirstName], as my own."
