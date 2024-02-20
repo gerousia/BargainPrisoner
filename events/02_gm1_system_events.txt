@@ -1,0 +1,965 @@
+﻿namespace = gm1_system
+
+##############################
+## GM1 events
+##############################
+
+#------------------------------
+# Transfer Prisoner Interaction
+# 0001 - 0499
+#------------------------------
+
+# This serves as an event-redirect and a starter for this event chain.
+gm1_system.0001 = {
+	hidden = yes
+
+	immediate = {
+		save_scope_as = prisoner
+
+		var:old_imprisoner = {
+			save_scope_as = sender
+		}
+
+		var:new_imprisoner = {
+			save_scope_as = receiver
+		}
+
+		var:travel_escort ?= {
+			save_scope_as = escort
+		}
+
+		scope:prisoner = {
+			### Determine if this interaction is invalidated
+			transfer_prisoner_company_invalidate_effect = yes
+			
+			if = {
+				limit = { exists = var:invalidate_reason }
+				trigger_event = {
+					on_action = on_invalidate_transfer_prisoner_interaction
+				}
+			}
+			else = {
+				trigger_event = gm1_system.0002 # Start changing imprisoners
+	
+				scope:escort ?= {
+					trigger_event = {
+						on_action = on_transfer_prisoner_company_depart_return
+					}
+				}
+			}
+		}
+	}
+}
+
+#------------------------------
+# Transfer Prisoner Interaction Succesful
+# 0002 - 0249
+#------------------------------
+
+# This serves as an event-redirect and a starter for this event chain.
+## Notifies involved characters when the prisoner arrives at their target's court. 
+gm1_system.0002 = {
+	hidden = yes
+
+	immediate = {	
+		save_scope_as = prisoner
+
+		var:old_imprisoner = {
+			save_scope_as = sender
+		}
+
+		var:new_imprisoner = {
+			save_scope_as = receiver
+		}
+
+		var:travel_escort ?= {
+			save_scope_as = escort
+		}
+
+		scope:sender = {
+			trigger_event = gm1_system.0011
+		}
+
+		scope:receiver = {
+			trigger_event = gm1_system.0021
+		}
+
+		scope:prisoner = {
+			trigger_event = gm1_system.0131
+		}
+	}
+}
+
+####### Sender Perspective
+####### 0011 - 0019
+
+## The sender's prisoner arrives at the receiver's court.
+### This is the sender's perspective.
+gm1_system.0011 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = {
+		desc = gm1_system.0011.desc_1
+		desc = gm1_system.0011.desc_2
+	}
+
+	sender = {
+		character = scope:receiver
+		animation = dismissal
+	}
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_neutral
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:prisoner
+			right_icon = scope:receiver
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+	
+				transfer_prisoner_interaction_bargain_effect = {
+					PRISONER = scope:prisoner
+					SENDER = scope:sender
+					RECEIVER = scope:receiver
+				}
+			}
+		}
+	}
+
+	option = {
+		name = gm1_system.0011.a
+	}
+}
+
+####### Receiver Perspective
+####### 0021 - 0029
+
+## The sender's prisoner arrives at the receiver's court. 
+### This is the receiver's perspective.
+gm1_system.0021 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = {
+		desc = gm1_system.0021.desc_1
+		desc = gm1_system.0021.desc_2
+	}
+	
+	sender = {
+		character = scope:sender
+		animation = dismissal
+	}
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_good
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:prisoner
+			right_icon = scope:sender
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+			}
+
+			transfer_prisoner_interaction_bargain_effect = {
+				PRISONER = scope:prisoner
+				SENDER = scope:sender
+				RECEIVER = scope:receiver
+			}
+		}
+
+		hidden_effect = {
+			change_imprisoner_character_effect = { 
+				TARGET = scope:prisoner
+				IMPRISONER = scope:sender
+				NEW_IMPRISONER = scope:receiver
+			}
+		}
+	}
+
+	option = {
+		name = gm1_system.0021.a
+	}
+
+	after = {
+		trigger_event = gm1_system.0022
+	}
+}
+
+### This is how the receiver would interact with the prisoner up arriving.
+gm1_system.0022 = {
+	type = character_event
+	title = gm1_system.0022.title
+	desc = {
+		desc = gm1_system.0022.intro
+		triggered_desc = {
+			trigger = { 
+				is_at_war_with = scope:prisoner	
+			}
+			desc = gm1_system.0022.desc.war_1
+		}
+		triggered_desc = {
+			trigger = { 
+				is_at_war_with = scope:prisoner	
+				any_character_war = {
+					is_war_leader = scope:prisoner
+				}
+			}
+			desc = gm1_system.0022.desc.war_2
+		}
+		triggered_desc = {
+			trigger = {
+				has_relation_rival = scope:prisoner
+			}
+			desc = gm1_system.0022.desc.rival
+		}
+		triggered_desc = {
+			trigger = {
+				opinion = {
+					target = scope:prisoner
+					value <= high_negative_opinion
+				}
+			}
+			desc = gm1_system.0022.desc.negative_opinion
+		}
+		desc = gm1_system.0022.outro
+	}
+
+	theme = prison
+
+	left_portrait = {
+		character = scope:receiver
+		triggered_animation = {
+			trigger = {
+				OR = {
+					is_at_war_with = scope:prisoner
+					has_relation_rival = scope:prisoner
+					opinion = {
+						target = scope:prisoner
+						value <= high_negative_opinion
+					}
+
+				}
+			}
+			animation = anger
+		}
+		animation = scheming
+	}
+
+	right_portrait = {
+		character = scope:prisoner
+		animation = sadness
+	}
+
+	immediate = {
+		show_as_tooltip = {
+			imprison = {
+				target = scope:prisoner
+				type = house_arrest
+			}
+		}
+	}
+
+	option = {
+		name = gm1_system.0022.a
+	}
+}
+
+###### Prisoner Perspective
+###### 0030 - 0039
+
+## The sender's prisoner arrives at the receiver's court. 
+### This is the prisoner's perspective.
+gm1_system.0131 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_bad
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:sender
+			right_icon = scope:receiver
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+			}
+		}
+	}
+}
+
+#------------------------------
+# Transfer Prisoner Interaction Invalidated
+# 0250 - 0499
+#------------------------------
+
+# transfer prisoner interaction invalidated
+## flag:prisoner
+gm1_system.0251 = {
+	hidden = yes
+
+	trigger = { 
+		exists = var:invalidate_reason
+		var:invalidate_reason = flag:prisoner
+	}
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_system.0251 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		scope:sender = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:receiver
+
+				custom_description = {
+					text = "escape_tooltip_effect"
+					subject = scope:prisoner
+				}
+			}
+		}
+
+		scope:receiver = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:sender
+
+				custom_description = {
+					text = "escape_tooltip_effect"
+					subject = scope:prisoner
+				}
+			}
+		}
+	}
+}
+
+# transfer prisoner interaction invalidated
+## flag:sender
+gm1_system.0252 = {
+	hidden = yes
+	
+	trigger = { 
+		exists = var:invalidate_reason
+		var:invalidate_reason = flag:sender 
+	}
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_system.0252 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		## Notify their new jailor instead
+		scope:prisoner.imprisoner ?= {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:receiver
+
+				show_as_tooltip = {
+					scope:sender = {
+						if = {
+							limit = { is_alive = no }
+							death = { death_reason = death_vanished } 
+						}
+						else = {
+							depose = yes
+						}
+					}
+				}
+			}
+		}
+
+		scope:receiver = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:sender
+
+				show_as_tooltip = {
+					scope:sender = {
+						if = {
+							limit = { is_alive = no }
+							death = { death_reason = death_vanished } 
+						}
+						else = {
+							depose = yes
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# transfer prisoner interaction invalidated
+## flag:receiver
+gm1_system.0253 = {
+	hidden = yes
+
+	trigger = { 
+		exists = var:invalidate_reason
+		var:invalidate_reason = flag:receiver
+	}
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_system.0253 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {		
+		scope:sender = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:receiver
+
+				show_as_tooltip = {
+					scope:receiver = {
+						if = {
+							limit = { is_alive = no }
+							death = { death_reason = death_vanished } 
+						}
+						else = {
+							depose = yes
+						}
+					}
+				}
+			}
+		}
+
+		## We honestly only care if they are a player
+		scope:receiver.player_heir ?= {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:sender
+
+				show_as_tooltip = {
+					scope:receiver = {
+						if = {
+							limit = { is_alive = no }
+							death = { death_reason = death_vanished } 
+						}
+						else = {
+							depose = yes
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+# transfer prisoner interaction invalidated
+## flag:escort
+gm1_system.0254 = {
+	hidden = yes
+		
+	trigger = { 
+		exists = var:invalidate_reason
+		var:invalidate_reason = flag:escort
+	}
+
+	on_trigger_fail = {
+		debug_log = "GM1: gm1_system.0254 failed."
+		debug_log_scopes = yes
+	}
+
+	immediate = {
+		scope:sender = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:receiver
+
+				show_as_tooltip = {
+					scope:escort = { depose = yes }
+				}
+			}
+		}
+
+		scope:receiver = {
+			send_interface_toast = {
+				title = transfer_prisoner_interaction_invalidated_toast
+				left_icon = scope:prisoner
+				right_icon = scope:sender
+
+				show_as_tooltip = {
+					scope:escort = { depose = yes }
+				}
+			}
+		}
+	}
+}
+
+#------------------------------
+# Attempt Escape
+# 0500 - 1499
+#------------------------------
+
+# This serves as an event-redirect and a starter for this event chain.
+gm1_system.0500 = {
+	hidden = yes
+
+	immediate = {
+		save_scope_as = prisoner
+
+		var:old_imprisoner = {
+			save_scope_as = sender
+		}
+
+		var:new_imprisoner = {
+			save_scope_as = receiver
+		}
+
+		var:travel_escort ?= {
+			save_scope_as = escort
+		}
+
+		random_list = {
+			50 = {
+				trigger_event = { on_action = escape_from_prison_transfer_success }
+				min = 0
+
+				modifier = {
+					add = {
+						value = prowess
+						subtract = average_skill_rating
+						multiply = 2
+					}
+				}
+
+				modifier = {
+					add = 15
+					has_character_modifier = childhood_prison_escape
+				}
+
+				ai_value_modifier = {
+					ai_energy = 0.5
+				}
+			}
+
+			50 = {
+				trigger_event = { on_action = escape_from_prison_transfer_failure }
+				min = 0			
+				
+				modifier = {
+					add = {
+						value = scope:escort.intrigue
+						subtract = average_skill_rating
+						multiply = 2
+					}
+				}
+
+				modifier = {
+					add = {
+						value = 10
+					}
+				}
+
+				modifier = {
+					add = 25
+					scope:escort = { suitable_shieldmaiden_gaoler_trigger = yes }
+				}
+
+				modifier = {
+					add = 25
+					OR = {
+						has_trait = weak
+						has_trait = craven
+						has_trait = physique_bad_1
+					}
+				}
+
+				modifier = {
+					add = 50
+					OR = {
+						has_trait = physique_bad_2
+						has_trait = physique_bad_3
+					}
+				}
+				
+				modifier = {
+					add = 25
+					health <= poor_health
+				}
+
+				modifier = {
+					scope:escort = { is_alive = no } 
+					add = {
+						value = 0
+						subtract = 1000
+					}
+				}			
+			}
+		}
+	}
+}
+
+###### Attempt Escape Success
+###### 0501 - 0999
+
+# based on ./events/prison_events/prison_events.txt/prison.9001
+## Generic Outcome
+gm1_system.0501 = {
+	type = character_event
+	title = gm1_system.0501.t
+	desc = {
+		random_valid = {
+			## Generic
+			desc = gm1_system.0501.desc_1
+			
+			## Diplomatic
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_trait = gregarious
+						has_lifestyle = diplomacy_lifestyle
+						has_diplomacy_lifestyle_trait_trigger = yes
+					}
+				}
+				desc = gm1_system.0501.desc_2
+			}
+			
+			## Personality Trait
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_trait = diligent
+						has_trait = paranoid
+					}
+				}
+				desc = gm1_system.0501.desc_4
+			}
+
+			## Intellectual
+			triggered_desc = {
+				trigger = {
+					NOR = {
+						has_trait = intellect_bad_1
+						has_trait = intellect_bad_2
+						has_trait = intellect_bad_3
+						has_trait = dull
+					}
+				}
+				desc = gm1_system.0501.desc_5_1
+				desc = gm1_system.0501.desc_5_2
+				desc = gm1_system.0501.desc_5_3
+			}
+
+			# Physique
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_trait = strong
+						has_trait = physique_good_2
+						has_trait = physique_good_3
+					}
+				}
+				desc = gm1_system.0501.desc_6_1
+				desc = gm1_system.0501.desc_6_2
+			}
+
+			# Intrigue
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_lifestyle = intrigue_lifestyle
+						has_intrigue_lifestyle_trait_trigger = yes
+					}
+				}
+				desc = {
+					random_valid = {
+						desc = gm1_system.0501.desc_7_a
+						desc = gm1_system.0501.desc_7_b
+					}
+				}
+			}
+
+			## Learning
+			triggered_desc = {
+				trigger = {
+					OR = {
+						has_lifestyle = learning_lifestyle
+						has_learning_lifestyle_trait_trigger = yes
+					}
+				}
+				desc = gm1_system.0501.desc_8_1
+				desc = gm1_system.0501.desc_8_2
+			}
+
+			## Seductive
+			triggered_desc = {
+				trigger = {
+					has_trait = seducer
+				}
+				desc = gm1_system.0501.desc_9_1
+				desc = gm1_system.0501.desc_9_2
+			}
+		}
+
+		## Outro
+		desc = {
+			random_valid = {
+				desc = gm1_system.0501.outro_a
+				desc = gm1_system.0501.outro_a
+			}
+		}
+	}
+
+	theme = prison
+	override_background = {
+		reference = wilderness_scope
+	}
+
+	left_portrait = {
+		character = this
+		animation = ecstasy
+	}
+
+	right_portrait = {
+		character = scope:escort
+		animation = anger
+	}
+
+	lower_left_portrait = {
+		character = scope:sender
+	}
+
+	lower_right_portrait = {
+		character = scope:receiver
+	}
+
+	immediate = {
+		change_imprisoner_escape_character_effect = {
+			NEXT_IMPRISONER = scope:receiver
+		}
+	}
+
+	option = {
+		name = gm1_system.0501.a
+	}
+
+	after = {
+		remove_character_flag = block_for_prison_release_notification
+		
+		if = {
+			limit = { scope:sender = { is_ai = no } }
+			save_scope_as = escapee
+			scope:sender = { trigger_event = gm1_system.0999 }
+		}
+	}
+}
+
+# Your escort is dead!
+gm1_system.0502 = {
+	type = character_event
+	title = gm1_system.0502.t
+	desc = {
+		desc = gm1_system.0502.desc_1
+		desc = gm1_system.0502.desc_2
+	}
+
+	theme = prison
+	override_background = {
+		reference = wilderness_scope
+	}
+
+	left_portrait = {
+		character = this
+		animation = ecstasy
+	}
+
+	right_portrait = {
+		character = scope:escort
+		animation = idle
+	}
+
+	lower_left_portrait = {
+		character = scope:sender
+	}
+
+	lower_right_portrait = {
+		character = scope:receiver
+	}
+
+	trigger = {
+		scope:escort = { is_alive = no }
+	}
+
+	immediate = {
+		change_imprisoner_escape_character_effect = {
+			NEXT_IMPRISONER = scope:receiver
+		}
+	}
+
+	option = {
+		name = gm1_system.0502.a
+	}
+
+	after = {
+		remove_character_flag = block_for_prison_release_notification
+		
+		if = {
+			limit = { scope:sender = { is_ai = no } }
+			save_scope_as = escapee
+			scope:sender = { trigger_event = gm1_system.0999 }
+		}
+	}
+}
+
+# based on ./events/prison_events/prison_events.txt/prison.9499
+## Notify the imprisoner about the escape.
+gm1_system.0999 = {
+	type = character_event
+	title = gm1_system.0999.t
+	desc = {
+		first_valid = {
+			triggered_desc = {
+				trigger = { scope:escapee = { exists = var:under_transfer_prisoner_interaction_with } }
+				desc = gm1_system.0999.desc_a
+			}
+			desc = gm1_system.0999.desc_b
+		}
+		desc = gm1_system.0999.outro
+	}
+	theme = prison
+
+	left_portrait = {
+		character = this
+		animation = anger
+	}
+
+	right_portrait = {
+		character = scope:escort
+		animation = fear
+	}
+
+	lower_right_portrait = {
+		character = scope:escapee
+	}
+
+	immediate = {
+		play_music_cue = "mx_cue_prison"
+		custom_tooltip = PRISONER_ESCAPED_TT
+	}
+
+	option = {
+		name = gm1_system.0999.a
+	}
+}
+
+###### Attempt Escape Failure
+###### 1000 - 1499
+
+# based on ./events/prison_events/prison_events.txt/prison.9501
+## Generic Outcome
+gm1_system.1001 = {
+	type = character_event
+	title = gm1_system.1001.t
+	desc = {
+		desc = gm1_system.1001.desc_1
+		desc = gm1_system.1001.desc_2
+		desc = gm1_system.1001.desc_3
+	}
+	theme = prison
+
+	left_portrait = {
+		character = this
+		animation = shame
+	}
+
+	right_portrait = {
+		character = scope:escort
+		animation = angry
+	}
+
+	immediate = {
+		play_music_cue = "mx_cue_prison"
+		scope:sender = {
+			add_opinion = {
+				target = scope:prisoner
+				modifier = respect_opinion
+				opinion = -20
+			}
+		}
+	}
+
+	option = {
+		name = gm1_system.1001.a
+		add_character_modifier = {
+			modifier = stress_starvation
+			days = 1825
+		}
+	}
+}
+
+# based on ./events/prison_events/prison_events.txt/prison.9505
+## Wounded Outcome
+gm1_system.1002 = {
+	type = character_event
+	title = gm1_system.1002.t
+	desc = {
+		desc = gm1_system.1002.intro
+		random_valid = {
+			desc = gm1_system.1002.desc_a
+			desc = gm1_system.1002.desc_b
+		}
+	}
+	theme = prison
+
+	left_portrait = {
+		character = this
+		animation = paranoia
+	}
+
+	right_portrait = {
+		character = scope:escort
+		animation = angry
+	}
+	
+	lower_right_portrait = {
+		character = scope:sender
+	}
+
+	trigger = {
+		has_trait_rank = {
+			trait = wounded
+			rank < 2
+		}
+	}
+
+	weight_multiplier = {
+		base = 1
+		modifier = {
+			add = 1
+			has_character_modifier = childhood_prison_escape
+		}
+	}
+
+	immediate = {
+		play_music_cue = "mx_cue_prison"
+		increase_wounds_effect = { REASON = wounds }
+	}
+
+	option = { #I am still alive!
+		name = gm1_system.1002.a
+	}
+}
