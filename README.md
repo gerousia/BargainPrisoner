@@ -24,17 +24,17 @@ With that said, these balance values strictly derive from existing numbers perta
   - Force Demand Prisoners from your Vassals
   - Force Demand Prisoners from rulers if you have a hook
   - Demand Prisoners for Gold or a Favor
-- ⛓️ Mechanism for replacing Prisoner Jailors
-- 🪙 Prisoner Gold Value Logic
-- 🤖 AI Scripted Modifier Logic
-- 🗣️ Opinion Modifiers
+- ⛓️ Mechanisms
+  - 🤖 AI Logic
+  - 🪙 Prisoner Value Logic
+  - 🗣️ Character Modifiers (Opinion, Stress, Dread)
 
 
 ## ⚙️ Installation
 
-Download the mod through the Steam Workshop, or alternatively, download it from the release page and extract it inside the Documents folder.
+Subscribe the mod on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3161565481), or alternatively, download it from the release page and extract it inside the Documents folder.
 
-```bash
+```
   ~.\Documents\Paradox Interactive\Crusader Kings III\mod
 ```
 
@@ -44,6 +44,21 @@ Download the mod through the Steam Workshop, or alternatively, download it from 
 - ✅ Mod Compatible
 - ✅ Iron-man Compatible
 - ✅ Achievement Compatible
+
+
+## 🗺️ Roadmap
+I may consider reintroducing them once the new DLC is released or if some of you guys want to try it, however, I have temporarily removed these features to ensure compatibility with other mods:
+- Prisoner Traveling System
+- Events Related to Travel System
+- Travel System Game Rules
+- Exchange Prisoner Interaction
+
+
+## ⚙️ Mod Support
+These mods are not mandatory but adds extra features if installed.
+
+[Rescue and Revenge](https://steamcommunity.com/sharedfiles/filedetails/?id=3089046758&searchtext=rescue+and+revenge) by Big Uncle
+- New feature: Ability to take military action whenever your demand for a prisoner transfer gets declined.
 
 
 ## 📹 Preview
@@ -57,15 +72,6 @@ Download the mod through the Steam Workshop, or alternatively, download it from 
   </div>
 </details>
 
-
-## 🗺️ Roadmap
-I have temporarily removed these features to ensure compatibility with other mods:
-- Prisoner Traveling System
-- Events Related to Travel System
-- Travel System Game Rules
-- Exchange Prisoner Interaction
-
-I may consider reintroducing them once the new DLC is released or if some of you guys want to try it, however.
 
 ## ❓ FAQ
 
@@ -82,4 +88,9 @@ I may consider reintroducing them once the new DLC is released or if some of you
 #### ❔ Isn't there a mod similar to this already?
 
 > Yes, however, it lacks some features that I desire or that I plan to implement in the future. Since everything is written from scratch, it is also highly customizable should you ever wish to add, modify, or maintain it yourself.
+
+#### ❔ This mod doesn't work with 'x' mod?
+
+> If you encounter any mod incompatibility, it might be due to this mod sharing the same namespace with another mod. Please inform me if you come across such an issue.
+
 

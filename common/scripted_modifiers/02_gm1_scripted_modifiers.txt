@@ -531,7 +531,7 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 	modifier = {
 		$PRISONER$ = { is_head_of_faith_of = { WHO = $RECEIVER$ } }
 		add = {
-			value = -100
+			value = -500
 			if = {
 				limit = { $RECEIVER$ = { has_imprisonment_reason = $PRISONER$ } }
 				divide = 4
