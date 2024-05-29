@@ -38,7 +38,7 @@ l_english:
  INTERACTION_AI_REASON_RECENT_INDEPENDECE_WAR: "[recipient.GetSheHe|U] fought for Independence against me: $VALUE|=+0$"
 
  INTERACTION_AI_REASON_LIEGE: "You are [recipient.GetHerHis] [liege|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_POWERFUL_VASSAL: "[recipient.GetSheHe] is a [powerful_vassal|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_POWERFUL_VASSAL: "[recipient.GetSheHe|U] is a [powerful_vassal|E]: $VALUE|=+0$"
 
  INTERACTION_AI_REASON_CASUS_BELLI: "Has [casus_bellis|E] against you: $VALUE|=+0$"
  INTERACTION_AI_REASON_CLAIMS: "Has [claims|E] on your [titles|E]: $VALUE|=+0$"
