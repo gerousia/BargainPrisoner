@@ -15,6 +15,16 @@ already_under_ongoing_transfer_prisoner_interaction_trigger = {
 	third_not = CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER
 }
 
+recently_underwent_transfer_prisoner_interaction_trigger = {
+	global_not = RECENTLY_UNDERWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER
+	first_not = I_RECENTLY_UNDEWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER
+	third_not = CHARACTER_RECENTLY_UNDERWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER
+}
+
+already_allies_transfer_prisoner_interaction_trigger = {
+	global_not = ALREADY_ALLIES_TRANSFER_PRISONER_INTERACTION_TRIGGER
+}
+
 # PDX bug - remove when fixed
 
 has_prisoners = {

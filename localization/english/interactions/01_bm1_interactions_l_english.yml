@@ -30,15 +30,14 @@ l_english:
  INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH: "Relative Military Strength: $VALUE|=+0$ #weak ([actor.GetPrimaryTitle.GetNameNoTier]: [SCOPE.ScriptValue('interaction_actor_current_military_strength')|0] vs. [recipient.GetPrimaryTitle.GetNameNoTier]: [SCOPE.ScriptValue('interaction_recipient_current_military_strength')|0])#!"
  INTERACTION_AI_REASON_ALLY_MILITARY_STRENGTH: "[allies|E] Military Strength: $VALUE|=+0$ #weak ([actor.GetPrimaryTitle.GetNameNoTier]: [SCOPE.ScriptValue('interaction_actor_ally_military_strength')|0] vs. [recipient.GetPrimaryTitle.GetNameNoTier]: [SCOPE.ScriptValue('interaction_recipient_ally_military_strength')|0])#!"
 
- INTERACTION_AI_REASON_TRIBAL_VS_NON_TRIBAL: "You are not [GetGovernment( 'tribal_government' ).GetName]: $VALUE|=+0$"
- INTERACTION_AI_REASON_NON_TRIBAL_VS_TRIBAL: "You are [GetGovernment( 'tribal_government' ).GetName]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_GOVERNMENT: "You are [GetGovernment( 'tribal_government' ).GetName]: $VALUE|=+0$"
 
  INTERACTION_AI_REASON_ALLIED: "You are [allies|E]: $VALUE|=+0$"
  INTERACTION_AI_REASON_RECENT_WAR: "You recently Waged [war|E]: $VALUE|=+0$"
  INTERACTION_AI_REASON_RECENT_INDEPENDECE_WAR: "[recipient.GetSheHe|U] fought for Independence against me: $VALUE|=+0$"
 
  INTERACTION_AI_REASON_LIEGE: "You are [recipient.GetHerHis] [liege|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_POWERFUL_VASSAL: "[recipient.GetSheHe] is a [powerful_vassal|E]: $VALUE|=+0$"
+ INTERACTION_AI_REASON_POWERFUL_VASSAL: "[recipient.GetSheHe|U] is a [powerful_vassal|E]: $VALUE|=+0$"
 
  INTERACTION_AI_REASON_CASUS_BELLI: "Has [casus_bellis|E] against you: $VALUE|=+0$"
  INTERACTION_AI_REASON_CLAIMS: "Has [claims|E] on your [titles|E]: $VALUE|=+0$"

@@ -341,6 +341,5 @@ interaction_recipient_prisoner_value = {
 		scope:secondary_recipient ?= { save_temporary_scope_as = prisoner }
 		add = scope:prisoner.interaction_prisoner_value
 		ceiling = yes
-		multiply = -1
 	}
 }

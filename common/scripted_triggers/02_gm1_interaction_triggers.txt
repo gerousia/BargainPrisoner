@@ -2,89 +2,50 @@
 ## GM1 scripted_triggers
 ##############################
 #------------------------------
-# list
-#------------------------------
-# gm1_basic_valid_for_transfer_prisoner_interaction_trigger
-# gm1_available_for_transfer_prisoner_interaction_trigger
-# gm1_available_for_transfer_prisoner_interaction_trigger_ai
-
-#------------------------------
 # interaction-related
 #------------------------------
 
 # SENDER (character)
 gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
-	## Must be imprisoned.
-	## Must be imprisoned by actor.
 	trigger_if = {
-		limit = { is_imprisoned = yes }
-		is_imprisoned_by = $SENDER$
+		limit = { is_imprisoned = yes }												## Must be imprisoned.
+		is_imprisoned_by = $SENDER$													## Must be imprisoned by the sender.
 	}
-	## Must not be themselves
-	#NOT = { $RECEIVER$ = this }
-	## Must not be imprisoned by diarch.
-	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
+	#NOT = { $RECEIVER$ = this }													## Must not be themselves
+	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {			## Must not be imprisoned by diarch.
 		PRISONER = this
 		REGENT = this.var:imprisoned_by_diarch
 	}
 }
 
 gm1_valid_for_transfer_prisoner_interaction_trigger = {
-	## Must be at imprisoner capital. DISABLED
-	#custom_description = {
+																					## Mod - Prisoner of War
+	#custom_description = {															# Prisoner must be at their imprisoner capital.
 		#text = "is_at_capital_prison_trigger"
 		#object = imprisoner
 		#is_at_location = imprisoner.capital_province
 	#}
-	## Must not be under any ongoing interaction.
-	custom_description = {
+	custom_description = {															## Prisoner must not be under any ongoing interaction.
 		text = "already_under_ongoing_transfer_prisoner_interaction_trigger"
 		NOT = { has_character_flag = under_transfer_prisoner_interaction }
 	}
-	## Must not currently be tortured.
-	is_being_tortured = no
-	## Must not be dying.
-	health > dying_health
-}
-
-# AI
-gm1_valid_for_transfer_prisoner_interaction_ai_trigger = {
-	## Must be neighbhors
-	$RECEIVER$ = { character_is_land_realm_neighbor = $SENDER$ }
-	# Don't waste prisoners on those who are broke
-	#$RECEIVER$.current_gold_value <= $SENDER$.current_gold_value
-	# Don't send prisoners to those you seriously hate, or vice versa
-	NOR = {
-		should_avoid_hostile_action_against_due_to_personal_relations_trigger = {
-			ACTOR = $SENDER$
-			RECIPIENT = $RECEIVER$
-		}
-
-		$RECEIVER$ = {
-			has_any_bad_relationship_with_character_trigger = { CHARACTER = $SENDER$ }
-		}
-
-		$SENDER$.house.house_head ?= {
-			any_owned_story = {
-				story_type = story_cycle_house_feud
-				var:house_feud_house ?= $RECEIVER$.house
-			}
-		}	
+	custom_description = {															## Prisoner must not recently undergone any interaction.
+		text = "recently_underwent_transfer_prisoner_interaction_trigger"
+		NOT = { has_character_flag = recently_prison_transferred }
 	}
+	is_being_tortured = no															## Prisoner must not currently be tortured.
+	health > dying_health															## Prisoner must not be dying.
 }
 
 gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
-	# Don't inform of unimportant cases
-	NOT = { is_allied_to = root }
+	NOT = { is_allied_to = root } 													## Don't inform of unimportant cases
 }
 
 gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
-	# Context checks, e.g. alliance
-	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
+	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes			## Context checks, e.g. alliance
 
 	root = {
-		# You have a prisoner to offer
-		any_prisoner = {
+		any_prisoner = {															## You have a prisoner to offer
 			count >= 1
 			gm1_basic_valid_for_transfer_prisoner_interaction_trigger = { 
 				SENDER = $SENDER$
@@ -92,8 +53,7 @@ gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
 			}
 			save_temporary_scope_as = prisoner
 		}
-		# Ensure Offer might be accepted
-		is_character_interaction_potentially_accepted = {
+		is_character_interaction_potentially_accepted = {							## Ensure Offer might be accepted
 			interaction = offer_prisoner_interaction
 			recipient = $RECEIVER$
 			secondary_actor = scope:prisoner
