@@ -2,63 +2,46 @@
 ## GM1 character_memory_types
 ##############################
 #------------------------------
-# list
-#------------------------------
-# gm1_transfer_prisoner_interaction_ai_rank_tier_modifier
-# gm1_transfer_prisoner_interaction_ai_relative_strength_modifier
-# gm1_transfer_prisoner_interaction_ai_government_modifier
-# gm1_transfer_prisoner_interaction_ai_realm_modifier
-# gm1_transfer_prisoner_interaction_ai_culture_modifier
-# gm1_transfer_prisoner_interaction_ai_reason_faith_modifier
-# gm1_transfer_prisoner_interaction_ai_relation_modifier
-# gm1_transfer_prisoner_interaction_ai_dread_modifier
-# gm1_transfer_prisoner_interaction_ai_perk_modifier
-# gm1_transfer_prisoner_interaction_ai_trait_modifier
-#
-# gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner
-# gm1_transfer_prisoner_interaction_ai_relation_modifier_prisoner
-#
-# gm1_transfer_prisoner_interaction_ai_offer_personality_modifier
-# gm1_transfer_prisoner_interaction_ai_demand_personality_modifier
-
-#------------------------------
-# Primary
+# Rulers
 #------------------------------
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_tier_neighbor_modifier
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
-	### Approving towards Higher Tier
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_tier_modifier = {
+	### This ruler is approving towards higher tier rulers.
+	### Unless they're too bold to care.
 	modifier = {
-		$RECEIVER$.highest_held_title_tier < $SENDER$.highest_held_title_tier
+		$WHO$.highest_held_title_tier < $WITH$.highest_held_title_tier
 		NOR = {
-			$RECEIVER$.liege = $SENDER$
-			$SENDER$.liege = $RECEIVER$
-		}
-		add = {
-			value = -20
-			multiply = {
-				value = $SENDER$.highest_held_title_tier
-				subtract = $RECEIVER$.highest_held_title_tier
-				min = 1
-			}
-		}
-		desc = RANK_DIFFERENCE_REASON
-	}
-
-	### Dissmissive towards Lower Tier
-	modifier = {
-		$RECEIVER$.highest_held_title_tier > $SENDER$.highest_held_title_tier
-		NOR = {
-			$RECEIVER$.liege = $SENDER$
-			$SENDER$.liege = $RECEIVER$
+			$WHO$.liege = $WITH$
+			$WITH$.liege = $WHO$
 		}
 		add = {
 			value = 20
 			multiply = {
-				value = $RECEIVER$.highest_held_title_tier
-				subtract = $SENDER$.highest_held_title_tier
+				subtract = $WHO$.highest_held_title_tier
+				min = 1
+			}
+			if = {
+				limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+				multiply = 0
+			}
+		}
+		desc = RANK_DIFFERENCE_REASON
+	}
+	### This ruler is dismissive towards lower tier rulers.
+	modifier = {
+		$WHO$.highest_held_title_tier > $WITH$.highest_held_title_tier
+		NOR = {
+			$WHO$.liege = $WITH$
+			$WITH$.liege = $WHO$
+		}
+		add = {
+			value = -20
+			multiply = {
+				value = $WHO$.highest_held_title_tier
+				subtract = $WITH$.highest_held_title_tier
 				min = 1
 			}
 		}
@@ -67,99 +50,100 @@ gm1_transfer_prisoner_interaction_ai_rank_tier_modifier = {
 }
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_relative_strength_modifier
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
-	### Both are close in power
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_relative_strength_modifier = {
+	### This ruler is the same strength toward that ruler.
+	### This ruler is less likely to accept.
 	modifier = {
 		NOR = {
-			$SENDER$.interaction_current_strength_ninety_percent_value > $RECEIVER$.current_military_strength
-			$SENDER$.current_military_strength < $RECEIVER$.interaction_current_strength_ninety_percent_value
+			$WHO$.interaction_current_strength_ninety_percent_value > $WITH$.current_military_strength
+			$WHO$.current_military_strength < $WITH$.interaction_current_strength_ninety_percent_value
 		}
-		add = {
-			value = 10
-			multiply = -1 # inverted
-		}
+		add = -10
 		desc = INTERACTION_AI_REASON_SIMILAR_MILITARY_STRENGTH
 	}
-
-	### They are less powerful in Military Strength
+	### This ruler is more powerful than that ruler. 
+	### This ruler is less likely to accept.
 	modifier = {
-		$SENDER$.interaction_current_strength_ninety_percent_value > $RECEIVER$.current_military_strength
+		$WHO$.interaction_current_strength_ninety_percent_value > $WITH$.current_military_strength
 		add = {
-			value = $SENDER$.current_military_strength # 1828
+			value = $WHO$.current_military_strength 			# 1828
 			divide = {
-				value = $RECEIVER$.current_military_strength # 1382
+				value = $WITH$.current_military_strength 		# 1382
 				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
+			}													# 1828 / 1382 = 1.32
+			subtract = 1									 	# 1.32 - 1 = 0.32
+			multiply = -50 										# 0.32 * 50 = -16
+			max = 50
+			min = -50
+		}
+		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
+	}
+	### This ruler is less powerful than that ruler.
+	### This ruler is more likely to accept.
+	### Unless they are too bold to care.
+	modifier = {
+		$WHO$.current_military_strength < $WITH$.interaction_current_strength_ninety_percent_value
+		add = {
+			value = $WITH$.current_military_strength 			# 1828
+			divide = {
+				value = $WHO$.current_military_strength 		# 1382
+				min = 1
+			}													# 1828 / 1382 = 1.32
+			subtract = 1 										# 1.32 - 1 = 0.32
 			multiply = {
-				value = 50 # 0.32 * 50 = 16
-				multiply = -1 # inverted
+				value = 50										# 0.32 * 50 = 16
+				if = {
+					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					multiply = 0
+				}
 			}
 			max = 50
 			min = -50
 		}
 		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
 	}
-
-	### They are more powerful in Military Strength
+	### This evaluates both the ruler's allies strength.
+	### This ruler's alliance is more powerful than the that ruler's alliance.
+	### This ruler is less likely to accept.
+	### Unless they are too bold to care.
 	modifier = {
-		$SENDER$.current_military_strength < $RECEIVER$.interaction_current_strength_ninety_percent_value
-		add = {
-			value = $RECEIVER$.current_military_strength # 1828
-			divide = {
-				value = $SENDER$.current_military_strength # 1382
-				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = {
-				value = -50 # 0.32 * -50 = -16
-				multiply = -1 # inverted
-			}
-			max = 50
-			min = -50
-		}
-		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
-	}
-
-	### Both allies' power in Military Strength
-	modifier = {
-		#### Some allies must exist
+		#### There needs to be at least any alliances.
 		OR = {
-			$SENDER$ = { any_ally = { exists = this } }
-			$RECEIVER$ = { any_ally = { exists = this } }
+			$WHO$ = { any_ally = { exists = this } }
+			$WITH$ = { any_ally = { exists = this } }
 		}
-		#### Strength with allies must be greater than enemies base strength
+		#### There needs to be at least difference in strength.
 		OR = {
-			$SENDER$.interaction_current_strength_with_allies_value >= $RECEIVER$.interaction_current_strength_ninety_percent_value
-			$RECEIVER$.interaction_current_strength_with_allies_value >= $SENDER$.interaction_current_strength_ninety_percent_value
+			$WHO$.interaction_current_strength_with_allies_value >= $WITH$.interaction_current_strength_ninety_percent_value
+			$WITH$.interaction_current_strength_with_allies_value >= $WHO$.interaction_current_strength_ninety_percent_value
 		}
 		add = {
 			value = {
 				value = 0
-				$SENDER$ = {
-					every_ally = { add = current_military_strength } # 1828
+				$WHO$ = {
+					every_ally = { add = current_military_strength } 		# 1828
 				}
 			}
 			divide = {
 				value = {
 					value = 0
-					$RECEIVER$ = {
-						every_ally = { add = current_military_strength } # 1382
+					$WITH$ = {
+						every_ally = { add = current_military_strength } 	# 1382
 					}
 				}
 				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
+			}																# 1828 / 1382 = 1.32
+			subtract = 1 													# 1.32 - 1 = 0.32
 			multiply = {
-				value = 100 # 0.32 * 100 = 32
-				multiply = -1 # inverted
+				value = -100												# 0.32 * 100 = -32
+				if = {
+					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					multiply = 0
+				}
 			}
-			divide = 2 # 32 / 2 = 16
+			divide = 2 														# -32 / 2 = -16
 			max = 25
 			min = -25
 		}
@@ -167,50 +151,49 @@ gm1_transfer_prisoner_interaction_ai_relative_strength_modifier = {
 	}
 }
 
-# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_government_modifier = {
-	### They are tribal and the other is not
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction#ai_accept
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_government_modifier = {
+	### This ruler is tribal while the other ruler is not.
+	### This ruler is less likely to approve.
 	modifier = {
-		$RECEIVER$ = { government_has_flag = government_is_tribal }
-		$SENDER$ = { NOT = { government_has_flag = government_is_tribal } }
+		$WHO$ = { government_has_flag = government_is_tribal }
+		$WITH$ = { NOT = { government_has_flag = government_is_tribal } }
 		add = -20
-		desc = INTERACTION_AI_REASON_TRIBAL_VS_NON_TRIBAL
+		desc = INTERACTION_AI_REASON_GOVERNMENT
 	}
-
-	### They are not tribal and the other one is
+	### This ruler is not tribal while the other ruler is.
+	### This ruler is less likely to approve.
 	modifier = {
-		$RECEIVER$ = { NOT = { government_has_flag = government_is_tribal } }
-		$SENDER$ = { government_has_flag = government_is_tribal }
+		$WHO$ = { NOT = { government_has_flag = government_is_tribal } }
+		$WITH$ = { government_has_flag = government_is_tribal }
 		add = -20
-		desc = INTERACTION_AI_REASON_NON_TRIBAL_VS_TRIBAL
+		desc = INTERACTION_AI_REASON_GOVERNMENT
 	}
 }
 
-# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_realm_modifier = {
-	### Agreeable towards their allies
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction#ai_accept
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_realm_modifier = {
+	### This ruler is agreeable towards their own allies.
 	modifier = {
-		$RECEIVER$ = { is_allied_to = $SENDER$ } 
+		$WHO$ = { is_allied_to = $WITH$ } 
 		add = 20
 		desc = INTERACTION_AI_REASON_ALLIED
 	}
-
-	### Recently fought in a war against
+	### This ruler recently fought in a war against that ruler.
 	modifier = {
-		$RECEIVER$ = { any_truce_holder = { $SENDER$ = this } }	
+		$WHO$ = { any_truce_holder = { $WITH$ = this } }	
 		add = -50
 		desc = INTERACTION_AI_REASON_RECENT_WAR
 	}
-
-	### Fought in an independence war against
+	### This ruler fought in an independence war against that ruler.
 	modifier = {
-		$RECEIVER$ = {
+		$WHO$ = {
 			exists = var:independence_war_former_liege
-			var:independence_war_former_liege = $SENDER$
+			var:independence_war_former_liege = $WITH$
 		}
 		add = {
 			value = -50
@@ -218,61 +201,35 @@ gm1_transfer_prisoner_interaction_ai_realm_modifier = {
 		}
 		desc = INTERACTION_AI_REASON_RECENT_INDEPENDECE_WAR
 	}
-
-	### You are their liege
-	modifier = {
-		$RECEIVER$.liege = $SENDER$ 
-		add = 20
-		desc = INTERACTION_AI_REASON_LIEGE
-	}
-
-	### They are a your powerful vassal
-	modifier = {
-		$RECEIVER$ = { is_powerful_vassal_of = $SENDER$ } 
-		add = {
-			value = 20
-			multiply = 1.5
-		}
-		desc = INTERACTION_AI_REASON_POWERFUL_VASSAL
-
-	}
-
-	### Extra
-	modifier = {
-		$SENDER$ = { has_character_modifier = event_bonus_to_vassal_accept }
-		add = 20
-		desc = event_bonus_to_vassal_accept_tt
-	}
 }
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_culture_faith_modifier
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_culture_modifier = {
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_culture_modifier = {
+	### This ruler is non-agreeable towards different culture rulers.
 	modifier = {
-		$RECEIVER$.culture = {
-			NOT = { this = $SENDER$.culture }
-			cultural_acceptance = { target = $SENDER$.culture value < 75 }
-			cultural_acceptance = { target = $SENDER$.culture value >= 50 }
+		$WHO$.culture = {
+			NOT = { this = $WITH$.culture }
+			cultural_acceptance = { target = $WITH$.culture value < 75 }
+			cultural_acceptance = { target = $WITH$.culture value >= 50 }
 		}
 		add = -5
 		desc = INTERACTION_AI_REASON_CULTURAL_ACCEPTANCE
 	}
-
 	modifier = {
-		$RECEIVER$.culture = {
-			NOT = { this = $SENDER$.culture }
-			cultural_acceptance = { target = $SENDER$.culture value < 50 }
-			cultural_acceptance = { target = $SENDER$.culture value >= 25 }
+		$WHO$.culture = {
+			NOT = { this = $WITH$.culture }
+			cultural_acceptance = { target = $WITH$.culture value < 50 }
+			cultural_acceptance = { target = $WITH$.culture value >= 25 }
 		}
 		add = -5
 		desc = INTERACTION_AI_REASON_CULTURAL_ACCEPTANCE
 	}
-
 	modifier = {
-		$RECEIVER$.culture = {
-			NOT = { this = $SENDER$.culture }
-			cultural_acceptance = { target = $SENDER$.culture value < 25 }
+		$WHO$.culture = {
+			NOT = { this = $WITH$.culture }
+			cultural_acceptance = { target = $WITH$.culture value < 25 }
 		}
 		add = {
 			value = -5
@@ -283,14 +240,15 @@ gm1_transfer_prisoner_interaction_ai_culture_modifier = {
 }
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_culture_faith_modifier
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_faith_modifier = {
+	### This ruler is non-agreeable towards different faith rulers.
 	modifier = {
-		$RECEIVER$.faith = {
-			NOT = { this = $SENDER$.faith }
+		$WHO$.faith = {
+			NOT = { this = $WITH$.faith }
 			faith_hostility_level = {
-				target = $SENDER$.faith
+				target = $WITH$.faith
 				value = faith_evil_level
 			}
 		}
@@ -300,12 +258,11 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
 		}
 		desc = INTERACTION_AI_REASON_FAITH_EVIL
 	}
-
 	modifier = {
-		$RECEIVER$.faith = {
-			NOT = { this = $SENDER$.faith }
+		$WHO$.faith = {
+			NOT = { this = $WITH$.faith }
 			faith_hostility_level = {
-				target = $SENDER$.faith
+				target = $WITH$.faith
 				value = faith_hostile_level
 			}
 		}
@@ -315,12 +272,11 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
 		}
 		desc = INTERACTION_AI_REASON_FAITH_EVIL
 	}
-
 	modifier = {
-		$RECEIVER$.faith = {
-			NOT = { this = $SENDER$.faith }
+		$WHO$.faith = {
+			NOT = { this = $WITH$.faith }
 			faith_hostility_level = {
-				target = $SENDER$.faith
+				target = $WITH$.faith
 				value = faith_astray_level
 			}
 		}
@@ -330,74 +286,67 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier = {
 }
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_relation_modifier = {
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_relation_modifier = {
 	modifier = {
-		$RECEIVER$ = { has_relation_friend = $SENDER$ }
-		$RECEIVER$ = { NOT = { has_relation_best_friend = $SENDER$ } }
+		$WHO$ = { has_relation_friend = $WITH$ }
+		$WHO$ = { NOT = { has_relation_best_friend = $WITH$ } }
 		add = 10
 		desc = INTERACTION_AI_REASON_RELATION_FRIEND
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_best_friend = $SENDER$ } 
+		$WHO$ = { has_relation_best_friend = $WITH$ } 
 		add = 20
 		desc = INTERACTION_AI_REASON_RELATION_BEST_FRIEND
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_lover = $SENDER$ }
-		$RECEIVER$ = { NOT = { has_relation_soulmate = $SENDER$ } }
+		$WHO$ = { has_relation_lover = $WITH$ }
+		$WHO$ = { NOT = { has_relation_soulmate = $WITH$ } }
 		add = 10
 		desc = INTERACTION_AI_REASON_RELATION_LOVER
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_soulmate = $SENDER$ } 
+		$WHO$ = { has_relation_soulmate = $WITH$ } 
 		add = 20
 		desc = INTERACTION_AI_REASON_RELATION_SOULMATE
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_rival = $SENDER$ }
-		$RECEIVER$ = { NOT = { has_relation_nemesis = $SENDER$ } }
+		$WHO$ = { has_relation_rival = $WITH$ }
+		$WHO$ = { NOT = { has_relation_nemesis = $WITH$ } }
 		add = -25
 		desc = INTERACTION_AI_REASON_RELATION_RIVAL
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_nemesis = $SENDER$ } 
+		$WHO$ = { has_relation_nemesis = $WITH$ } 
 		add = -50
 		desc = INTERACTION_AI_REASON_RELATION_NEMESIS
 	}
-
 	modifier = {
-		$RECEIVER$ = { dynasty = $SENDER$.dynasty } 
+		$WHO$ = { dynasty = $WITH$.dynasty } 
 		add = 5
 		desc = INTERACTION_AI_REASON_DYNASTY_SAME_DYNASTY
 	}
 }
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_dread_modifier = {
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_dread_modifier = {
 	modifier = {
-		$RECEIVER$ = {
+		$WHO$ = {
 			has_dread_level_towards = {
-				target = $SENDER$
+				target = $WITH$
 				level = 1
 			}
 		}
 		add = intimidated_halved_reason_value
 		desc = INTIMIDATED_REASON
 	}
-
 	modifier = {
-		$RECEIVER$ = {
+		$WHO$ = {
 			has_dread_level_towards = {
-				target = $SENDER$
+				target = $WITH$
 				level = 2
 			}
 		}
@@ -407,14 +356,17 @@ gm1_transfer_prisoner_interaction_ai_dread_modifier = {
 }
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_perk_modifier = {
+## WHO (character)
+## WITH (character)
+## PRISONER (character)
+gm1_transfer_prisoner_interaction_perk_modifier = {
+	### This ruler has the "True Ruler" perk.
+	### This ruler is allowed to do anything with their own vassal prisoner.
 	modifier = {
-		$SENDER$ = { has_perk = true_ruler_perk }
+		$WHO$ = { has_perk = true_ruler_perk }
 		OR = {
-			$RECEIVER$ = { is_vassal_of = $SENDER$ }
-			$PRISONER$ = { is_vassal_of = $SENDER$ }
+			$WITH$ = { is_vassal_of = $WHO$ }
+			$PRISONER$ = { is_vassal_of = $WHO$ }
 		}
 		add = true_ruler_value
 		desc = INTERACTION_TRUE_RULER_PERK
@@ -422,69 +374,349 @@ gm1_transfer_prisoner_interaction_ai_perk_modifier = {
 }
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## SENDER (character)
-## RECEIVER (character)
-gm1_transfer_prisoner_interaction_ai_trait_modifier = {
+## WHO (character)
+## WITH (character)
+gm1_transfer_prisoner_interaction_trait_modifier = {
+	### This ruler is more likely to accept with diplomatic rulers.
 	modifier = {
-		$SENDER$ = { has_trait = education_diplomacy_5 }
+		$WITH$ = { has_trait = education_diplomacy_5 }
 		add = 25
 		desc = INTERACTION_DIPLOMACY_EDUCATION
 	}
-
+	### This ruler is less likely to accept if paranoid.
 	modifier = {
-		$RECEIVER$ = { has_trait = paranoid }
+		$WHO$ = { has_trait = paranoid }
 		add = -20
 		desc = INTERACTION_PARANOID
 	}
-
+	### This ruler is more likely to accept if trusting.
 	modifier = {
-		$RECEIVER$ = { has_trait = trusting }
+		$WHO$ = { has_trait = trusting }
 		add = 5
 		desc = INTERACTION_TRUSTING
 	}
-
+	### This ruler is more likely to accept if content.
 	modifier = {
-		$RECEIVER$ = { has_trait = content }
+		$WHO$ = { has_trait = content }
 		add = 5
 		desc = INTERACTION_CONTENT
 	}
-
+	### This ruler is less likely to accept if arrogant.
 	modifier = {
-		$RECEIVER$ = { has_trait = arrogant }
+		$WHO$ = { has_trait = arrogant }
 		add = -20
 		desc = INTERACTION_ARROGANT
 	}
-
+	### This ruler is less likely to accept if fickle.
 	modifier = {
-		$RECEIVER$ = { has_trait = fickle }
+		$WHO$ = { has_trait = fickle }
 		add = -20
 		desc = INTERACTION_FICKLE
 	}
-
+	### This ruler is less likely to accept if forgiving.
 	modifier = {
-		$RECEIVER$ = { has_trait = forgiving }
+		$WHO$ = { has_trait = forgiving }
 		add = -20
 		desc = INTERACTION_FORGIVING
 	}
-
+	### This ruler is more likely to accept if vengeful.
 	modifier = {
-		$RECEIVER$ = { has_trait = vengeful }
+		$WHO$ = { has_trait = vengeful }
 		add = 5
 		desc = INTERACTION_VENGEFUL
 	}
 }
 
 #------------------------------
-# Secondary
+# PRISONER
 #------------------------------
+
+# based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_relative_strength_modifier
+## WHO (character)
+## PRISONER (character)
+gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
+	### This ruler is the same strength toward the prisoner.
+	### This ruler is okay with accepting.
+	#modifier = {
+	#	NOR = {
+	#		$WHO$.interaction_current_strength_ninety_percent_value > $PRISONER$.current_military_strength
+	#		$WHO$.current_military_strength < $PRISONER$.interaction_current_strength_ninety_percent_value
+	#	}
+	#	add = 10
+	#	desc = INTERACTION_AI_REASON_PRISONER_MILITARY_STRENGTH
+	#}
+	### This ruler is more powerful than the prisoner.
+	### This ruler is more likely to accept.
+	#modifier = {
+	#	$WHO$.interaction_current_strength_ninety_percent_value > $PRISONER$.current_military_strength
+	#	add = {
+	#		value = $WHO$.current_military_strength 			# 1828
+	#		divide = {
+	#			value = $PRISONER$.current_military_strength 	# 1382
+	#			min = 1
+	##		subtract = 1									 	# 1.32 - 1 = 0.32
+	#		multiply = 50 										# 0.32 * 50 = 16
+	#		max = 50
+	#		min = -50
+	#	}
+	#	desc = INTERACTION_AI_REASON_PRISONER_MILITARY_STRENGTH
+	#}
+	### This ruler is less powerful than the prisoner.
+	### This ruler is scared to accept.
+	### Unless they are too bold to care.
+	modifier = {
+		$WHO$.current_military_strength < $PRISONER$.current_military_strength
+		add = {
+			value = $PRISONER$.current_military_strength 		# 1828
+			divide = {
+				value = $WHO$.current_military_strength 		# 1382
+				min = 1
+			}													# 1828 / 1382 = 1.32
+			subtract = 1 										# 1.32 - 1 = 0.32
+			multiply = {
+				value = -50										# 0.32 * -50 = -16
+				if = {
+					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					multiply = 0
+				}
+			}
+			max = 50
+			min = -50
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_MILITARY_STRENGTH
+	}
+	### This evaluates the ruler and prisoner's allies strength.
+	### This ruler's alliance is more less than the prisoner's alliance.
+	### This ruler is scared to accept.
+	### Unless they are too bold to care.
+	modifier = {
+		#### There needs to be at least any alliances.
+		OR = {
+			$WHO$ = { any_ally = { exists = this } }
+			$PRISONER$ = { any_ally = { exists = this } }
+		}
+		#### There needs to be at least difference in strength.
+		OR = {
+			$WHO$.interaction_current_strength_with_allies_value >= $PRISONER$.interaction_current_strength_ninety_percent_value
+			$PRISONER$.interaction_current_strength_with_allies_value >= $WHO$.interaction_current_strength_ninety_percent_value
+		}
+		add = {
+			value = {
+				value = 0
+				$PRISONER$ = {
+					every_ally = { add = current_military_strength } 		# 1828
+				}
+			}
+			divide = {
+				value = {
+					value = 0
+					$WHO$ = {
+						every_ally = { add = current_military_strength } 	# 1382
+					}
+				}
+				min = 1
+			}																# 1828 / 1382 = 1.32
+			subtract = 1 													# 1.32 - 1 = 0.32
+			multiply = {
+				value = -100												# 0.32 * 100 = -32
+				if = {
+					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					multiply = 0
+				}
+			}
+			divide = 2 														# -32 / 2 = -16
+			max = 25
+			min = -25
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_MILITARY_STRENGTH
+	}
+}
+
+# based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_claims_casus_bellis_modifier
+## WHO (character)
+## PRISONER (character)
+gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_gain = {
+	### This ruler has casus bellis on the prisoner.
+	### This ruler is less likely to accept.
+	modifier = {
+		$WHO$ = { has_any_cb_on = $PRISONER$ }
+		add = -15
+		desc = INTERACTION_AI_REASON_PRISONER_CASUS_BELLI
+	}
+	### This ruler has any claims against this prisoner's title/s.
+	### This ruler is more likely to accept
+	modifier = {
+		$PRISONER$ = {
+			any_held_title = {
+				tier >= tier_county 
+				save_temporary_scope_as = title_temp
+			}
+		}
+		$WHO$ = { has_claim_on = scope:title_temp }
+		add = {
+			value = 0
+			$PRISONER$ = {
+				every_held_title = {
+					limit = {
+						any_claimant = { this = $WHO$ }
+						save_temporary_scope_as = title_temp
+					}
+					add = {
+						value = 5
+						#### The ruler's strong claims worth more for the ruler.
+						if = {
+							limit = { $WHO$ = { has_strong_claim_on = scope:title_temp } }
+							multiply = 2
+						}
+						#### The ruler's higher title claims are worth more.
+						multiply = {
+							value = {
+								value = tier
+								add = 1
+							}
+						}
+					}
+				}
+			}
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_CLAIMS_TOWARDS
+	}
+	### The prisoner has any claims against this ruler's title/s.
+	### This ruler is more likely to accept
+	modifier = {
+		$WHO$ = {
+			any_held_title = {
+				tier >= tier_county 
+				save_temporary_scope_as = title_temp
+			}
+		}
+		$PRISONER$ = { has_claim_on = scope:title_temp }
+		add = {
+			value = 0
+			$WHO$ = {
+				every_held_title = {
+					limit = {
+						any_claimant = { this = $PRISONER$ }
+						save_temporary_scope_as = title_temp
+					}
+					add = {
+						value = 5
+						#### The prisoner's strong claims worth more for the ruler.
+						if = {
+							limit = { $PRISONER$ = { has_strong_claim_on = scope:title_temp } }
+							multiply = 2
+						}
+						#### The prisoner's higher title claims are worth more.
+						multiply = {
+							value = {
+								value = tier
+								add = 1
+							}
+						}
+					}
+				}
+			}
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_CLAIMS_AGAINST
+	}
+}
+
+# based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_claims_casus_bellis_modifier
+## WHO (character)
+## PRISONER (character)
+gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_loss = {
+	### This ruler has casus bellis on the prisoner.
+	### This ruler is more likely to accept.
+	#modifier = {
+	#	$WHO$ = { has_any_cb_on = $PRISONER$ }
+	#	add = 15
+	#	desc = INTERACTION_AI_REASON_PRISONER_CASUS_BELLI
+	#}
+	### This ruler has any claims against this prisoner's title/s.
+	### This ruler is more likely to accept
+	modifier = {
+		$PRISONER$ = {
+			any_held_title = {
+				tier >= tier_county 
+				save_temporary_scope_as = title_temp
+			}
+		}
+		$WHO$ = { has_claim_on = scope:title_temp }
+		add = {
+			value = 0
+			$PRISONER$ = {
+				every_held_title = {
+					limit = {
+						any_claimant = { this = $WHO$ }
+						save_temporary_scope_as = title_temp
+					}
+					add = {
+						value = -5
+						#### The ruler's strong claims worth more for the ruler.
+						if = {
+							limit = { $WHO$ = { has_strong_claim_on = scope:title_temp } }
+							multiply = 2
+						}
+						#### The ruler's higher title claims are worth more.
+						multiply = {
+							value = {
+								value = tier
+								add = -1
+							}
+						}
+					}
+				}
+			}
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_CLAIMS_TOWARDS
+	}
+	### The prisoner has any claims against this ruler's title/s.
+	### This ruler is more likely to accept
+	modifier = {
+		$WHO$ = {
+			any_held_title = {
+				tier >= tier_county 
+				save_temporary_scope_as = title_temp
+			}
+		}
+		$PRISONER$ = { has_claim_on = scope:title_temp }
+		add = {
+			value = 0
+			$WHO$ = {
+				every_held_title = {
+					limit = {
+						any_claimant = { this = $PRISONER$ }
+						save_temporary_scope_as = title_temp
+					}
+					add = {
+						value = -5
+						#### The prisoner's strong claims worth more for the ruler.
+						if = {
+							limit = { $PRISONER$ = { has_strong_claim_on = scope:title_temp } }
+							multiply = 2
+						}
+						#### The prisoner's higher title claims are worth more.
+						multiply = {
+							value = {
+								value = tier
+								add = -1
+							}
+						}
+					}
+				}
+			}
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_CLAIMS_AGAINST
+	}
+}
 
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
 # based on ./common/scripted_modifiers/00_hostile_scheme_scripted_modifiers.txt/hostile_murder_agent_base_join_chance_modifier
-## RECEIVER (character)
+## WHO (character)
 ## PRISONER (character)
-gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
+gm1_transfer_prisoner_interaction_prisoner_faith_modifier = {
 	modifier = {
-		$RECEIVER$.faith = {
+		$WHO$.faith = {
 			NOT = { this = $PRISONER$.faith }
 			faith_hostility_level = {
 				target = $PRISONER$.faith
@@ -497,9 +729,8 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_FAITH_EVIL
 	}
-
 	modifier = {
-		$RECEIVER$.faith = {
+		$WHO$.faith = {
 			NOT = { this = $PRISONER$.faith }
 			faith_hostility_level = {
 				target = $PRISONER$.faith
@@ -512,9 +743,8 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_FAITH_EVIL
 	}
-
 	modifier = {
-		$RECEIVER$.faith = {
+		$WHO$.faith = {
 			NOT = { this = $PRISONER$.faith }
 			faith_hostility_level = {
 				target = $PRISONER$.faith
@@ -527,21 +757,20 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY
 	}
-
 	modifier = {
-		$PRISONER$ = { is_head_of_faith_of = { WHO = $RECEIVER$ } }
+		$PRISONER$ = { is_head_of_faith_of = { WHO = $WHO$ } }
 		add = {
 			value = -500
 			if = {
-				limit = { $RECEIVER$ = { has_imprisonment_reason = $PRISONER$ } }
+				limit = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
 				divide = 4
 			}
 			if = {
-				limit = { $RECEIVER$ = { has_trait = zealous } }
+				limit = { $WHO$ = { has_trait = zealous } }
 				multiply = 2
 			}
 			else_if = {
-				limit = { $RECEIVER$ = { has_trait = arbitrary } }
+				limit = { $WHO$ = { has_trait = arbitrary } }
 				multiply = 0
 			}
 		}
@@ -549,69 +778,142 @@ gm1_transfer_prisoner_interaction_ai_reason_faith_modifier_prisoner = {
 	}
 }
 
-# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
-## RECEIVER (character)
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction#ai_accept
+## WHO (character)
 ## PRISONER (character)
-gm1_transfer_prisoner_interaction_ai_relation_modifier_prisoner = {
+gm1_transfer_prisoner_interaction_prisoner_realm_modifier = {
+	### That ruler is a vassal of this ruler.
+	### This ruler, without any imprisonment claim, is less likely to accept.
 	modifier = {
-		$RECEIVER$ = { has_relation_friend = $PRISONER$ }
-		$RECEIVER$ = { NOT = { has_relation_best_friend = $PRISONER$ } }
+		$PRISONER$ = { is_vassal_of = $WHO$ }
+		NOT = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
+		add = -30
+		desc = INTERACTION_AI_REASON_PRISONER_VASSAL
+	}
+}
+
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
+## WHO (character)
+## PRISONER (character)
+gm1_offer_prisoner_interaction_prisoner_relation_modifier = {
+	modifier = {
+		$WHO$ = { has_relation_friend = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_best_friend = $PRISONER$ } }
 		add = {
 			value = 10
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_best_friend = $PRISONER$ } 
+		$WHO$ = { has_relation_best_friend = $PRISONER$ } 
 		add = {
 			value = 20
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_lover = $PRISONER$ }
-		$RECEIVER$ = { NOT = { has_relation_soulmate = $PRISONER$ } }
+		$WHO$ = { has_relation_lover = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_soulmate = $PRISONER$ } }
 		add = {
 			value = 10
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_LOVER
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_soulmate = $PRISONER$ } 
+		$WHO$ = { has_relation_soulmate = $PRISONER$ } 
 		add = {
 			value = 20
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_rival = $PRISONER$ }
-		$RECEIVER$ = { NOT = { has_relation_nemesis = $PRISONER$ } }
+		$WHO$ = { has_relation_rival = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_nemesis = $PRISONER$ } }
 		add = {
 			value = -25
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL
 	}
-
 	modifier = {
-		$RECEIVER$ = { has_relation_nemesis = $PRISONER$ } 
+		$WHO$ = { has_relation_nemesis = $PRISONER$ } 
 		add = {
 			value = -50
 			multiply = -2
 		}
 		desc = INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS
 	}
-
 	modifier = {
-		$RECEIVER$ = { dynasty = $PRISONER$.dynasty } 
+		$WHO$ = { dynasty = $PRISONER$.dynasty } 
+		add = {
+			value = 5
+			multiply = -2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_DYNASTY_SAME_DYNASTY
+	}
+}
+
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
+## WHO (character)
+## PRISONER (character)
+gm1_demand_prisoner_interaction_prisoner_relation_modifier = {
+	modifier = {
+		$WHO$ = { has_relation_friend = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_best_friend = $PRISONER$ } }
+		add = {
+			value = 10
+			multiply = -2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND
+	}
+	modifier = {
+		$WHO$ = { has_relation_best_friend = $PRISONER$ } 
+		add = {
+			value = 20
+			multiply = -2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND
+	}
+	modifier = {
+		$WHO$ = { has_relation_lover = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_soulmate = $PRISONER$ } }
+		add = {
+			value = 10
+			multiply = -2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_LOVER
+	}
+	modifier = {
+		$WHO$ = { has_relation_soulmate = $PRISONER$ } 
+		add = {
+			value = 20
+			multiply = -2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE
+	}
+	modifier = {
+		$WHO$ = { has_relation_rival = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_nemesis = $PRISONER$ } }
+		add = {
+			value = -25
+			multiply = 2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL
+	}
+	modifier = {
+		$WHO$ = { has_relation_nemesis = $PRISONER$ } 
+		add = {
+			value = -50
+			multiply = 2
+		}
+		desc = INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS
+	}
+	modifier = {
+		$WHO$ = { dynasty = $PRISONER$.dynasty } 
 		add = {
 			value = 5
 			multiply = -2
@@ -625,38 +927,36 @@ gm1_transfer_prisoner_interaction_ai_relation_modifier_prisoner = {
 #------------------------------
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_offer_personality_modifier
-## SENDER (character)
-## RECEIVER (character)
+## WHO (character)
+## WITH (character)
 ## PRISONER (character)
-gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
+gm1_offer_prisoner_interaction_personality_modifier = {
 	## Cowardly characters are less willing to take prisoners
 	modifier = {
-		$RECEIVER$.ai_boldness < 0
+		$WHO$.ai_boldness < 0
 		add = {
-			value = $RECEIVER$.ai_boldness
+			value = $WHO$.ai_boldness
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_BOLDNESS
 	}
-
 	## Compassionate characters are less willing to take prisoners
 	modifier = {
-		$RECEIVER$.ai_compassion > 0
+		$WHO$.ai_compassion > 0
 		add = {
-			value = $RECEIVER$.ai_compassion
+			value = $WHO$.ai_compassion
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_COMPASSION
 	}
-
 	## Greedy characters are more willing to take, but not bargain prisoners
 	modifier = { 
-		$RECEIVER$.ai_greed != 0
+		$WHO$.ai_greed != 0
 		add = {
-			value = $RECEIVER$.ai_greed
+			value = $WHO$.ai_greed
 			if = {
 				limit = { 
-					$RECEIVER$ = {
+					$WHO$ = {
 						OR = {
 							ai_greed < 0
 							scope:gold = yes
@@ -672,22 +972,21 @@ gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_GREED
 	}
-
 	## Honorable characters are less willing to take prisoners, dishonorable only when to take them
 	modifier = {
-		$RECEIVER$.ai_honor != 0
+		$WHO$.ai_honor != 0
 		add = {
-			value = $RECEIVER$.ai_honor
+			value = $WHO$.ai_honor
 			if = {
-				limit = { $RECEIVER$.ai_honor < 0 }
+				limit = { $WHO$.ai_honor < 0 }
 				multiply = 0.5
 			}
 			else = {
 				multiply = -0.5
 				if = {
 					limit = {
-						$RECEIVER$ = { is_vassal_of = $SENDER$ }
-						$SENDER$ = { has_realm_law_flag = vassal_refusal_is_treason }
+						$WHO$ = { is_vassal_of = $WITH$ }
+						$WITH$ = { has_realm_law_flag = vassal_refusal_is_treason }
 					}
 					multiply = 2
 				}
@@ -695,29 +994,27 @@ gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_HONOR
 	}
-
 	## Rational characters are more willing to take hostages
 	modifier = {
-		$RECEIVER$.ai_rationality > 0
+		$WHO$.ai_rationality > 0
 		add = {
-			value = $RECEIVER$.ai_rationality
+			value = $WHO$.ai_rationality
 			multiply = 0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_RATIONALITY
 	}
-
 	## Zealous characters are more willing to take prisoners with hostile/evil faiths
 	modifier = {
-		$RECEIVER$.ai_zeal != 0
-		$RECEIVER$.faith ?= {
+		$WHO$.ai_zeal != 0
+		$WHO$.faith ?= {
 			faith_hostility_level = { target = $PRISONER$.faith value >= faith_hostile_level }
 		}
 		add = {
-			value = $RECEIVER$.ai_zeal
+			value = $WHO$.ai_zeal
 			multiply = 0.5
 			if = {
 				limit = {
-					$RECEIVER$.faith ?= {
+					$WHO$.faith ?= {
 						faith_hostility_level = { target = $PRISONER$.faith value >= faith_evil_level }
 					}
 				}
@@ -726,14 +1023,13 @@ gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_ZEAL
 	}
-
 	## Crown authority makes it even more dishonorable
 	modifier = { 
-		$RECEIVER$.ai_honor > 0
-		$RECEIVER$ = { is_vassal_of = $SENDER$ }
-		$SENDER$ = { has_realm_law_flag = vassal_refusal_is_treason }
+		$WHO$.ai_honor > 0
+		$WHO$ = { is_vassal_of = $WITH$ }
+		$WITH$ = { has_realm_law_flag = vassal_refusal_is_treason }
 		add = {
-			value = $RECEIVER$.ai_honor
+			value = $WHO$.ai_honor
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_REASON_REALM_LAW
@@ -741,38 +1037,36 @@ gm1_transfer_prisoner_interaction_ai_offer_personality_modifier = {
 }
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_demand_personality_modifier
-## SENDER (character)
-## RECEIVER (character)
+## WHO (character)
+## WITH (character)
 ## PRISONER (character)
-gm1_transfer_prisoner_interaction_ai_demand_personality_modifier = {
+gm1_demand_prisoner_interaction_personality_modifier = {
 	## Cowardly characters are less willing to give prisoners
 	modifier = {
-		$RECEIVER$.ai_boldness < 0
+		$WHO$.ai_boldness < 0
 		add = {
-			value = $RECEIVER$.ai_boldness
+			value = $WITH$.ai_boldness
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_BOLDNESS
 	}
-
 	## Compassionate characters are less willing to take prisoners
 	modifier = {
-		$RECEIVER$.ai_compassion > 0
+		$WHO$.ai_compassion > 0
 		add = {
-			value = $RECEIVER$.ai_compassion
+			value = $WHO$.ai_compassion
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_COMPASSION
 	}
-
 	## Greedy characters are more willing to bargain, but not give prisoners
 	modifier = { 
-		$RECEIVER$.ai_greed != 0
+		$WHO$.ai_greed != 0
 		add = {
-			value = $RECEIVER$.ai_greed
+			value = $WHO$.ai_greed
 			if = {
 				limit = { 
-					$RECEIVER$ = {
+					$WHO$ = {
 						OR = {
 							ai_greed > 0
 							scope:gold = yes
@@ -788,22 +1082,21 @@ gm1_transfer_prisoner_interaction_ai_demand_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_GREED
 	}
-
 	## Honorable characters are less willing to give prisoners, dishonorable only when to take them
 	modifier = {
-		$RECEIVER$.ai_honor != 0
+		$WHO$.ai_honor != 0
 		add = {
-			value = $RECEIVER$.ai_honor
+			value = $WHO$.ai_honor
 			if = {
-				limit = { $RECEIVER$.ai_honor < 0 }
+				limit = { $WHO$.ai_honor < 0 }
 				multiply = 0.5
 			}
 			else = {
 				multiply = -0.5
 				if = {
 					limit = {
-						$RECEIVER$ = { is_vassal_of = $SENDER$ }
-						$SENDER$ = { has_realm_law_flag = vassal_refusal_is_treason }
+						$WHO$ = { is_vassal_of = $WITH$ }
+						$WITH$ = { has_realm_law_flag = vassal_refusal_is_treason }
 					}
 					multiply = 2
 				}
@@ -811,29 +1104,27 @@ gm1_transfer_prisoner_interaction_ai_demand_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_HONOR
 	}
-
 	## Rational characters are less willing to give hostages
 	modifier = {
-		$RECEIVER$.ai_rationality > 0
+		$WHO$.ai_rationality > 0
 		add = {
-			value = $RECEIVER$.ai_rationality
+			value = $WHO$.ai_rationality
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_RATIONALITY
 	}
-
 	## Zealous characters are less willing to give prisoners with hostile/evil faiths
 	modifier = {
-		$RECEIVER$.ai_zeal != 0
-		$RECEIVER$.faith ?= {
+		$WHO$.ai_zeal != 0
+		$WHO$.faith ?= {
 			faith_hostility_level = { target = $PRISONER$.faith value >= faith_hostile_level }
 		}
 		add = {
-			value = $RECEIVER$.ai_zeal
+			value = $WHO$.ai_zeal
 			multiply = -0.5
 			if = {
 				limit = {
-					$RECEIVER$.faith ?= {
+					$WHO$.faith ?= {
 						faith_hostility_level = { target = $PRISONER$.faith value >= faith_evil_level }
 					}
 				}
@@ -842,14 +1133,13 @@ gm1_transfer_prisoner_interaction_ai_demand_personality_modifier = {
 		}
 		desc = INTERACTION_AI_VALUE_MODIFIER_ZEAL
 	}
-
 	## Crown authority makes it even more dishonorable
 	modifier = { 
-		$RECEIVER$.ai_honor > 0
-		$RECEIVER$ = { is_vassal_of = $SENDER$ }
-		$SENDER$ = { has_realm_law_flag = vassal_refusal_is_treason }
+		$WHO$.ai_honor > 0
+		$WHO$ = { is_vassal_of = $WITH$ }
+		$PRISONER$ = { has_realm_law_flag = vassal_refusal_is_treason }
 		add = {
-			value = $RECEIVER$.ai_honor
+			value = $WHO$.ai_honor
 			multiply = -0.5
 		}
 		desc = INTERACTION_AI_REASON_REALM_LAW

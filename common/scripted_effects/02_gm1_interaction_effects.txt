@@ -79,6 +79,12 @@ transfer_prisoner_interaction_effect = {
 		WHO = $RECEIVER$
 		TARGET = $PRISONER$
 	}
+
+	if = {
+		limit = { debug_only = yes }
+		debug_log_date = yes
+		debug_log_scopes = yes
+	}
 }
 
 # based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
