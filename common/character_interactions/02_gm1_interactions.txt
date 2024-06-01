@@ -370,9 +370,6 @@ offer_prisoner_interaction = {
 						}
 					}
 				}
-				scope:recipient = {
-					has_usable_hook = scope:actor
-				}
 			}
 		}
 
