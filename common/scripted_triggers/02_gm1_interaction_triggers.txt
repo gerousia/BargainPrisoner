@@ -5,55 +5,42 @@
 # interaction-related
 #------------------------------
 
+# ROOT (character)
 # SENDER (character)
-gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
-	trigger_if = {
-		limit = { is_imprisoned = yes }												## Must be imprisoned.
-		is_imprisoned_by = $SENDER$													## Must be imprisoned by the sender.
-	}
-	#NOT = { $RECEIVER$ = this }													## Must not be themselves
-	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {			## Must not be imprisoned by diarch.
+gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
+	is_imprisoned = yes
+	is_imprisoned_by = $SENDER$
+	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
 		PRISONER = this
 		REGENT = this.var:imprisoned_by_diarch
 	}
 }
 
+# ROOT (character)
 gm1_valid_for_transfer_prisoner_interaction_trigger = {
-																					## Mod - Prisoner of War
-	#custom_description = {															# Prisoner must be at their imprisoner capital.
-		#text = "is_at_capital_prison_trigger"
-		#object = imprisoner
-		#is_at_location = imprisoner.capital_province
-	#}
-	custom_description = {															## Prisoner must not be under any ongoing interaction.
-		text = "already_under_ongoing_transfer_prisoner_interaction_trigger"
-		NOT = { has_character_flag = under_transfer_prisoner_interaction }
-	}
-	custom_description = {															## Prisoner must not recently undergone any interaction.
-		text = "recently_underwent_transfer_prisoner_interaction_trigger"
-		NOT = { has_character_flag = recently_prison_transferred }
-	}
-	is_being_tortured = no															## Prisoner must not currently be tortured.
-	health > dying_health															## Prisoner must not be dying.
+	## Mod - Prisoner of War
+	is_under_ongoing_interaction = no
+	is_being_tortured = no
+	health > dying_health
 }
 
 gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
-	NOT = { is_allied_to = root } 													## Don't inform of unimportant cases
+	NOT = { is_allied_to = root }
 }
 
 gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
-	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes			## Context checks, e.g. alliance
+	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
 
 	root = {
-		any_prisoner = {															## You have a prisoner to offer
+		any_prisoner = {
 			count >= 1
-			gm1_basic_valid_for_transfer_prisoner_interaction_trigger = { 
+			gm1_valid_for_transfer_prisoner_interaction_trigger_basic = { 
 				SENDER = $SENDER$
 				RECEIVER = $RECEIVER$
 			}
 			save_temporary_scope_as = prisoner
 		}
-		is_character_interaction_potentially_accepted = {							## Ensure Offer might be accepted
+		is_character_interaction_potentially_accepted = {
 			interaction = offer_prisoner_interaction
 			recipient = $RECEIVER$
 			secondary_actor = scope:prisoner
