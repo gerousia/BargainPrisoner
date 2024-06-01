@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## BM1 script_values
 ##############################
 
@@ -116,7 +116,7 @@ interaction_tier_check_value = {
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost
 barter_cost = {
 	value = ransom_cost
-	multiply = 0.8 # Make it worth less than ransoming
+	multiply = 0.8
 }
 
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost_value

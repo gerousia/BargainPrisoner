@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -37,7 +37,7 @@ offer_prisoner_interaction = {
 		## Must be available.
 		## Must not be imprisoned.
 		## Must have prisoners
-		## Must be at peace with the Recipient.
+		## Must not be at war with the Recipient.
 		scope:actor = { 
 			is_busy_in_events_localised = yes
 			is_imprisoned = no
@@ -164,7 +164,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -185,7 +185,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -205,7 +205,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = extortionate_gold
-		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -226,7 +226,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = extortionate_current_gold
-		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -248,7 +248,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_gold
-		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
 	}
 
 	send_option = {
@@ -271,7 +271,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
 	}
 
 	send_option = {
@@ -293,7 +293,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = gold
-		localization = "BARTER_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD"
 	}
 
 	send_option = {
@@ -316,24 +316,22 @@ offer_prisoner_interaction = {
 		}
 
 		flag = current_gold
-		localization = "BARTER_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_CURRENT"
 	}
 
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor 
-			OR = {
 				scope:secondary_actor ?= {
+				OR = {
 					is_at_war_with = scope:recipient
-				}
-				scope:secondary_actor ?= {
 					any_held_title = {
 						tier >= tier_kingdom
 						custom_tooltip = { 
 							# Workaround just to mute this specific localization error. 
 							# Why does it have to be designed this way?
 							scope:recipient = { has_strong_claim_on = prev }
-							text = DEBUG_IDENTIFIER
+							text = DEBUG_COLON
 						}
 					}
 				}
@@ -350,24 +348,22 @@ offer_prisoner_interaction = {
 		}
 
 		flag = strong_hook
-		localization = "BARTER_FAVOR_OPTION"
+		localization = "BARTER_OPTION_FAVOR"
 	}
 
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			NOT = {
 				scope:secondary_actor ?= {
+				NOR = {
 					is_at_war_with = scope:recipient
-				}
-				scope:secondary_actor ?= {
 					any_held_title = {
 					tier >= tier_kingdom
 						custom_tooltip = { 
 							# Workaround just to mute this specific localization error. 
 							# Why does it have to be designed this way?
 							scope:recipient = { has_strong_claim_on = prev }
-							text = DEBUG_IDENTIFIER
+							text = DEBUG_COLON
 						}
 					}
 				}
@@ -387,7 +383,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = favor
-		localization = "BARTER_FAVOR_OPTION"
+		localization = "BARTER_OPTION_FAVOR"
 	}
 
 	send_options_exclusive = no
@@ -484,7 +480,7 @@ offer_prisoner_interaction = {
 		## Receiver's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 			PRISONER = scope:secondary_actor
 		}
 
@@ -499,43 +495,42 @@ offer_prisoner_interaction = {
 		### Receiver accepts less if they are not tribal while the sender is.
 		gm1_transfer_prisoner_interaction_government_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on diplomatic relations with the sender.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts less if different culture with the sender.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts less if different faith with the sender.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on personal relations with the sender.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on sender dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
-		### Receiver accepts based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 		### Receiver accepts based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:actor
-			WITH = scope:recipient
+			WHO = scope:recipient
+			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -631,7 +626,7 @@ offer_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
+			desc = INTERACTION_AI_PRISONER_REASON_APPROVAL
 		}
 	}
 
@@ -666,7 +661,7 @@ offer_prisoner_interaction = {
 		## AI's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 
@@ -681,38 +676,38 @@ offer_prisoner_interaction = {
 		### AI sends based on diplomatic relations with the receiver.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends less if different culture with the receiver.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends less if different faith with the receiver.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends based on personal relations with the receiver.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends based on receiver dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### AI sends based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 		### AI sends based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:actor
-			WITH = scope:recipient
+			WHO = scope:recipient
+			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -823,7 +818,6 @@ offer_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
 		}
 	}
 }
@@ -928,7 +922,7 @@ demand_prisoner_interaction = {
 
 	can_send = {
 		custom_description = {
-			text = "already_allies_transfer_prisoner_interaction_trigger"
+			text = "is_allies_with_target_trigger"
 			subject = scope:actor
 			object = scope:recipient
 			NAND = {
@@ -977,7 +971,7 @@ demand_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:actor = this }
-					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+					gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
 						SENDER = scope:recipient
 					}
 				}
@@ -1030,7 +1024,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -1070,7 +1064,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -1109,7 +1103,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = extortionate_gold
-		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -1149,7 +1143,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = extortionate_current_gold
-		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -1190,7 +1184,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_gold
-		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
 	}
 
 	send_option = {
@@ -1232,7 +1226,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
 	}
 
 	send_option = {
@@ -1273,7 +1267,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = gold
-		localization = "BARTER_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD"
 	}
 
 	send_option = {
@@ -1315,7 +1309,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = current_gold
-		localization = "BARTER_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -1340,7 +1334,7 @@ demand_prisoner_interaction = {
 								# Workaround just to mute this specific localization error. 
 								# Why does it have to be designed this way?
 								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_IDENTIFIER
+								text = DEBUG_COLON
 							}
 						}
 					}
@@ -1361,7 +1355,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = strong_hook
-		localization = "BARTER_OWE_FAVOR_OPTION"
+		localization = "BARTER_OPTION_OWE_FAVOR"
 	}
 
 	send_option = {
@@ -1386,7 +1380,7 @@ demand_prisoner_interaction = {
 								# Workaround just to mute this specific localization error. 
 								# Why does it have to be designed this way?
 								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_IDENTIFIER
+								text = DEBUG_COLON
 							}
 						}
 					}	
@@ -1407,7 +1401,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = favor
-		localization = "BARTER_OWE_FAVOR_OPTION"
+		localization = "BARTER_OPTION_OWE_FAVOR"
 	}
 
 	## Hook can be used to force accept demand for a prisoner.
@@ -1533,7 +1527,7 @@ demand_prisoner_interaction = {
 		## Sender's Personality
 		gm1_demand_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 			PRISONER = scope:secondary_recipient
 		}
 
@@ -1548,53 +1542,53 @@ demand_prisoner_interaction = {
 		### Sender accepts more if they are below the receiver.
 		gm1_transfer_prisoner_interaction_tier_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts more if they are scared of the receiver.
 		gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if they are not tribal while the receiver is.
 		gm1_transfer_prisoner_interaction_government_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on diplomatic relations with the receiver.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if different culture with the receiver.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if different faith with the receiver.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on personal relations with the receover.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on receiver dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### Sender accepts based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_recipient
 		}
 		### Sender accepts based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 
 		## Modifiers towards the Prisoner.
@@ -1690,7 +1684,7 @@ demand_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE
+			desc = INTERACTION_AI_PRISONER_REASON_VALUE_RECIPIENT
 		}
 	}
 

@@ -12,7 +12,7 @@ l_english:
 ## offer_prisoner_interaction
  offer_prisoner_interaction: "Offer Prisoner"
  offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] one of your [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\n$offer_prisoner_interaction_desc_1$"
- offer_prisoner_interaction_desc_1: "Concedes any [imprisonment|E] reasons against the prisoner."
+ offer_prisoner_interaction_desc_1: "#weak Concedes [imprisonment|E] reasons against the [prisoner|E]#!"
  offer_prisoner_interaction_notification: "Offered Prisoner"
  offer_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  actor_secondary_offer_prisoner_interaction: "[prisoner|E]"
@@ -22,7 +22,7 @@ l_english:
 ## demand_prisoner_interaction
  demand_prisoner_interaction: "Demand Prisoner"
  demand_prisoner_interaction_desc: "Demand [recipient.GetShortUINameNoTooltip] one of their [prisoners|E] for a sum of [gold|E] or a [favor|E].\n\n$demand_prisoner_interaction_desc_1$"
- demand_prisoner_interaction_desc_1: "Will enforce demand [prisoners|E] from [direct_vassals|E]."
+ demand_prisoner_interaction_desc_1: "#weak Will enforce demand [prisoners|E] from [direct_vassals|E].#!"
  demand_prisoner_interaction_notification: "Demanded Prisoner"
  demand_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  recipient_secondary_demand_prisoner_interaction: "[prisoner|E]"
@@ -30,51 +30,42 @@ l_english:
  DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
 
 # AI REASONS
- INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE: "[secondary_recipient.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
-
- INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_ACTOR: "You are at war with [prisoner|E]: $VALUE|+0$"
- INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT: "[recipient.GetSheHe|U] is at war with the [prisoner|E]: $VALUE|+0$"
-
- INTERACTION_AI_REASON_PRISONER_MILITARY_STRENGTH: "[prisoner|E] Military Strength: $VALUE|=+0$#! #weak (Scared)#!"
- INTERACTION_AI_REASON_PRISONER_CASUS_BELLI: "Has [casus_bellis|E] against [prisoner|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_CLAIMS_TOWARDS: "Has [claims|E] on [prisoner|E] [titles|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_CLAIMS_AGAINST: "[prisoner|E] has [claims|E] on [recipient.GetHerHis] [titles|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_VASSAL: "Has no [imprisonment_reason|E] against [prisoner|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_HEAD_OF_FAITH: "[prisoner|E] is their [head_of_faith|E]: $VALUE|+0=$"
- INTERACTION_AI_REASON_PRISONER_FAITH_ASTRAY: "[prisoner|E] [faith|E] is [faith_astray|E]: $VALUE|0+=$"
- INTERACTION_AI_REASON_PRISONER_FAITH_HOSTILE: "[prisoner|E] [faith|E] is [faith_hostile|E]: $VALUE|0+=$"
- INTERACTION_AI_REASON_PRISONER_FAITH_EVIL: "[prisoner|E] [faith|E] is [faith_evil|E]: $VALUE|0+=$"
- INTERACTION_AI_REASON_PRISONER_RELATION_FRIEND: "[prisoner|E] is [recipient.GetHerHis] [friend|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_BEST_FRIEND: "[prisoner|E] is [recipient.GetHerHis] [best_friend|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_LOVER: "[prisoner|E] is [recipient.GetHerHis] [lover|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_SOULMATE: "[prisoner|E] is [recipient.GetHerHis] [soulmate|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_RIVAL: "[prisoner|E] is [recipient.GetHerHis] [rival|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_RELATION_NEMESIS: "[prisoner|E] is [recipient.GetHerHis] [nemesis|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_DYNASTY_SAME_DYNASTY: "Shares [dynasty] with [prisoner|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_INTIMIDATED: "[intimidated_i][intimidated|E] by [prisoner|E]: $VALUE|=+0$"
- INTERACTION_AI_REASON_PRISONER_COWED: "[terrified_i][cowed|E] of [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_VALUE_ACTOR: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_VALUE_RECIPIENT: "[secondary_recipient.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
+ 
+ INTERACTION_AI_PRISONER_REASON_APPROVAL: "[recipient.GetSheHe|U] #EMP [Select_CString( LessThan_int32( '(int32)$VALUE|0$', '(int32)1' ), 'dislikes', 'likes' )]#! this offer: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_WAR_AGAINST: "$BULLET_WITH_TAB$ [recipient.GetSheHe|U] is at war with the [prisoner|E]: $VALUE|+0$"
+ INTERACTION_AI_PRISONER_REASON_MILITARY_STRENGTH: "$BULLET_WITH_TAB$ [prisoner|E] Military Strength: $VALUE|=+0$#! #weak ([Select_CString( LessThan_int32( '(int32)$VALUE|0$', '(int32)-1' ), 'Afraid', 'Neutral' )])#!"
+ INTERACTION_AI_PRISONER_REASON_CASUS_BELLI: "$BULLET_WITH_TAB$ Has [casus_bellis|E] against [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_CLAIMS_TOWARDS: "$BULLET_WITH_TAB$ Has [claims|E] on [prisoner|E] [titles|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_CLAIMS_AGAINST: "$BULLET_WITH_TAB$ [prisoner|E] has [claims|E] on [recipient.GetHerHis] [titles|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_FAITH_ASTRAY: "$BULLET_WITH_TAB$ [prisoner|E] [faith|E] is [faith_astray|E]: $VALUE|0+=$"
+ INTERACTION_AI_PRISONER_REASON_FAITH_HOSTILE: "$BULLET_WITH_TAB$ [prisoner|E] [faith|E] is [faith_hostile|E]: $VALUE|0+=$"
+ INTERACTION_AI_PRISONER_REASON_FAITH_EVIL: "$BULLET_WITH_TAB$ [prisoner|E] [faith|E] is [faith_evil|E]: $VALUE|0+=$"
+ INTERACTION_AI_PRISONER_REASON_HEAD_OF_FAITH: "$BULLET_WITH_TAB$ [prisoner|E] is their [head_of_faith|E]: $VALUE|+0=$"
+ INTERACTION_AI_PRISONER_REASON_VASSAL: "$BULLET_WITH_TAB$ Has no [imprisonment_reason|E] against [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_FRIEND: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_BEST_FRIEND: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [best_friend|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_LOVER: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [lover|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_SOULMATE: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [soulmate|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_RIVAL: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [rival|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_RELATION_NEMESIS: "$BULLET_WITH_TAB$ [prisoner|E] is [recipient.GetHerHis] [nemesis|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_DYNASTY_SAME_DYNASTY: "$BULLET_WITH_TAB$ Shares [dynasty] with [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_INTIMIDATED: "$BULLET_WITH_TAB$ [intimidated_i][intimidated|E] by [prisoner|E]: $VALUE|=+0$"
+ INTERACTION_AI_PRISONER_REASON_COWED: "$BULLET_WITH_TAB$ [terrified_i][cowed|E] of [prisoner|E]: $VALUE|=+0$"
 
 # EFFECT
- I_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes your [prisoner|E]"
- I_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became your [prisoner|E]"
  CHARACTER_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
  CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
 
 # TRIGGER
- IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "Is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
- I_AM_NOT_AT_CAPITAL_PRISON_TRIGGER: "You are currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
- CHARACTER_IS_NOT_AT_CAPITAL_PRISON_TRIGGER: "[CHARACTER.GetShortUIName|V] is currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ NOT_AT_IMPRISONER_CAPITAL_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
+ ALREADY_ALLIES_WITH_TARGET_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] already [allies|E] in [war|E] with [TARGET_CHARACTER.GetShortUIName|U]"
+ ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] already under an ongoing interaction"
+ RECENTLY_UNDERGONE_INTERACTION_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharHaveHas(CHARACTER)]', 'has' )] recently undergone this interaction"
 
- ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "Is already under an ongoing transaction"
- I_AM_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "You are already under an ongoing transaction"
- CHARACTER_IS_ALREADY_UNDER_ONGOING_TRANSFER_PRISONER_INTERACTION_TRIGGER: "[CHARACTER.GetShortUIName|V] is already under an ongoing transaction"
-
- RECENTLY_UNDERWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER: "Recently underwent this transaction"
- I_RECENTLY_UNDEWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER: "You recently underwent this transaction"
- CHARACTER_RECENTLY_UNDERWENT_TRANSFER_PRISONER_INTERACTION_TRIGGER: "[CHARACTER.GetShortUIName|V] recently underwent this transaction"
-
- ALREADY_ALLIES_TRANSFER_PRISONER_INTERACTION_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [Select_CString( CHARACTER.IsLocalPlayer, 'are', 'is' )] already [allies|E] in [war|E] with [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
+# TOOLTIP
+ maximum_opinion_reached: "Maximum attainable [opinion|E] already reached."
 
 # NOTIFICATION
  msg_transfer_prisoner_interaction_title: "Prisoner Transferred!"
