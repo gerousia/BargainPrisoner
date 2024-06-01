@@ -580,21 +580,22 @@ offer_prisoner_interaction = {
 			add = {
 				value = 0
 				#### Gold Option
+				add = {
 				if = {
 					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_actor.highly_increased_barter_cost_value
+						value = scope:secondary_actor.highly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_actor.slightly_increased_barter_cost_value
+						value = scope:secondary_actor.slightly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_actor.increased_barter_cost_value
+						value = scope:secondary_actor.increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:gold ?= yes }
-					add = scope:secondary_actor.barter_cost_value
+						value = scope:secondary_actor.barter_cost_value
 				}
 				else_if = {
 					limit = {
@@ -605,17 +606,20 @@ offer_prisoner_interaction = {
 							scope:current_gold ?= yes
 						}
 					} 
-					add = scope:recipient.current_gold_value
+						value = scope:recipient.current_gold_value
+					}
 				}
 				### Hook Option
+				add = {
 				if = {
 					limit = { scope:strong_hook ?= yes }
-					add = scope:recipient.golden_obligation_value
+						value = scope:recipient.golden_obligation_value
 					multiply = 2
 				}
 				else_if = {
 					limit = { scope:favor ?= yes }
-					add = scope:recipient.golden_obligation_value
+						value = scope:recipient.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_actor_prisoner_value
@@ -772,21 +776,22 @@ offer_prisoner_interaction = {
 			add = {
 				value = 0
 				#### Gold Option
+				add = {
 				if = {
 					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_actor.highly_increased_barter_cost_value
+						value = scope:secondary_actor.highly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_actor.slightly_increased_barter_cost_value
+						value = scope:secondary_actor.slightly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_actor.increased_barter_cost_value
+						value = scope:secondary_actor.increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:gold ?= yes }
-					add = scope:secondary_actor.barter_cost_value
+						value = scope:secondary_actor.barter_cost_value
 				}
 				else_if = {
 					limit = {
@@ -797,17 +802,20 @@ offer_prisoner_interaction = {
 							scope:current_gold ?= yes
 						}
 					} 
-					add = scope:recipient.current_gold_value 
+						value = scope:recipient.current_gold_value
+					}
 				}
 				### Hook Option
+				add = {
 				if = {
 					limit = { scope:strong_hook ?= yes }
-					add = scope:recipient.golden_obligation_value
-					multiply = 0.5 # They should be more reluctant in giving out strong hooks 
+						value = scope:recipient.golden_obligation_value
+						multiply = 2
 				}
 				else_if = {
 					limit = { scope:favor ?= yes }
-					add = scope:recipient.golden_obligation_value
+						value = scope:recipient.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_actor_prisoner_value
@@ -1638,21 +1646,22 @@ demand_prisoner_interaction = {
 			add = {
 				value = 0
 				#### Gold Option
+				add = {
 				if = {
 					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_recipient.highly_increased_barter_cost_value
+						value = scope:secondary_recipient.highly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_recipient.slightly_increased_barter_cost_value
+						value = scope:secondary_recipient.slightly_increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_recipient.increased_barter_cost_value
+						value = scope:secondary_recipient.increased_barter_cost_value
 				}
 				else_if = {
 					limit = { scope:gold ?= yes }
-					add = scope:secondary_recipient.barter_cost_value
+						value = scope:secondary_recipient.barter_cost_value
 				}
 				else_if = {
 					limit = {
@@ -1663,17 +1672,20 @@ demand_prisoner_interaction = {
 							scope:current_gold ?= yes
 						}
 					} 
-					add = scope:actor.current_gold_value 
+						value = scope:actor.current_gold_value
+					}
 				}
 				### Hook Option
+				add = {
 				if = {
 					limit = { scope:strong_hook ?= yes }
-					add = scope:actor.golden_obligation_value
+						value = scope:actor.golden_obligation_value
 					multiply = 2
 				}
 				else_if = {
 					limit = { scope:favor ?= yes }
-					add = scope:actor.golden_obligation_value
+						value = scope:actor.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_recipient_prisoner_value
