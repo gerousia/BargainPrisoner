@@ -130,7 +130,7 @@ offer_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:recipient = this }
-					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+					gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
 						SENDER = scope:actor
 					}
 				}
