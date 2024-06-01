@@ -37,7 +37,7 @@ offer_prisoner_interaction = {
 		## Must be available.
 		## Must not be imprisoned.
 		## Must have prisoners
-		## Must be at peace with the Recipient.
+		## Must not be at war with the Recipient.
 		scope:actor = { 
 			is_busy_in_events_localised = yes
 			is_imprisoned = no
@@ -74,53 +74,52 @@ offer_prisoner_interaction = {
 	}
 
 	can_send = {
-		custom_description = {
-			text = "already_allies_transfer_prisoner_interaction_trigger"
-			subject = scope:actor
-			object = scope:recipient
-			NAND = {
-				scope:actor = { is_allied_in_war = scope:recipient }
-				scope:recipient = { is_at_war_with = scope:secondary_actor }
-			}
-		}
+		exists = scope:secondary_actor
 		trigger_if = {
-			limit = {
-				scope:recipient = { is_ai = no }
-				exists = scope:secondary_actor
-			}
+			limit = { scope:recipient = { is_ai = no } }
 			scope:secondary_actor = {
 				NOT = { has_character_flag = offered_prisoner_already }
 			}
 		}
 		trigger_if = {
-			limit = { 
-				scope:actor = { is_ai = yes }
-				exists = scope:secondary_actor
-			}
+			limit = { scope:actor = { is_ai = yes }	}
 			scope:secondary_actor = {
-				OR = {	
-					## May harbor some form of hatred against the prisoner.
+				has_recently_undergone_interaction = no # Enforce.
+				OR = {
+					scope:recipient = {
+						NOT = {
+							likes_character_trigger = {
+								CHARACTER = prev
+							}
+						}
+					}
 					has_any_bad_relationship_with_character_trigger = {
 						CHARACTER = scope:recipient
 					}
 					has_any_worst_bad_relationship_with_character_trigger = {
 						CHARACTER = scope:recipient
-					}	
-					## Must have any semblance of relationship		
+					}
+				}
+				OR = {
 					has_any_relation_trigger = {
 						CHARACTER = scope:recipient
 					}
-					### Must be at least significant.
 					is_of_major_or_minor_interest_trigger = {
 						CHARACTER = scope:recipient
 					}
 				}
-				OR = {
-					## Don't bother with insignificant fucks.
-					has_no_real_status_trigger = no
-					has_no_particular_noble_roots_trigger = no
-				}
-				NOT = { has_character_flag = recently_prison_transferred }
+				## Don't bother with insignificant fucks.
+				has_no_real_status_trigger = no
+				has_no_particular_noble_roots_trigger = no
+			}
+		}
+		custom_description = {
+			text = "is_allies_with_target_trigger"
+			subject = scope:actor
+			object = scope:recipient
+			NAND = {
+				scope:actor = { is_allied_in_war = scope:recipient }
+				scope:recipient = { is_at_war_with = scope:secondary_actor }
 			}
 		}
 	}
@@ -130,7 +129,7 @@ offer_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:recipient = this }
-					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+					gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
 						SENDER = scope:actor
 					}
 				}
@@ -149,191 +148,182 @@ offer_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
 			scope:actor = {
 				exists = dynasty
 				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
 			}
-
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold >= scope:secondary_actor.highly_increased_barter_cost_value
 			}
 		}
 
 		flag = exploitive_extortionate_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
 			scope:actor = {
 				exists = dynasty
 				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
 			}
-
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold < scope:secondary_actor.highly_increased_barter_cost_value
 				gold >= 1
 			}
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
 			scope:actor = {
 				exists = dynasty
 				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
 			}
-
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
 			}
 		}
 
 		flag = extortionate_gold
-		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
 	}
 
 	send_option = {
 		is_shown = {
-			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
-
+			exists = scope:secondary_actor
 			scope:secondary_actor ?= { 
 				NOT = { is_at_war_with = scope:recipient } 
 			}
 
-			scope:recipient ?= {
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:recipient = {
 				gold < scope:secondary_actor.slightly_increased_barter_cost_value
 				gold >= 1
 			}
 		}
 
 		flag = extortionate_current_gold
-		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient 
+			}
 			scope:actor = {
 				OR = {
 					is_lowborn = yes
 					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
 				}
 			}
-
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient 
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold >= scope:secondary_actor.increased_barter_cost_value
 			}
 		}
 
 		flag = exploitive_gold
-		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				is_at_war_with = scope:recipient
+			}
 			scope:actor = {
 				OR = {
 					is_lowborn = yes
 					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
 				}
 			}
-
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold < scope:secondary_actor.increased_barter_cost_value
 				gold >= 1
 			}
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
 			scope:actor = {
 				OR = {
 					is_lowborn = yes
 					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
 				}
 			}
-
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold >= scope:secondary_actor.barter_cost_value
 			}
 		}
 
 		flag = gold
-		localization = "BARTER_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD"
 	}
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
 			scope:actor = {
 				OR = {
 					is_lowborn = yes
 					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
 				}
 			}
-
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-
-			scope:recipient ?= {
+			scope:recipient = {
 				gold < scope:secondary_actor.barter_cost_value
 				gold >= 1
 			}
 		}
 
 		flag = current_gold
-		localization = "BARTER_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_CURRENT"
 	}
 
 	send_option = {
 		is_shown = {
-			exists = scope:secondary_actor 
-			OR = {
-				scope:secondary_actor ?= {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= {
+				OR = {
 					is_at_war_with = scope:recipient
-				}
-				scope:secondary_actor ?= {
 					any_held_title = {
 						tier >= tier_kingdom
 						custom_tooltip = { 
 							# Workaround just to mute this specific localization error. 
 							# Why does it have to be designed this way?
 							scope:recipient = { has_strong_claim_on = prev }
-							text = DEBUG_IDENTIFIER
+							text = DEBUG_COLON
 						}
 					}
 				}
@@ -341,6 +331,16 @@ offer_prisoner_interaction = {
 		}
 
 		is_valid = {
+			## Modifier is already tapped out at this point.
+			custom_tooltip = {
+				NOR = {
+					scope:exploitive_extortionate_gold ?= yes
+					scope:extortionate_gold ?= yes
+					scope:exploitive_gold ?= yes
+					scope:gold ?= yes
+				}
+				text = "maximum_opinion_reached"
+			}
 			scope:actor = {
 				can_add_hook = {
 					target = scope:recipient
@@ -350,34 +350,39 @@ offer_prisoner_interaction = {
 		}
 
 		flag = strong_hook
-		localization = "BARTER_FAVOR_OPTION"
+		localization = "BARTER_OPTION_FAVOR"
 	}
 
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			NOT = {
-				scope:secondary_actor ?= {
+			scope:secondary_actor ?= {
+				NOR = {
 					is_at_war_with = scope:recipient
-				}
-				scope:secondary_actor ?= {
 					any_held_title = {
-					tier >= tier_kingdom
+						tier >= tier_kingdom
 						custom_tooltip = { 
 							# Workaround just to mute this specific localization error. 
 							# Why does it have to be designed this way?
 							scope:recipient = { has_strong_claim_on = prev }
-							text = DEBUG_IDENTIFIER
+							text = DEBUG_COLON
 						}
 					}
-				}
-				scope:recipient = {
-					has_usable_hook = scope:actor
 				}
 			}
 		}
 
 		is_valid = {
+			## Modifier is already tapped out at this point.
+			custom_tooltip = {
+				NOR = {
+					scope:exploitive_extortionate_gold ?= yes
+					scope:extortionate_gold ?= yes
+					scope:exploitive_gold ?= yes
+					scope:gold ?= yes
+				}
+				text = "maximum_opinion_reached"
+			}
 			scope:actor = {
 				can_add_hook = {
 					target = scope:recipient
@@ -387,7 +392,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = favor
-		localization = "BARTER_FAVOR_OPTION"
+		localization = "BARTER_OPTION_FAVOR"
 	}
 
 	send_options_exclusive = no
@@ -395,16 +400,16 @@ offer_prisoner_interaction = {
 	on_send = {
 		hidden_effect = {
 			scope:secondary_actor = {
+				add_character_flag = {
+					flag = under_transfer_prisoner_interaction
+					months = 3
+				}
 				if = {
 					limit = { scope:recipient = { is_ai = no } }
 					add_character_flag = {
 						flag = offered_prisoner_already
 						years = 3
 					}
-				}
-				add_character_flag = {
-					flag = under_transfer_prisoner_interaction
-					months = 1
 				}
 			}
 		}
@@ -484,7 +489,7 @@ offer_prisoner_interaction = {
 		## Receiver's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 			PRISONER = scope:secondary_actor
 		}
 
@@ -499,43 +504,42 @@ offer_prisoner_interaction = {
 		### Receiver accepts less if they are not tribal while the sender is.
 		gm1_transfer_prisoner_interaction_government_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on diplomatic relations with the sender.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts less if different culture with the sender.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts less if different faith with the sender.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on personal relations with the sender.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Receiver accepts based on sender dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
-		### Receiver accepts based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 		### Receiver accepts based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:actor
-			WITH = scope:recipient
+			WHO = scope:recipient
+			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -545,6 +549,14 @@ offer_prisoner_interaction = {
 			opinion_target = scope:secondary_actor
 			multiplier = -0.5
 			desc = AI_OPINION_REASON
+		}
+		### Receiver will gladly accept if at war with the prisoner.
+		modifier = {
+			scope:recipient = {  
+				is_at_war_with = scope:secondary_actor
+			}
+			add = 300
+			desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
 		}
 		### Receiver is scared to accept powerful prisoners.
 		gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
@@ -571,56 +583,52 @@ offer_prisoner_interaction = {
 			WHO = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
-		### Receiver will gladly accept if at war with the prisoner.
-		modifier = {
-			scope:recipient = {  
-				is_at_war_with = scope:secondary_actor
-			}
-			add = 300
-			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
-		}
 		### Does the receiver think this trade is worth it compared to a straight up ransom?
 		modifier = {
 			exists = scope:secondary_actor
 			add = {
 				value = 0
 				#### Gold Option
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_actor.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_actor.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_actor.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
-					add = scope:secondary_actor.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
-					add = scope:recipient.current_gold_value
+				add = {
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
+						value = scope:secondary_actor.highly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
+						value = scope:secondary_actor.slightly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
+						value = scope:secondary_actor.increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
+						value = scope:secondary_actor.barter_cost_value
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
+						value = scope:recipient.current_gold_value
+					}
 				}
 				### Hook Option
-				if = {
-					limit = { scope:strong_hook ?= yes }
-					add = scope:recipient.golden_obligation_value
-					multiply = 2
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
-					add = scope:recipient.golden_obligation_value
+				add = {
+					if = {
+						limit = { scope:strong_hook ?= yes }
+						value = scope:recipient.golden_obligation_value
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
+						value = scope:recipient.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_actor_prisoner_value
@@ -631,7 +639,7 @@ offer_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
+			desc = INTERACTION_AI_PRISONER_REASON_APPROVAL
 		}
 	}
 
@@ -657,6 +665,22 @@ offer_prisoner_interaction = {
 			add = -1000
 		}
 
+		### AI will not send if they are at war with the prisoner.
+		modifier = {
+			scope:actor = { is_at_war_with = scope:secondary_actor }
+			add = -500
+		}
+		### AI will send if receiver is at war with the prisoner.
+		modifier = {
+			scope:actor = {
+				NOT = { is_at_war_with = scope:secondary_actor }
+			}
+			scope:recipient = {  
+				is_at_war_with = scope:secondary_actor
+			}
+			add = 300
+		}
+
 		## AI will barter their prisoners more for a higher value if they are tribal
 		modifier = {
 			government_has_flag = government_is_tribal
@@ -666,7 +690,7 @@ offer_prisoner_interaction = {
 		## AI's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 
@@ -681,38 +705,38 @@ offer_prisoner_interaction = {
 		### AI sends based on diplomatic relations with the receiver.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends less if different culture with the receiver.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends less if different faith with the receiver.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends based on personal relations with the receiver.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### AI sends based on receiver dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### AI sends based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
 		### AI sends based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:actor
-			WITH = scope:recipient
+			WHO = scope:recipient
+			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -748,71 +772,52 @@ offer_prisoner_interaction = {
 			WHO = scope:actor
 			PRISONER = scope:secondary_actor
 		}
-		### AI will gladly send if receiver is at war with the prisoner.
-		modifier = {
-			scope:recipient = {  
-				is_at_war_with = scope:secondary_actor
-				NOT = {
-					any_character_war = {
-						any_war_participant = {
-							scope:recipient = this
-							is_allied_in_war = scope:actor
-							NOT = { is_allied_in_war = scope:secondary_actor }
-						}
-					}
-				}
-			}
-			add = 300
-			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
-		}
-		### AI will almost not send if they are at war with the prisoner.
-		modifier = {
-			scope:actor = { is_at_war_with = scope:secondary_actor }
-			add = 500
-			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
-		}
 		### Does the AI think this trade is worth it compared to a straight up ransom?
 		modifier = {
 			exists = scope:secondary_actor
 			add = {
 				value = 0
 				#### Gold Option
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_actor.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_actor.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_actor.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
-					add = scope:secondary_actor.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
-					add = scope:recipient.current_gold_value 
+				add = {
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
+						value = scope:secondary_actor.highly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
+						value = scope:secondary_actor.slightly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
+						value = scope:secondary_actor.increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
+						value = scope:secondary_actor.barter_cost_value
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
+						value = scope:recipient.current_gold_value
+					}
 				}
 				### Hook Option
-				if = {
-					limit = { scope:strong_hook ?= yes }
-					add = scope:recipient.golden_obligation_value
-					multiply = 0.5 # They should be more reluctant in giving out strong hooks 
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
-					add = scope:recipient.golden_obligation_value
+				add = {
+					if = {
+						limit = { scope:strong_hook ?= yes }
+						value = scope:recipient.golden_obligation_value
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
+						value = scope:recipient.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_actor_prisoner_value
@@ -823,7 +828,6 @@ offer_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_ACTOR_PRISONER_VALUE
 		}
 	}
 }
@@ -927,22 +931,26 @@ demand_prisoner_interaction = {
 	}
 
 	can_send = {
+		exists = scope:secondary_recipient
+		trigger_if = {
+			limit = { scope:recipient = { is_ai = no } }
+			scope:secondary_recipient = {
+				NOT = { has_character_flag = demanded_prisoner_already }
+			}
+		}
+		trigger_if = {
+			limit = { scope:actor = { is_ai = yes} }
+			scope:secondary_recipient = {
+				has_recently_undergone_interaction = no
+			}
+		}
 		custom_description = {
-			text = "already_allies_transfer_prisoner_interaction_trigger"
+			text = "is_allies_with_target_trigger"
 			subject = scope:actor
 			object = scope:recipient
 			NAND = {
 				scope:actor = { is_allied_in_war = scope:recipient }
 				scope:recipient = { is_at_war_with = scope:secondary_recipient }
-			}
-		}
-		trigger_if = {
-			limit = {
-				scope:recipient = { is_ai = no }
-				exists = scope:secondary_recipient
-			}
-			scope:secondary_recipient = {
-				NOT = { has_character_flag = demanded_prisoner_already }
 			}
 		}
 	}
@@ -977,7 +985,7 @@ demand_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:actor = this }
-					gm1_basic_valid_for_transfer_prisoner_interaction_trigger = {
+					gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
 						SENDER = scope:recipient
 					}
 				}
@@ -1030,7 +1038,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -1070,7 +1078,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_EXPLOITIVE_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -1109,7 +1117,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = extortionate_gold
-		localization = "BARTER_EXTORTIONATE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
 	}
 
 	send_option = {
@@ -1149,7 +1157,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = extortionate_current_gold
-		localization = "BARTER_EXTORTIONATE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
 	}
 
 	send_option = {
@@ -1190,7 +1198,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_gold
-		localization = "BARTER_EXPLOITIVE_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
 	}
 
 	send_option = {
@@ -1232,7 +1240,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_EXPLOITIVE_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
 	}
 
 	send_option = {
@@ -1273,7 +1281,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = gold
-		localization = "BARTER_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD"
 	}
 
 	send_option = {
@@ -1315,7 +1323,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = current_gold
-		localization = "BARTER_CURRENT_GOLD_OPTION"
+		localization = "BARTER_OPTION_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -1340,7 +1348,7 @@ demand_prisoner_interaction = {
 								# Workaround just to mute this specific localization error. 
 								# Why does it have to be designed this way?
 								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_IDENTIFIER
+								text = DEBUG_COLON
 							}
 						}
 					}
@@ -1352,6 +1360,16 @@ demand_prisoner_interaction = {
 		}
 
 		is_valid = {
+			## Modifier is already tapped out at this point.
+			custom_tooltip = {
+				NOR = {
+					scope:exploitive_extortionate_gold ?= yes
+					scope:extortionate_gold ?= yes
+					scope:exploitive_gold ?= yes
+					scope:gold ?= yes
+				}
+				text = "maximum_opinion_reached"
+			}
 			scope:recipient = {
 				can_add_hook = {
 					target = scope:actor
@@ -1361,7 +1379,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = strong_hook
-		localization = "BARTER_OWE_FAVOR_OPTION"
+		localization = "BARTER_OPTION_OWE_FAVOR"
 	}
 
 	send_option = {
@@ -1386,7 +1404,7 @@ demand_prisoner_interaction = {
 								# Workaround just to mute this specific localization error. 
 								# Why does it have to be designed this way?
 								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_IDENTIFIER
+								text = DEBUG_COLON
 							}
 						}
 					}	
@@ -1398,6 +1416,16 @@ demand_prisoner_interaction = {
 		}
 
 		is_valid = {
+			## Modifier is already tapped out at this point.
+			custom_tooltip = {
+				NOR = {
+					scope:exploitive_extortionate_gold ?= yes
+					scope:extortionate_gold ?= yes
+					scope:exploitive_gold ?= yes
+					scope:gold ?= yes
+				}
+				text = "maximum_opinion_reached"
+			}
 			scope:recipient = {
 				can_add_hook = {
 					target = scope:actor
@@ -1407,7 +1435,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = favor
-		localization = "BARTER_OWE_FAVOR_OPTION"
+		localization = "BARTER_OPTION_OWE_FAVOR"
 	}
 
 	## Hook can be used to force accept demand for a prisoner.
@@ -1428,16 +1456,16 @@ demand_prisoner_interaction = {
 	on_send = {
 		hidden_effect = {
 			scope:secondary_recipient = {
+				add_character_flag = {
+					flag = under_transfer_prisoner_interaction
+					months = 3
+				}
 				if = {
 					limit = { scope:recipient = { is_ai = no } }
 					add_character_flag = {
 						flag = demanded_prisoner_already
 						years = 3
 					}
-				}
-				add_character_flag = {
-					flag = under_transfer_prisoner_interaction
-					months = 1
 				}
 			}	
 		}
@@ -1533,7 +1561,7 @@ demand_prisoner_interaction = {
 		## Sender's Personality
 		gm1_demand_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 			PRISONER = scope:secondary_recipient
 		}
 
@@ -1548,53 +1576,53 @@ demand_prisoner_interaction = {
 		### Sender accepts more if they are below the receiver.
 		gm1_transfer_prisoner_interaction_tier_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts more if they are scared of the receiver.
 		gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if they are not tribal while the receiver is.
 		gm1_transfer_prisoner_interaction_government_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on diplomatic relations with the receiver.
 		gm1_transfer_prisoner_interaction_realm_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if different culture with the receiver.
 		gm1_transfer_prisoner_interaction_culture_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts less if different faith with the receiver.
 		gm1_transfer_prisoner_interaction_faith_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on personal relations with the receover.
 		gm1_transfer_prisoner_interaction_relation_modifier = {
 			WHO = scope:recipient
-			WITH = scope:actor
+			TARGET = scope:actor
 		}
 		### Sender accepts based on receiver dread levels.
 		gm1_transfer_prisoner_interaction_dread_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 		### Sender accepts based on perks.
 		gm1_transfer_prisoner_interaction_perk_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 			PRISONER = scope:secondary_recipient
 		}
 		### Sender accepts based on traits.
 		gm1_transfer_prisoner_interaction_trait_modifier = {
 			WHO = scope:actor
-			WITH = scope:recipient
+			TARGET = scope:recipient
 		}
 
 		## Modifiers towards the Prisoner.
@@ -1604,6 +1632,14 @@ demand_prisoner_interaction = {
 			opinion_target = scope:secondary_recipient
 			multiplier = 0.5
 			desc = AI_OPINION_REASON
+		}
+		### Sender will decline if at war with the prisoner.
+		modifier = {
+			scope:recipient = {  
+				is_at_war_with = scope:secondary_recipient
+			}
+			add = -500
+			desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
 		}
 		### Sender is scared to give away powerful prisoners.
 		gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
@@ -1630,56 +1666,52 @@ demand_prisoner_interaction = {
 			WHO = scope:recipient
 			PRISONER = scope:secondary_recipient
 		}
-		### Sender will gladly decline if at war with the prisoner.
-		modifier = {
-			scope:recipient = {  
-				is_at_war_with = scope:secondary_recipient
-			}
-			add = 500
-			desc = INTERACTION_AI_REASON_PRISONER_AT_WAR_WITH_RECIPIENT
-		}
 		### Does the sender think this trade is worth it compared to a straight up ransom?
 		modifier = {
 			exists = scope:secondary_recipient
 			add = {
 				value = 0
 				#### Gold Option
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
-					add = scope:secondary_recipient.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
-					add = scope:secondary_recipient.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
-					add = scope:secondary_recipient.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
-					add = scope:secondary_recipient.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
-					add = scope:actor.current_gold_value 
+				add = {
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
+						value = scope:secondary_recipient.highly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
+						value = scope:secondary_recipient.slightly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
+						value = scope:secondary_recipient.increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
+						value = scope:secondary_recipient.barter_cost_value
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
+						value = scope:actor.current_gold_value
+					}
 				}
 				### Hook Option
-				if = {
-					limit = { scope:strong_hook ?= yes }
-					add = scope:actor.golden_obligation_value
-					multiply = 2
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
-					add = scope:actor.golden_obligation_value
+				add = {
+					if = {
+						limit = { scope:strong_hook ?= yes }
+						value = scope:actor.golden_obligation_value
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
+						value = scope:actor.golden_obligation_value
+					}
 				}
 				divide = {
 					value = interaction_recipient_prisoner_value
@@ -1690,7 +1722,7 @@ demand_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_REASON_RECIPIENT_PRISONER_VALUE
+			desc = INTERACTION_AI_PRISONER_REASON_VALUE_RECIPIENT
 		}
 	}
 

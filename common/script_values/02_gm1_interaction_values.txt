@@ -144,7 +144,7 @@ interaction_prisoner_value = {
 				multiply = -1
 			}
 		}
-		desc = INTERACTION_AI_REASON_PRISONER_SIMILAR_MILITARY_STRENGTH
+		desc = INTERACTION_AI_PRISONER_REASON_SIMILAR_MILITARY_STRENGTH
 	}
 
 	### Prisoner is more powerful in Military Strength
@@ -168,7 +168,7 @@ interaction_prisoner_value = {
 			max = 50
 			min = -50
 		}
-		desc = INTERACTION_AI_REASON_PRISONER_RELATIVE_MILITARY_STRENGTH
+		desc = INTERACTION_AI_PRISONER_REASON_RELATIVE_MILITARY_STRENGTH
 	}
 
 	### Prisoner is less powerful in Military Strength

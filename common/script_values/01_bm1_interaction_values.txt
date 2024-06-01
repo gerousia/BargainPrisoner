@@ -58,40 +58,14 @@ interaction_current_allies_strength_value = {
 
 # based on ./common/script_values/05/bp2_hostage_values.txt/current_strength_with_allies_fifty_percent_value
 interaction_current_strength_with_allies_fifty_percent_value = {
-	value = current_military_strength
-	every_ally = { add = current_military_strength }
+	value = interaction_current_strength_with_allies_value
 	multiply = 0.5
 }
 
 # based on ./common/script_values/05/bp2_hostage_values.txt/current_strength_with_allies_seventy_five_percent_value
 interaction_current_strength_with_allies_seventy_five_percent_value = {
-	value = current_military_strength
-	every_ally = { add = current_military_strength }
-	multiply = 0.5
-}
-
-# based on ./common/script_values/05/bp2_hostage_values.txt/recipient_strength_divided_by_actors_value
-interaction_recipient_strength_divided_by_actors_value = {
-	value = 1
-	add = {
-		value = scope:recipient.current_military_strength # 1828
-		scope:recipient = {
-			every_ally = { add = current_military_strength }
-		}
-		divide = {
-			value = scope:actor.current_military_strength # 1382
-			scope:actor = {
-				every_ally = { add = current_military_strength }
-			}
-			min = 1
-		}
-		# 1828 / 1382 = 1.32
-		subtract = 1 # 1.32 - 1 = 0.32
-		multiply = 100 # 0.32 * 100 = 32
-		max = 50
-		min = -50
-	}
-	max = 20
+	value = interaction_current_strength_with_allies_value
+	multiply = 0.7
 }
 
 # based on ./common/script_values/00_interaction_values.txt/offer_hostage_military_strength_value
@@ -116,7 +90,7 @@ interaction_tier_check_value = {
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost
 barter_cost = {
 	value = ransom_cost
-	multiply = 0.8 # Make it worth less than ransoming
+	multiply = 0.8
 }
 
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost_value

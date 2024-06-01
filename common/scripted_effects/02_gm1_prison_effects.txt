@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -50,7 +50,7 @@ change_imprisoner_character_effect = {
 
 	scope:imprisonment_target = {
 		custom_description = { 
-			text = "move_tooltip_effect"
+			text = "move_tooltip"
 	
 			if = {
 				limit = { scope:old_imprisoner = { has_imprisonment_reason = prev } }
@@ -62,7 +62,7 @@ change_imprisoner_character_effect = {
 		}
 
 		custom_description = {
-			text = "release_tooltip_effect"
+			text = "release_tooltip"
 			subject = scope:old_imprisoner
 			object = this
 
@@ -107,7 +107,7 @@ change_imprisoner_character_effect = {
 		}
 
 		custom_description = {
-			text = "imprison_tooltip_effect"
+			text = "imprison"
 			subject = scope:new_imprisoner
 			object = this
 
@@ -280,22 +280,19 @@ change_imprisoner_vassal_consequences_effect = {
 		if = {
 			limit = { $PRISONER$ = { is_vassal_of = prev } }
 			custom_description = {
-				text = "change_imprisoner_vassal_tooltip_effect"
+				text = "change_imprisoner_vassal_tooltip"
 				subject = $IMPRISONER$
 				object = $PRISONER$
 			}
-
 			if = {
-				limit = { has_imprisonment_reason = $PRISONER$ }
-				custom_description = { 
-					text = "is_allowed_to_change_imprisoner_tooltip_effect"
-					object = $PRISONER$
+				limit = { 
+					OR = {
+						has_imprisonment_reason = $PRISONER$
+						is_at_war_with = $PRISONER$
+					}
 				}
-			}
-			else_if = {
-				limit = { is_at_war_with = $PRISONER$ }
-				custom_description = {
-					text = "is_allowed_to_change_imprisoner_tooltip_effect_war"
+				custom_description = { 
+					text = "add_opinion_imprison_reason_unusable"
 					object = $PRISONER$
 				}
 			}
@@ -314,21 +311,18 @@ change_imprisoner_head_of_faith_consequences_effect = {
 		if = {
 			limit = { $PRISONER$ = { is_head_of_faith_of = { WHO = prev } } }
 			custom_description = {
-				text = "change_imprisoner_head_of_faith_tooltip_effect"
+				text = "change_imprisoner_head_of_faith_tooltip"
 				object = $PRISONER$
 			}
-
 			if = {
-				limit = { has_imprisonment_reason = $PRISONER$ }
-				custom_description = { 
-					text = "is_allowed_to_change_imprisoner_tooltip_effect" 
-					object = $PRISONER$
+				limit = { 
+					OR = {
+						has_imprisonment_reason = $PRISONER$
+						is_at_war_with = $PRISONER$
+					}
 				}
-			}
-			else_if = {
-				limit = { is_at_war_with = $PRISONER$ }
-				custom_description = {
-					text = "is_allowed_to_change_imprisoner_tooltip_effect_war" 
+				custom_description = { 
+					text = "add_opinion_imprison_reason_unusable"
 					object = $PRISONER$
 				}
 			}
@@ -348,7 +342,7 @@ change_imprisoner_war_participants_consequences_effect = {
 		if = {
 			limit = { is_at_war_with = $OLD_IMPRISONER$ }
 			custom_description = {
-				text = "change_imprisoner_war_tooltip_effect" # tooltip for sadistic roleplayers
+				text = "change_imprisoner_war_tooltip"
 				subject = $OLD_IMPRISONER$
 				object = this
 			}
@@ -357,20 +351,20 @@ change_imprisoner_war_participants_consequences_effect = {
 		if = { 
 			limit = { is_at_war_with = $NEW_IMPRISONER$ }
 			custom_description = {
-				text = "change_imprisoner_war_tooltip_effect"
+				text = "change_imprisoner_war_tooltip"
 				subject = this
 				object = $NEW_IMPRISONER$
 			}
 	
 			custom_description = {
-				text = "change_imprisoner_war_tooltip_effect"
+				text = "change_imprisoner_war_tooltip"
 				subject = $NEW_IMPRISONER$
 				object = this
 			}
 	
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
-				custom_description = { text = "change_imprisoner_war_leader_tooltip_effect" }
+				custom_description = { text = "change_imprisoner_war_leader_tooltip" }
 				add_opinion = {
 					target = $OLD_IMPRISONER$
 					modifier = supported_my_enemy_opinion
@@ -378,10 +372,22 @@ change_imprisoner_war_participants_consequences_effect = {
 				}
 
 				$NEW_IMPRISONER$ = {
+					if = { 
+						limit = { is_ai = no }
+						hidden_effect = {
 					add_opinion = {
 						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
 						opinion = 40
+							}
+						}
+					}
+					else = {
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_war_opinion
+							opinion = 40
+						}
 					}
 				}
 			}
@@ -392,9 +398,20 @@ change_imprisoner_war_participants_consequences_effect = {
 				}
 
 				$NEW_IMPRISONER$ = {
+					if = {
+						limit = { is_ai = no }
+						hidden_effect = {
+							add_opinion = {
+								target = $OLD_IMPRISONER$
+								modifier = supported_my_war_opinion
+							}
+						}
+					}
+					else = {
 					add_opinion = {
 						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
+						}
 					}
 				}
 			}
