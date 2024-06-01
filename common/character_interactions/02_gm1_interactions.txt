@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -74,53 +74,52 @@ offer_prisoner_interaction = {
 	}
 
 	can_send = {
-		custom_description = {
-			text = "already_allies_transfer_prisoner_interaction_trigger"
-			subject = scope:actor
-			object = scope:recipient
-			NAND = {
-				scope:actor = { is_allied_in_war = scope:recipient }
-				scope:recipient = { is_at_war_with = scope:secondary_actor }
-			}
-		}
+		exists = scope:secondary_actor
 		trigger_if = {
-			limit = {
-				scope:recipient = { is_ai = no }
-				exists = scope:secondary_actor
-			}
+			limit = { scope:recipient = { is_ai = no } }
 			scope:secondary_actor = {
 				NOT = { has_character_flag = offered_prisoner_already }
 			}
 		}
 		trigger_if = {
-			limit = { 
-				scope:actor = { is_ai = yes }
-				exists = scope:secondary_actor
-			}
+			limit = { scope:actor = { is_ai = yes }	}
 			scope:secondary_actor = {
-				OR = {	
-					## May harbor some form of hatred against the prisoner.
+				has_recently_undergone_interaction = no # Enforce.
+				OR = {
+					scope:recipient = {
+						NOT = {
+							likes_character_trigger = {
+								CHARACTER = prev
+							}
+						}
+					}
 					has_any_bad_relationship_with_character_trigger = {
 						CHARACTER = scope:recipient
 					}
 					has_any_worst_bad_relationship_with_character_trigger = {
 						CHARACTER = scope:recipient
-					}	
-					## Must have any semblance of relationship		
+					}
+				}
+				OR = {
 					has_any_relation_trigger = {
 						CHARACTER = scope:recipient
 					}
-					### Must be at least significant.
 					is_of_major_or_minor_interest_trigger = {
 						CHARACTER = scope:recipient
 					}
 				}
-				OR = {
-					## Don't bother with insignificant fucks.
-					has_no_real_status_trigger = no
-					has_no_particular_noble_roots_trigger = no
-				}
-				NOT = { has_character_flag = recently_prison_transferred }
+				## Don't bother with insignificant fucks.
+				has_no_real_status_trigger = no
+				has_no_particular_noble_roots_trigger = no
+			}
+		}
+		custom_description = {
+			text = "is_allies_with_target_trigger"
+			subject = scope:actor
+			object = scope:recipient
+			NAND = {
+				scope:actor = { is_allied_in_war = scope:recipient }
+				scope:recipient = { is_at_war_with = scope:secondary_actor }
 			}
 		}
 	}
@@ -314,8 +313,8 @@ offer_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			exists = scope:secondary_actor 
-				scope:secondary_actor ?= {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= {
 				OR = {
 					is_at_war_with = scope:recipient
 					any_held_title = {
@@ -357,11 +356,11 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-				scope:secondary_actor ?= {
+			scope:secondary_actor ?= {
 				NOR = {
 					is_at_war_with = scope:recipient
 					any_held_title = {
-					tier >= tier_kingdom
+						tier >= tier_kingdom
 						custom_tooltip = { 
 							# Workaround just to mute this specific localization error. 
 							# Why does it have to be designed this way?
@@ -591,43 +590,43 @@ offer_prisoner_interaction = {
 				value = 0
 				#### Gold Option
 				add = {
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
 						value = scope:secondary_actor.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
 						value = scope:secondary_actor.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
 						value = scope:secondary_actor.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
 						value = scope:secondary_actor.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
 						value = scope:recipient.current_gold_value
 					}
 				}
 				### Hook Option
 				add = {
-				if = {
-					limit = { scope:strong_hook ?= yes }
+					if = {
+						limit = { scope:strong_hook ?= yes }
 						value = scope:recipient.golden_obligation_value
-					multiply = 2
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
 						value = scope:recipient.golden_obligation_value
 					}
 				}
@@ -780,43 +779,43 @@ offer_prisoner_interaction = {
 				value = 0
 				#### Gold Option
 				add = {
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
 						value = scope:secondary_actor.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
 						value = scope:secondary_actor.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
 						value = scope:secondary_actor.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
 						value = scope:secondary_actor.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
 						value = scope:recipient.current_gold_value
 					}
 				}
 				### Hook Option
 				add = {
-				if = {
-					limit = { scope:strong_hook ?= yes }
+					if = {
+						limit = { scope:strong_hook ?= yes }
 						value = scope:recipient.golden_obligation_value
 						multiply = 2
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
 						value = scope:recipient.golden_obligation_value
 					}
 				}
@@ -1674,43 +1673,43 @@ demand_prisoner_interaction = {
 				value = 0
 				#### Gold Option
 				add = {
-				if = {
-					limit = { scope:exploitive_extortionate_gold ?= yes }
+					if = {
+						limit = { scope:exploitive_extortionate_gold ?= yes }
 						value = scope:secondary_recipient.highly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:extortionate_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:extortionate_gold ?= yes }
 						value = scope:secondary_recipient.slightly_increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:exploitive_gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:exploitive_gold ?= yes }
 						value = scope:secondary_recipient.increased_barter_cost_value
-				}
-				else_if = {
-					limit = { scope:gold ?= yes }
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
 						value = scope:secondary_recipient.barter_cost_value
-				}
-				else_if = {
-					limit = {
-						OR = {
-							scope:exploitive_extortionate_current_gold ?= yes
-							scope:extortionate_current_gold ?= yes
-							scope:exploitive_current_gold ?= yes
-							scope:current_gold ?= yes
-						}
-					} 
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:exploitive_extortionate_current_gold ?= yes
+								scope:extortionate_current_gold ?= yes
+								scope:exploitive_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
 						value = scope:actor.current_gold_value
 					}
 				}
 				### Hook Option
 				add = {
-				if = {
-					limit = { scope:strong_hook ?= yes }
+					if = {
+						limit = { scope:strong_hook ?= yes }
 						value = scope:actor.golden_obligation_value
-					multiply = 2
-				}
-				else_if = {
-					limit = { scope:favor ?= yes }
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
 						value = scope:actor.golden_obligation_value
 					}
 				}
