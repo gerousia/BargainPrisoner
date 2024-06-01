@@ -372,10 +372,22 @@ change_imprisoner_war_participants_consequences_effect = {
 				}
 
 				$NEW_IMPRISONER$ = {
+					if = { 
+						limit = { is_ai = no }
+						hidden_effect = {
 					add_opinion = {
 						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
 						opinion = 40
+							}
+						}
+					}
+					else = {
+						add_opinion = {
+							target = $OLD_IMPRISONER$
+							modifier = supported_my_war_opinion
+							opinion = 40
+						}
 					}
 				}
 			}
@@ -386,9 +398,20 @@ change_imprisoner_war_participants_consequences_effect = {
 				}
 
 				$NEW_IMPRISONER$ = {
+					if = {
+						limit = { is_ai = no }
+						hidden_effect = {
+							add_opinion = {
+								target = $OLD_IMPRISONER$
+								modifier = supported_my_war_opinion
+							}
+						}
+					}
+					else = {
 					add_opinion = {
 						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
+						}
 					}
 				}
 			}
