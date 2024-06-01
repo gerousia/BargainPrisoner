@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -22,7 +22,7 @@ gm1_transfer_prisoner_interaction_tier_modifier = {
 				subtract = $WHO$.highest_held_title_tier
 				min = 1
 			}
-			}
+		}
 		desc = INTERACTION_AI_REASON_RANK_DIFFERENCE_REASON
 	}
 	### This ruler is dismissive towards lower tier rulers.
@@ -439,31 +439,31 @@ gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
 			if = {
 				limit = { $WHO$.current_military_strength < $PRISONER$.interaction_current_strength_ninety_percent_value }
 				value = $PRISONER$.current_military_strength 					# 1828
-			divide = {
+				divide = {
 					value = $WHO$.current_military_strength 					# 1382
-				min = 1
+					min = 1
 				}																# 1828 / 1382 = 1.32
 				subtract = 1 													# 1.32 - 1 = 0.32
 				multiply = -50													# 0.32 * -50 = -16
-			max = 50
-			min = -50
-		}
+				max = 50
+				min = -50
+			}
 			add = {
 				if = {
 					limit = {
-		#### There needs to be at least any alliances.
-		OR = {
-			$WHO$ = { any_ally = { exists = this } }
-			$PRISONER$ = { any_ally = { exists = this } }
-		}
+						#### There needs to be at least any alliances.
+						OR = {
+							$WHO$ = { any_ally = { exists = this } }
+							$PRISONER$ = { any_ally = { exists = this } }
+						}
 						$WHO$.interaction_current_strength_with_allies_value <= $PRISONER$.interaction_current_strength_ninety_percent_value
 					}
 					value = $PRISONER$.interaction_current_allies_strength_value	# 1828
-			divide = {
+					divide = {
 						value = $WHO$.interaction_current_allies_strength_value 	# 1382
-				min = 1
-			}																# 1828 / 1382 = 1.32
-			subtract = 1 													# 1.32 - 1 = 0.32
+						min = 1
+					}																# 1828 / 1382 = 1.32
+					subtract = 1 													# 1.32 - 1 = 0.32
 					multiply = -100													# 0.32 * 100 = -32
 					divide = 2 														# -32 / 2 = -16
 					max = 25
@@ -479,8 +479,8 @@ gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
 				else_if = {
 					limit = {  $WHO$.ai_boldness >= very_high_negative_ai_value  }
 					multiply = 1.5
+				}
 			}
-		}
 		}
 		desc = INTERACTION_AI_PRISONER_REASON_MILITARY_STRENGTH
 	}
@@ -493,7 +493,10 @@ gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_gain = {
 	### This ruler has casus bellis on the prisoner.
 	### This ruler is less likely to accept.
 	modifier = {
-		$WHO$ = { has_any_cb_on = $PRISONER$ }
+		$WHO$ = { 
+			has_any_cb_on = $PRISONER$
+			NOT = { is_at_war_with = $PRISONER$ }
+		}
 		add = -15
 		desc = INTERACTION_AI_PRISONER_REASON_CASUS_BELLI
 	}
