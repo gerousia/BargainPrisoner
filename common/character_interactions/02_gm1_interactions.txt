@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -911,23 +911,35 @@ demand_prisoner_interaction = {
 	}
 
 	auto_accept = {
+		## The things I do for localization.
 		trigger_if = {
-			limit = { scope:actor = { is_ai = no } }
-			OR = {
-				## Sender has no choice but to accept against a strong hook.
-				trigger_if = {
-					limit = { scope:hook ?= yes	}
+			limit = { scope:hook ?= yes }
 			custom_description = {
 				text = "spending_hook"
 				subject = scope:actor
 				object = scope:recipient
+				OR = {
+					## They have no choice against a strong hook.
+					AND = {
 						scope:actor = { has_strong_hook = scope:recipient }
+						scope:recipient = { NOT = { is_vassal_of = scope:actor } }
 					}
-				}
-				## Sender has no choice but to accept against their liege.
+					## Vassals can't complain against a hook.
+					AND = {
+						scope:actor = { has_usable_hook = scope:recipient }
 						scope:recipient = { is_vassal_of = scope:actor }
 					}
 				}
+			}
+		}
+		trigger_else_if = {
+			limit = {
+				scope:hook ?= no
+				scope:actor = { is_ai = no }
+			}
+			scope:recipient = { is_vassal_of = scope:actor }
+		}
+		trigger_else = { always = no }
 	}
 
 	can_send = {
@@ -958,14 +970,22 @@ demand_prisoner_interaction = {
 	can_be_blocked = {
 		## The hook from receiver can counteract, but only if 
 		## the sender is not forcing the action through a strong hook.
+		trigger_if = {
+			limit = {
+				AND = {
+					scope:hook ?= no
+					scope:actor = { 
+						NOT = { has_strong_hook = scope:recipient } 
+					}
+				}
+			}
+			scope:recipient = {
 				custom_description = {
 					text = "spending_hook"
-			subject = scope:recipient
+					subject = this
 					object = scope:actor
-			scope:recipient = { has_hook = scope:actor }
-			NAND = {
-				scope:hook ?= yes
-				scope:actor = { has_strong_hook = scope:recipient }
+					has_hook = scope:actor 
+				}
 			}
 		}
 	}
@@ -1353,8 +1373,15 @@ demand_prisoner_interaction = {
 						}
 					}
 				}
-				scope:actor = {
-					NOT = { has_usable_hook = scope:recipient }
+			}
+			NOR = {
+				AND = {
+					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
+					scope:actor = { has_strong_hook = scope:recipient }
+				}
+				AND = {
+					scope:recipient = { is_vassal_of = scope:actor }
+					scope:actor = { has_usable_hook = scope:recipient }
 				}
 			}
 		}
@@ -1409,8 +1436,15 @@ demand_prisoner_interaction = {
 						}
 					}	
 				}
-				scope:actor = {
-					NOT = { has_usable_hook = scope:recipient }
+			}
+			NOR = {
+				AND = {
+					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
+					scope:actor = { has_strong_hook = scope:recipient }
+				}
+				AND = {
+					scope:recipient = { is_vassal_of = scope:actor }
+					scope:actor = { has_usable_hook = scope:recipient }
 				}
 			}
 		}
@@ -1442,8 +1476,15 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:actor = {
-				has_usable_hook = scope:recipient
+			OR = {
+				AND = {
+					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
+					scope:actor = { has_strong_hook = scope:recipient }
+				}
+				AND = {
+					scope:recipient = { is_vassal_of = scope:actor }
+					scope:actor = { has_usable_hook = scope:recipient }
+				}
 			}
 		}
 
