@@ -917,9 +917,9 @@ gm1_offer_prisoner_interaction_personality_modifier = {
 						OR = {
 							ai_greed < 0
 							scope:gold = yes
-							scope:exploitive_gold = yes
-							scope:extortionate_gold = yes
-							scope:exploitive_extortionate_gold = yes
+							scope:high_gold = yes
+							scope:medium_gold = yes
+							scope:very_high_gold = yes
 						}
 					}
 				}
@@ -1027,9 +1027,9 @@ gm1_demand_prisoner_interaction_personality_modifier = {
 						OR = {
 							ai_greed > 0
 							scope:gold = yes
-							scope:exploitive_gold = yes
-							scope:extortionate_gold = yes
-							scope:exploitive_extortionate_gold = yes
+							scope:high_gold = yes
+							scope:medium_gold = yes
+							scope:very_high_gold = yes
 						}
 					}
 				}

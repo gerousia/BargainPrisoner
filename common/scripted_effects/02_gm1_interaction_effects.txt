@@ -200,7 +200,7 @@ transfer_prisoner_interaction_bargain_effect = {
 	### Full Gold Amount
 	### Full Prestige Amount 
 	if = {
-		limit = { scope:exploitive_extortionate_gold ?= yes	}
+		limit = { scope:very_high_gold ?= yes	}
 		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.highly_increased_barter_cost_value
@@ -233,7 +233,7 @@ transfer_prisoner_interaction_bargain_effect = {
 	### Full Gold Amount
 	### Full Prestige Amount 
 	if = {
-		limit = { scope:extortionate_gold ?= yes }
+		limit = { scope:medium_gold ?= yes }
 		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.slightly_increased_barter_cost_value
@@ -264,7 +264,7 @@ transfer_prisoner_interaction_bargain_effect = {
 	## War 
 	### Full Gold Amount
 	if = {
-		limit = { scope:exploitive_gold ?= yes }
+		limit = { scope:high_gold ?= yes }
 		$RECEIVER$ = {
 			pay_short_term_gold = {
 				gold = $PRISONER$.increased_barter_cost_value

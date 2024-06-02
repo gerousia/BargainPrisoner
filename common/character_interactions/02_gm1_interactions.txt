@@ -139,9 +139,9 @@ offer_prisoner_interaction = {
 	}
 
 	localization_values = {
-		EXPLOITIVE_EXTORTIONATE_BARTER_COST = scope:secondary_actor.highly_increased_barter_cost_value
-		EXPLOITIVE_BARTER_COST = scope:secondary_actor.increased_barter_cost_value
-		EXTORTIONATE_BARTER_COST = scope:secondary_actor.slightly_increased_barter_cost_value
+		VERY_HIGH_BARTER_COST = scope:secondary_actor.highly_increased_barter_cost_value
+		HIGH_BARTER_COST = scope:secondary_actor.increased_barter_cost_value
+		MEDIUM_BARTER_COST = scope:secondary_actor.slightly_increased_barter_cost_value
 		BARTER_COST = scope:secondary_actor.barter_cost_value
 		CURRENT_GOLD = scope:recipient.gold
 	}
@@ -161,8 +161,8 @@ offer_prisoner_interaction = {
 			}
 		}
 
-		flag = exploitive_extortionate_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
+		flag = very_high_gold
+		localization = "BARTER_OPTION_VERY_HIGH_GOLD"
 	}
 
 	send_option = {
@@ -182,47 +182,7 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
-	}
-
-	send_option = {
-		is_shown = {
-			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
-			scope:recipient = {
-				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
-			}
-		}
-
-		flag = extortionate_gold
-		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
-	}
-
-	send_option = {
-		is_shown = {
-			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-
-			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
-			scope:recipient = {
-				gold < scope:secondary_actor.slightly_increased_barter_cost_value
-				gold >= 1
-			}
-		}
-
-		flag = extortionate_current_gold
-		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
+		localization = "BARTER_OPTION_VERY_HIGH_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -242,8 +202,8 @@ offer_prisoner_interaction = {
 			}
 		}
 
-		flag = exploitive_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
+		flag = high_gold
+		localization = "BARTER_OPTION_HIGH_GOLD"
 	}
 
 	send_option = {
@@ -265,7 +225,47 @@ offer_prisoner_interaction = {
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
+		localization = "BARTER_OPTION_HIGH_GOLD_CURRENT"
+	}
+
+	send_option = {
+		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:recipient = {
+				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
+			}
+		}
+
+		flag = medium_gold
+		localization = "BARTER_OPTION_MEDIUM_GOLD"
+	}
+
+	send_option = {
+		is_shown = {
+			exists = scope:secondary_actor
+			scope:secondary_actor ?= { 
+				NOT = { is_at_war_with = scope:recipient } 
+			}
+
+			scope:actor = {
+				exists = dynasty
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:recipient = {
+				gold < scope:secondary_actor.slightly_increased_barter_cost_value
+				gold >= 1
+			}
+		}
+
+		flag = extortionate_current_gold
+		localization = "BARTER_OPTION_MEDIUM_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -334,9 +334,9 @@ offer_prisoner_interaction = {
 			## Modifier is already tapped out at this point.
 			custom_tooltip = {
 				NOR = {
-					scope:exploitive_extortionate_gold ?= yes
-					scope:extortionate_gold ?= yes
-					scope:exploitive_gold ?= yes
+					scope:very_high_gold ?= yes
+					scope:medium_gold ?= yes
+					scope:high_gold ?= yes
 					scope:gold ?= yes
 				}
 				text = "maximum_opinion_reached"
@@ -376,9 +376,9 @@ offer_prisoner_interaction = {
 			## Modifier is already tapped out at this point.
 			custom_tooltip = {
 				NOR = {
-					scope:exploitive_extortionate_gold ?= yes
-					scope:extortionate_gold ?= yes
-					scope:exploitive_gold ?= yes
+					scope:very_high_gold ?= yes
+					scope:medium_gold ?= yes
+					scope:high_gold ?= yes
 					scope:gold ?= yes
 				}
 				text = "maximum_opinion_reached"
@@ -591,15 +591,15 @@ offer_prisoner_interaction = {
 				#### Gold Option
 				add = {
 					if = {
-						limit = { scope:exploitive_extortionate_gold ?= yes }
+						limit = { scope:very_high_gold ?= yes }
 						value = scope:secondary_actor.highly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:extortionate_gold ?= yes }
+						limit = { scope:medium_gold ?= yes }
 						value = scope:secondary_actor.slightly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:exploitive_gold ?= yes }
+						limit = { scope:high_gold ?= yes }
 						value = scope:secondary_actor.increased_barter_cost_value
 					}
 					else_if = {
@@ -651,11 +651,11 @@ offer_prisoner_interaction = {
 		## Force this idiot to have at least one minimum option selected.
 		modifier = {
 			AND = {
-				scope:exploitive_extortionate_gold ?= no
+				scope:very_high_gold ?= no
 				scope:exploitive_extortionate_current_gold ?= no
-				scope:extortionate_gold ?= no
+				scope:medium_gold ?= no
 				scope:extortionate_current_gold ?= no
-				scope:exploitive_gold ?= no
+				scope:high_gold ?= no
 				scope:exploitive_current_gold ?= no
 				scope:gold ?= no
 				scope:current_gold ?= no
@@ -780,15 +780,15 @@ offer_prisoner_interaction = {
 				#### Gold Option
 				add = {
 					if = {
-						limit = { scope:exploitive_extortionate_gold ?= yes }
+						limit = { scope:very_high_gold ?= yes }
 						value = scope:secondary_actor.highly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:extortionate_gold ?= yes }
+						limit = { scope:medium_gold ?= yes }
 						value = scope:secondary_actor.slightly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:exploitive_gold ?= yes }
+						limit = { scope:high_gold ?= yes }
 						value = scope:secondary_actor.increased_barter_cost_value
 					}
 					else_if = {
@@ -995,9 +995,9 @@ demand_prisoner_interaction = {
 	}
 
 	localization_values = {
-		EXPLOITIVE_EXTORTIONATE_BARTER_COST = scope:secondary_recipient.highly_increased_barter_cost_value
-		EXPLOITIVE_BARTER_COST = scope:secondary_recipient.increased_barter_cost_value
-		EXTORTIONATE_BARTER_COST = scope:secondary_recipient.slightly_increased_barter_cost_value
+		VERY_HIGH_BARTER_COST = scope:secondary_recipient.highly_increased_barter_cost_value
+		HIGH_BARTER_COST = scope:secondary_recipient.increased_barter_cost_value
+		MEDIUM_BARTER_COST = scope:secondary_recipient.slightly_increased_barter_cost_value
 		BARTER_COST = scope:secondary_recipient.barter_cost_value
 		CURRENT_GOLD = scope:actor.gold
 	}
@@ -1037,8 +1037,8 @@ demand_prisoner_interaction = {
 			}
 		}
 
-		flag = exploitive_extortionate_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE"
+		flag = very_high_gold
+		localization = "BARTER_OPTION_VERY_HIGH_GOLD"
 	}
 
 	send_option = {
@@ -1078,7 +1078,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_extortionate_current_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_EXTORTIONATE_CURRENT"
+		localization = "BARTER_OPTION_VERY_HIGH_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -1116,8 +1116,8 @@ demand_prisoner_interaction = {
 			}
 		}
 
-		flag = extortionate_gold
-		localization = "BARTER_OPTION_GOLD_EXTORTIONATE"
+		flag = medium_gold
+		localization = "BARTER_OPTION_MEDIUM_GOLD"
 	}
 
 	send_option = {
@@ -1157,7 +1157,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = extortionate_current_gold
-		localization = "BARTER_OPTION_GOLD_EXTORTIONATE_CURRENT"
+		localization = "BARTER_OPTION_MEDIUM_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -1197,8 +1197,8 @@ demand_prisoner_interaction = {
 			}
 		}
 
-		flag = exploitive_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE"
+		flag = high_gold
+		localization = "BARTER_OPTION_HIGH_GOLD"
 	}
 
 	send_option = {
@@ -1240,7 +1240,7 @@ demand_prisoner_interaction = {
 		}
 
 		flag = exploitive_current_gold
-		localization = "BARTER_OPTION_GOLD_EXPLOITIVE_CURRENT"
+		localization = "BARTER_OPTION_HIGH_GOLD_CURRENT"
 	}
 
 	send_option = {
@@ -1363,9 +1363,9 @@ demand_prisoner_interaction = {
 			## Modifier is already tapped out at this point.
 			custom_tooltip = {
 				NOR = {
-					scope:exploitive_extortionate_gold ?= yes
-					scope:extortionate_gold ?= yes
-					scope:exploitive_gold ?= yes
+					scope:very_high_gold ?= yes
+					scope:medium_gold ?= yes
+					scope:high_gold ?= yes
 					scope:gold ?= yes
 				}
 				text = "maximum_opinion_reached"
@@ -1419,9 +1419,9 @@ demand_prisoner_interaction = {
 			## Modifier is already tapped out at this point.
 			custom_tooltip = {
 				NOR = {
-					scope:exploitive_extortionate_gold ?= yes
-					scope:extortionate_gold ?= yes
-					scope:exploitive_gold ?= yes
+					scope:very_high_gold ?= yes
+					scope:medium_gold ?= yes
+					scope:high_gold ?= yes
 					scope:gold ?= yes
 				}
 				text = "maximum_opinion_reached"
@@ -1674,15 +1674,15 @@ demand_prisoner_interaction = {
 				#### Gold Option
 				add = {
 					if = {
-						limit = { scope:exploitive_extortionate_gold ?= yes }
+						limit = { scope:very_high_gold ?= yes }
 						value = scope:secondary_recipient.highly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:extortionate_gold ?= yes }
+						limit = { scope:medium_gold ?= yes }
 						value = scope:secondary_recipient.slightly_increased_barter_cost_value
 					}
 					else_if = {
-						limit = { scope:exploitive_gold ?= yes }
+						limit = { scope:high_gold ?= yes }
 						value = scope:secondary_recipient.increased_barter_cost_value
 					}
 					else_if = {
