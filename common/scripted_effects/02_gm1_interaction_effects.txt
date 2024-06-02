@@ -2,16 +2,6 @@
 ## GM1 scripted_effects
 ##############################
 #------------------------------
-# list
-#------------------------------
-# transfer_prisoner_interaction_effect
-# transfer_prisoner_interaction_stress_effect
-# transfer_prisoner_interaction_dread_effect
-# transfer_prisoner_interaction_escalate_rivalry_effect
-# transfer_prisoner_interaction_bargain_effect
-# disband_all_schemes_effect
-
-#------------------------------
 # interaction-related
 #------------------------------
 
@@ -36,48 +26,47 @@ transfer_prisoner_interaction_effect = {
 		}
 	}
 
+	$PRISONER$ = {
 	change_imprisoner_character_effect = { 
-		TARGET = $PRISONER$
-		IMPRISONER = $SENDER$
+			TARGET = this
+			OLD_IMPRISONER = $SENDER$
+			NEW_IMPRISONER = $RECEIVER$
+		}
+		transfer_prisoner_interaction_escalates_rivalry_effect = {
+			OLD_IMPRISONER = $SENDER$
 		NEW_IMPRISONER = $RECEIVER$
+			PRISONER = this
+		}
 	}
 	
-	## Apply immediate effects towards the prisoner's current imprisoner
+	$SENDER$ = {
 	transfer_prisoner_interaction_dread_effect = { 
-		IMPRISONER = $SENDER$
+			TARGET = this
 		PRISONER = $PRISONER$
 	}
-
 	transfer_prisoner_interaction_stress_effect = { 
-		IMPRISONER = $SENDER$
+			TARGET = this
+			PRISONER = $PRISONER$
+		}
+		transfer_prisoner_interaction_scheme_effect = {
+			TARGET = this
 		PRISONER = $PRISONER$
 	}
-
-	disband_all_schemes_effect = {
-		WHO = $SENDER$
-		TARGET = $PRISONER$
 	}
 
-	## Apply immediate effects towards the prisoner's next imprisoner
+	$RECEIVER$ = {
 	transfer_prisoner_interaction_dread_effect = { 
+			TARGET = this
 		PRISONER = $PRISONER$
-		IMPRISONER = $RECEIVER$
 	}
-
 	transfer_prisoner_interaction_stress_effect = { 
+			TARGET = this
 		PRISONER = $PRISONER$
-		IMPRISONER = $RECEIVER$
 	}
-
-	transfer_prisoner_interaction_escalate_rivalry_effect = {
+		transfer_prisoner_interaction_scheme_effect = {
+			TARGET = this
 		PRISONER = $PRISONER$
-		OLD_IMPRISONER = $SENDER$
-		NEW_IMPRISONER = $RECEIVER$
 	}
-
-	disband_all_schemes_effect = {
-		WHO = $RECEIVER$
-		TARGET = $PRISONER$
 	}
 
 	if = {
@@ -87,66 +76,12 @@ transfer_prisoner_interaction_effect = {
 	}
 }
 
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## IMPRISONER (character)
-## PRISONER (character)
-transfer_prisoner_interaction_stress_effect = {
-	 $IMPRISONER$ = {
-		if = {
-			limit = { has_imprisonment_reason = $PRISONER$ }
-			stress_impact = {
-				compassionate = minor_stress_impact_gain
-				forgiving = minor_stress_impact_gain
-			}
-		}
-		else = {
-			stress_impact = {
-				just = medium_stress_impact_gain
-				compassionate = medium_stress_impact_gain
-			}
-		}
-	}
-}
-
-# based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
-## IMPRISONER (character)
-## PRISONER (character)
-transfer_prisoner_interaction_dread_effect = {
-	$IMPRISONER$ = {
-		if = {
-			limit = { NOT = { has_imprisonment_reason = $PRISONER$ } }
-			if = {
-				limit = {
-					$PRISONER$ = {
-						OR = {
-							is_spouse_of = $IMPRISONER$
-							is_close_family_of = $IMPRISONER$
-							tier_or_related_liege_tier_greater_or_equal_trigger = { TIER = tier_kingdom }
-						}
-					}
-				}
-				add_dread = medium_dread_gain
-			}
-			else_if = {
-				limit = {
-					$PRISONER$ = {
-						OR = {
-							tier_or_related_liege_tier_equal_trigger = { TIER = tier_duchy }
-							tier_or_related_liege_tier_equal_trigger = { TIER = tier_county }
-						}
-					}
-				}
-				add_dread = minor_dread_gain
-			}
-		}
-	}
-}
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
 ## OLD_IMPRISONER(character)
 ## NEW_IMPRISONER (character)
 ## PRISONER (character)
-transfer_prisoner_interaction_escalate_rivalry_effect = {
+transfer_prisoner_interaction_escalates_rivalry_effect = {
 	$PRISONER$ = {
 		if = {
 			limit = {
@@ -174,6 +109,82 @@ transfer_prisoner_interaction_escalate_rivalry_effect = {
 					CHARACTER = $OLD_IMPRISONER$
 					REASON = rival_imprisoned
 					OPINION = 0
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## TARGET (character)
+## PRISONER (character)
+transfer_prisoner_interaction_stress_effect = {
+	 $TARGET$ = {
+		if = {
+			limit = { 
+				has_imprisonment_reason = $PRISONER$ 
+			}
+			stress_impact = {
+				compassionate = minor_stress_impact_gain
+				forgiving = minor_stress_impact_gain
+			}
+		}
+		else = {
+			stress_impact = {
+				just = medium_stress_impact_gain
+				compassionate = medium_stress_impact_gain
+			}
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
+## TARGET (character)
+## PRISONER (character)
+transfer_prisoner_interaction_dread_effect = {
+	$TARGET$ = {
+		if = {
+			limit = { 
+				NOT = { has_imprisonment_reason = $PRISONER$ } 
+			}
+			if = {
+				limit = {
+					$PRISONER$ = {
+						OR = {
+							is_spouse_of = $TARGET$
+							is_close_family_of = $TARGET$
+							tier_or_related_liege_tier_greater_or_equal_trigger = { TIER = tier_kingdom }
+						}
+					}
+				}
+				add_dread = medium_dread_gain
+			}
+			else_if = {
+				limit = {
+					$PRISONER$ = {
+						OR = {
+							tier_or_related_liege_tier_equal_trigger = { TIER = tier_duchy }
+							tier_or_related_liege_tier_equal_trigger = { TIER = tier_county }
+						}
+					}
+				}
+				add_dread = minor_dread_gain
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## TARGET (character)
+## PRISONER (character)
+transfer_prisoner_interaction_scheme_effect = {
+	hidden_effect = {
+		$TARGET$ = {
+			if = {
+				limit = { any_scheme = { scheme_target = $PRISONER$ } }
+				every_scheme = {
+					limit = { scheme_target = $PRISONER$ }
+					end_scheme = yes
 				}
 			}
 		}
@@ -356,23 +367,6 @@ transfer_prisoner_interaction_bargain_effect = {
 		if = {
 			limit = { has_character_flag = under_transfer_prisoner_interaction }
 			remove_character_flag = under_transfer_prisoner_interaction
-		}
-	}
-}
-
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## TARGET (character)
-## WHO (character)
-disband_all_schemes_effect = {
-	hidden_effect = {
-		$WHO$ = {
-			if = {
-				limit = { any_scheme = { scheme_target = $TARGET$ } }
-				every_scheme = {
-					limit = { scheme_target = $TARGET$ }
-					end_scheme = yes
-				}
-			}
 		}
 	}
 }
