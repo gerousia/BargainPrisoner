@@ -54,7 +54,7 @@ gm1_interaction.0016 = {
 					PRISONER = scope:secondary_actor
 				}
 
-				transfer_prisoner_interaction_bargain_effect = {
+				transfer_prisoner_interaction_payment_effect = {
 					PRISONER = scope:secondary_actor
 					SENDER = scope:actor
 					RECEIVER = scope:recipient
@@ -76,7 +76,7 @@ gm1_interaction.0016 = {
 							PRISONER = scope:secondary_actor
 						}
 
-						transfer_prisoner_interaction_bargain_effect = {
+						transfer_prisoner_interaction_payment_effect = {
 							PRISONER = scope:secondary_actor
 							SENDER = scope:actor
 							RECEIVER = scope:recipient
@@ -163,7 +163,7 @@ gm1_interaction.0026 = {
 						PRISONER = scope:secondary_recipient
 					}
 
-					transfer_prisoner_interaction_bargain_effect = {
+					transfer_prisoner_interaction_payment_effect = {
 						PRISONER = scope:secondary_recipient
 						SENDER = scope:recipient
 						RECEIVER = scope:actor
@@ -186,7 +186,7 @@ gm1_interaction.0026 = {
 							PRISONER = scope:secondary_recipient
 						}
 
-						transfer_prisoner_interaction_bargain_effect = {
+						transfer_prisoner_interaction_payment_effect = {
 							PRISONER = scope:secondary_recipient
 							SENDER = scope:recipient
 							RECEIVER = scope:actor

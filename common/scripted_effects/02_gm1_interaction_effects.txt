@@ -9,64 +9,66 @@
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_effect = {
-	if = {
-		limit = {
-			OR = {
-				scope:exploitive_extortionate_current_gold ?= yes
-				scope:extortionate_current_gold ?= yes
-				scope:exploitive_current_gold ?= yes
-				scope:current_gold ?= yes
-			}
-		}
-		$RECEIVER$ = {
-			save_scope_value_as = {
-				name = barter_saved_gold_value
-				value = $RECEIVER$.current_gold_value
-			}
-		}
-	}
-
 	$PRISONER$ = {
-	change_imprisoner_character_effect = { 
+		if = {
+			limit = { has_character_flag = under_transfer_prisoner_interaction }
+			remove_character_flag = under_transfer_prisoner_interaction
+		}
+
+		change_imprisoner_character_effect = { 
 			TARGET = this
 			OLD_IMPRISONER = $SENDER$
 			NEW_IMPRISONER = $RECEIVER$
 		}
 		transfer_prisoner_interaction_escalates_rivalry_effect = {
 			OLD_IMPRISONER = $SENDER$
-		NEW_IMPRISONER = $RECEIVER$
+			NEW_IMPRISONER = $RECEIVER$
 			PRISONER = this
 		}
 	}
 	
 	$SENDER$ = {
-	transfer_prisoner_interaction_dread_effect = { 
+		transfer_prisoner_interaction_dread_effect = { 
 			TARGET = this
-		PRISONER = $PRISONER$
-	}
-	transfer_prisoner_interaction_stress_effect = { 
+			PRISONER = $PRISONER$
+		}
+		transfer_prisoner_interaction_stress_effect = { 
 			TARGET = this
 			PRISONER = $PRISONER$
 		}
 		transfer_prisoner_interaction_scheme_effect = {
 			TARGET = this
-		PRISONER = $PRISONER$
-	}
+			PRISONER = $PRISONER$
+		}
+
+		if = {
+			limit = { is_vassal_of = $RECEIVER$ }
+			if = {
+				limit = { scope:hook ?= yes }
+				$RECEIVER$ = { use_hook = prev }
+			}
+			else = {
+				add_opinion = {
+					target = $RECEIVER$
+					modifier = demanded_transfer_prisoner
+				}
+			}
+		}
 	}
 
 	$RECEIVER$ = {
-	transfer_prisoner_interaction_dread_effect = { 
+		transfer_prisoner_interaction_dread_effect = { 
 			TARGET = this
-		PRISONER = $PRISONER$
-	}
-	transfer_prisoner_interaction_stress_effect = { 
+			PRISONER = $PRISONER$
+		}
+		transfer_prisoner_interaction_stress_effect = { 
 			TARGET = this
-		PRISONER = $PRISONER$
-	}
+			PRISONER = $PRISONER$
+		}
 		transfer_prisoner_interaction_scheme_effect = {
 			TARGET = this
-		PRISONER = $PRISONER$
-	}
+			PRISONER = $PRISONER$
+		}
 	}
 
 	if = {
@@ -194,179 +196,103 @@ transfer_prisoner_interaction_scheme_effect = {
 # PRISONER (character)
 # SENDER (character)
 # RECEIVER (character)
-transfer_prisoner_interaction_bargain_effect = {
-	## War
-	## FP3 Perk 
-	### Full Gold Amount
-	### Full Prestige Amount 
-	if = {
-		limit = { scope:very_high_gold ?= yes	}
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.highly_increased_barter_cost_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = $PRISONER$.highly_increased_barter_cost_value
-		}
-	}
-
-	## War
-	## FP3 Perk 
-	### Partial Gold Amount
-	### Partial Prestige Amount 
-	if = {
-		limit = { scope:exploitive_extortionate_current_gold ?= yes	}
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = scope:barter_saved_gold_value
-		}
-	}
-
-	## FP3 Perk 
-	### Full Gold Amount
-	### Full Prestige Amount 
-	if = {
-		limit = { scope:medium_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.slightly_increased_barter_cost_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
-		}
-	}
-
-	## FP3 Perk 
-	### Partial Gold Amount
-	### Partial Prestige Amount 
-	if = {
-		limit = { scope:extortionate_current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = scope:barter_saved_gold_value 
-		}
-	}
-
-	## War 
-	### Full Gold Amount
-	if = {
-		limit = { scope:high_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.increased_barter_cost_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## War 
-	### Partial Gold Amount
-	if = {
-		limit = { scope:exploitive_current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Full Gold Amount
-	if = {
-		limit = { scope:gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.barter_cost_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Partial Gold Amount
-	if = {
-		limit = { scope:current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Strong Hook
-	if = {
-		limit = { scope:strong_hook ?= yes }
-		$SENDER$ = {
-			add_hook = {
-				target = $RECEIVER$
-				type = loyalty_hook
-			}
-		}
-	}
-
-	## Default
-	### Weak Hook
-	if = {
-		limit = { scope:favor ?= yes }
-		$SENDER$ = {
-			add_hook = {
-				target = $RECEIVER$
-				type = favor_hook
-			}
-		}
-	}
-
-	## Auto-accept
-	if = {
-		limit = { scope:hook ?= yes }
-		$SENDER$ = {
-			if = {
-				limit = {
-					NOT = { is_vassal_of = $RECEIVER$ }
-					NOT = { $RECEIVER$ = { has_strong_hook = $SENDER$ } }
+transfer_prisoner_interaction_payment_effect = {
+	switch = {
+		trigger = always
+		scope:very_high_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.highly_increased_barter_cost_value
+					target = $SENDER$
 				}
-				add_opinion = {
+			}
+			$SENDER$ = {
+				add_prestige = $PRISONER$.highly_increased_barter_cost_value
+			}
+		}
+		scope:very_high_current_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.barter_cost_value
+					target = $SENDER$
+				}
+			}
+			$SENDER$ = {
+				add_prestige = $PRISONER$.barter_cost_value
+			}
+		}
+		scope:high_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.increased_barter_cost_value
+					target = $SENDER$
+				}
+			}
+		}
+		scope:high_current_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.barter_cost_value
+					target = $SENDER$
+				}
+			}
+		}
+		scope:medium_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.slightly_increased_barter_cost_value
+					target = $SENDER$
+				}
+			}
+			$SENDER$ = { 
+				add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
+			}
+		}
+		scope:medium_current_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.barter_cost_value
+					target = $SENDER$
+				}
+			}
+			$SENDER$ = {
+				add_prestige = $PRISONER$.barter_cost_value
+			}
+		}
+		scope:gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.barter_cost_value
+					target = $SENDER$
+				}
+			}
+		}
+		scope:current_gold = {
+			$RECEIVER$ = {
+				pay_short_term_gold = {
+					gold = $PRISONER$.barter_cost_value
+					target = $SENDER$
+				}
+			}
+		}
+	}
+	switch = {
+		trigger = always
+		scope:strong_hook = {
+			$SENDER$ = {
+				add_hook = {
 					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
+					type = loyalty_hook
 				}
 			}
 		}
-		$RECEIVER$ = { use_hook = $SENDER$ }
-	}
-	else_if = {
-		limit = { scope:hook ?= no }
-		$SENDER$ = {
-			if = {
-				limit = { is_vassal_of = $RECEIVER$ }
-				add_opinion = {
+		scope:favor = {
+			$SENDER$ = {
+				add_hook = {
 					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
+					type = favor_hook
 				}
 			}
-		}
-	}
-	
-	$PRISONER$ = {
-		if = {
-			limit = { has_character_flag = under_transfer_prisoner_interaction }
-			remove_character_flag = under_transfer_prisoner_interaction
 		}
 	}
 }
