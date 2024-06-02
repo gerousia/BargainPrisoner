@@ -555,7 +555,7 @@ offer_prisoner_interaction = {
 			scope:recipient = {  
 				is_at_war_with = scope:secondary_actor
 			}
-			add = 300
+			add = 500
 			desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
 		}
 		### Receiver is scared to accept powerful prisoners.
@@ -678,7 +678,7 @@ offer_prisoner_interaction = {
 			scope:recipient = {  
 				is_at_war_with = scope:secondary_actor
 			}
-			add = 300
+			add = 500
 		}
 
 		## AI will barter their prisoners more for a higher value if they are tribal
