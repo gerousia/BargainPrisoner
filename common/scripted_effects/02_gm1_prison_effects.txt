@@ -25,7 +25,9 @@ change_imprisoner_character_effect = {
 			## - `release_from_prison_memory` prevented from being created
 			## - `imprisoned_me` -> `imprisoned_me_past` in `prison.0001`
 			custom_description = { 
-				text = "move_tooltip"
+				text = "release_tooltip"
+				subject = scope:old_imprisoner
+				object = this
 				if = {
 					limit = { has_character_modifier = allowed_to_go_outside }
 					remove_character_modifier = allowed_to_go_outside
@@ -42,17 +44,16 @@ change_imprisoner_character_effect = {
 					flag = block_for_prison_release_notification
 					days = 1
 				}
+				release_from_prison = yes
+				remove_character_flag = escaped_from_prison_flag
+			}
+			
+			custom_description = {
+				text = "move_tooltip"
 				add_character_flag = {
 					flag = recently_prison_transferred
 					years = 3
 				}
-			}
-			custom_description = {
-				text = "release_tooltip"
-				subject = scope:old_imprisoner
-				object = this
-				release_from_prison = yes
-				remove_character_flag = escaped_from_prison_flag
 			}
 
 			## MEMORY
