@@ -47,7 +47,7 @@ change_imprisoner_character_effect = {
 				release_from_prison = yes
 				remove_character_flag = escaped_from_prison_flag
 			}
-			
+
 			custom_description = {
 				text = "move_tooltip"
 				add_character_flag = {
@@ -419,16 +419,12 @@ change_imprisoner_consequences_war_effect = {
 	scope:imprisonment_target = {
 		if = {
 			limit = { is_at_war_with = scope:new_imprisoner }
-			custom_description = {
-				text = "change_imprisoner_war_tooltip"
-				subject = scope:imprisonment_target
-				object = scope:new_imprisoner
-			}
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
 				custom_description = {
 					text = "change_imprisoner_war_leader_tooltip"
 					subject = this
+					object = scope:new_imprisoner
 				}
 				add_opinion = {
 					target = scope:old_imprisoner
@@ -437,6 +433,11 @@ change_imprisoner_consequences_war_effect = {
 				}
 			}
 			else = {
+				custom_description = {
+					text = "change_imprisoner_war_tooltip"
+					subject = scope:imprisonment_target
+					object = scope:new_imprisoner
+				}
 				add_opinion = {
 					target = scope:old_imprisoner
 					modifier = supported_my_enemy_opinion
@@ -478,16 +479,12 @@ change_imprisoner_consequences_war_effect = {
 	scope:new_imprisoner = {
 		if = {
 			limit = { is_at_war_with = scope:imprisonment_target }
-			custom_description = {
-				text = "change_imprisoner_war_tooltip"
-				subject = this
-				object = scope:imprisonment_target
-			}
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
 				custom_description = {
 					text = "change_imprisoner_war_leader_tooltip"
 					subject = this
+					object = scope:imprisonment_target
 				}
 				if = {
 					limit = { is_ai = no }
@@ -508,6 +505,11 @@ change_imprisoner_consequences_war_effect = {
 				}
 			}
 			else = {
+				custom_description = {
+					text = "change_imprisoner_war_tooltip"
+					subject = this
+					object = scope:imprisonment_target
+				}
 				if = {
 					limit = { is_ai = no }
 					hidden_effect = {
@@ -560,16 +562,19 @@ change_imprisoner_consequences_war_effect = {
 	scope:old_imprisoner = {
 		if = {
 			limit = { is_at_war_with = scope:imprisonment_target }
-			custom_description = {
-				text = "change_imprisoner_war_tooltip"
-				subject = this
-				object = scope:imprisonment_target
-			}
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
 				custom_description = {
 					text = "change_imprisoner_war_leader_tooltip"
 					subject = this
+					object = scope:imprisonment_target
+				}
+			}
+			else = {
+				custom_description = {
+					text = "change_imprisoner_war_tooltip"
+					subject = this
+					object = scope:imprisonment_target
 				}
 			}
 		}
