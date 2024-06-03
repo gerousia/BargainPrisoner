@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 
@@ -66,8 +66,18 @@ change_imprisoner_character_effect = {
 			}
 
 			## PENALTIES
+			change_imprisoner_consequences_family_effect = {
+				OLD_IMPRISONER = scope:old_imprisoner
+				NEW_IMPRISONER = scope:new_imprisoner
+				TARGET = this
+			}
 			change_imprisoner_consequences_clan_effect = {
 				CHARACTER = scope:old_imprisoner
+				TARGET = this
+			}
+			change_imprisoner_consequences_war_effect = {
+				OLD_IMPRISONER = scope:old_imprisoner
+				NEW_IMPRISONER = scope:new_imprisoner
 				TARGET = this
 			}
 		}
@@ -118,16 +128,16 @@ change_imprisoner_character_effect = {
 
 			## PENALTIES
 			change_imprisoner_consequences_lover_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
 			change_imprisoner_consequences_vassal_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
 			change_imprisoner_consequences_HoF_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
 		}
 
@@ -188,39 +198,27 @@ change_imprisoner_character_effect = {
 
 			## PENALTIES
 			change_imprisoner_consequences_lover_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
 			change_imprisoner_consequences_vassal_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
 			change_imprisoner_consequences_HoF_effect = {
+				CHARACTER = this
 				TARGET = scope:imprisonment_target
-				IMPRISONER = this
 			}
-		}
-
-		## EXTRA
-		change_imprisoner_consequences_family_effect = {
-			TARGET = scope:imprisonment_target
-			OLD_IMPRISONER = scope:old_imprisoner
-			NEW_IMPRISONER = scope:new_imprisoner
-		}
-		change_imprisoner_consequences_war_effect = {
-			TARGET = scope:imprisonment_target
-			OLD_IMPRISONER = scope:old_imprisoner
-			NEW_IMPRISONER = scope:new_imprisoner
 		}
 	}
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
+## CHARACTER (character)
 ## TARGET (character)
-## IMPRISONER (character)
 change_imprisoner_consequences_lover_effect = {
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
 	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_temporary_scope_as = imprisoner }
 
 	scope:imprisoner = {
 		if = {
@@ -297,11 +295,11 @@ change_imprisoner_consequences_clan_effect = {
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_tyranny_effect
+## CHARACTER (character)
 ## TARGET (character)
-## IMPRISONER (character)
 change_imprisoner_consequences_vassal_effect = {
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
 	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_temporary_scope_as = imprisoner }
 
 	scope:imprisoner = {
 		if = {
@@ -336,11 +334,11 @@ change_imprisoner_consequences_vassal_effect = {
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_HoF_consequences_effect
+## CHARACTER (character)
 ## TARGET (character)
-## IMPRISONER (character)
 change_imprisoner_consequences_HoF_effect = {	
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
 	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
-	$IMPRISONER$ = { save_temporary_scope_as = imprisoner }
 
 	scope:imprisoner = {
 		if = {
@@ -376,13 +374,13 @@ change_imprisoner_consequences_HoF_effect = {
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-## TARGET (character)
 ## OLD_IMPRISONER (character)
 ## NEW_IMPRISONER (character)
+## TARGET (character)
 change_imprisoner_consequences_family_effect = {
-	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
 	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 
 	## Create a family list for the prisoner.
 	hidden_effect = {
@@ -443,13 +441,13 @@ change_imprisoner_consequences_family_effect = {
 	}
 }
 
-# TARGET (character)
 # OLD_IMPRISONER (character)
 # NEW_IMPRISONER (character)
+# TARGET (character)
 change_imprisoner_consequences_war_effect = {
-	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
 	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 
 	## Create a war participant list for wars including both the prisoner and new_imprisoner
 	hidden_effect = {
