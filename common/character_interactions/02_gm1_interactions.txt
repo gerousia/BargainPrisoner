@@ -153,8 +153,7 @@ offer_prisoner_interaction = {
 				is_at_war_with = scope:recipient
 			}
 			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			}
 			scope:recipient = {
 				gold >= scope:secondary_actor.highly_increased_barter_cost_value
@@ -172,8 +171,7 @@ offer_prisoner_interaction = {
 				is_at_war_with = scope:recipient
 			}
 			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			}
 			scope:recipient = {
 				gold < scope:secondary_actor.highly_increased_barter_cost_value
@@ -192,10 +190,7 @@ offer_prisoner_interaction = {
 				is_at_war_with = scope:recipient 
 			}
 			scope:actor = {
-				OR = {
-					is_lowborn = yes
-					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-				}
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			}
 			scope:recipient = {
 				gold >= scope:secondary_actor.increased_barter_cost_value
@@ -213,10 +208,7 @@ offer_prisoner_interaction = {
 				is_at_war_with = scope:recipient
 			}
 			scope:actor = {
-				OR = {
-					is_lowborn = yes
-					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-				}
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			}
 			scope:recipient = {
 				gold < scope:secondary_actor.increased_barter_cost_value
@@ -235,8 +227,7 @@ offer_prisoner_interaction = {
 				NOT = { is_at_war_with = scope:recipient } 
 			}
 			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			}
 			scope:recipient = {
 				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
@@ -255,8 +246,7 @@ offer_prisoner_interaction = {
 			}
 
 			scope:actor = {
-				exists = dynasty
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			}
 			scope:recipient = {
 				gold < scope:secondary_actor.slightly_increased_barter_cost_value
@@ -275,10 +265,7 @@ offer_prisoner_interaction = {
 				NOT = { is_at_war_with = scope:recipient } 
 			}
 			scope:actor = {
-				OR = {
-					is_lowborn = yes
-					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-				}
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			}
 			scope:recipient = {
 				gold >= scope:secondary_actor.barter_cost_value
@@ -296,10 +283,7 @@ offer_prisoner_interaction = {
 				NOT = { is_at_war_with = scope:recipient } 
 			}
 			scope:actor = {
-				OR = {
-					is_lowborn = yes
-					NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-				}
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			}
 			scope:recipient = {
 				gold < scope:secondary_actor.barter_cost_value
@@ -314,9 +298,9 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= {
-				OR = {
-					is_at_war_with = scope:recipient
+			OR = {
+				scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+				scope:secondary_actor ?= {
 					any_held_title = {
 						tier >= tier_kingdom
 						custom_tooltip = { 
@@ -356,9 +340,9 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= {
-				NOR = {
-					is_at_war_with = scope:recipient
+			NOR = {
+				scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+				scope:secondary_actor ?= {
 					any_held_title = {
 						tier >= tier_kingdom
 						custom_tooltip = { 
@@ -1024,27 +1008,20 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					is_at_war_with = scope:actor
-				}
-				scope:recipient = {
-					exists = dynasty
-					dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-				}
-				scope:actor = {
-					gold >= scope:secondary_recipient.highly_increased_barter_cost_value
-				}
+			scope:recipient = {
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:actor = {
+				gold >= scope:secondary_recipient.highly_increased_barter_cost_value
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1063,28 +1040,21 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					is_at_war_with = scope:actor
-				}
-				scope:recipient = {
-					exists = dynasty
-					dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-				}
-				scope:actor = {
-					gold < scope:secondary_recipient.highly_increased_barter_cost_value
-					gold >= 1
-				}
+			scope:recipient = {
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:actor = {
+				gold < scope:secondary_recipient.highly_increased_barter_cost_value
+				gold >= 1
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1103,29 +1073,20 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					is_at_war_with = scope:actor
-				}
-				scope:recipient = {
-					OR = {
-						is_lowborn = yes
-						NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-					}
-				}
-				scope:actor = {
-					gold >= scope:secondary_recipient.increased_barter_cost_value
-				}
+			scope:recipient = {
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
+			}
+			scope:actor = {
+				gold >= scope:secondary_recipient.increased_barter_cost_value
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1144,30 +1105,21 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				is_at_war_with = scope:actor
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					is_at_war_with = scope:actor
-				}
-				scope:recipient = {
-					OR = {
-						is_lowborn = yes
-						NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-					}
-				}
-				scope:actor = {
-					gold < scope:secondary_recipient.increased_barter_cost_value
-					gold >= 1
-				}
+			scope:recipient = {
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
+			}
+			scope:actor = {
+				gold < scope:secondary_recipient.increased_barter_cost_value
+				gold >= 1
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1186,27 +1138,20 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor }
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					NOT = { is_at_war_with = scope:actor }
-				}
-				scope:recipient = {
-					exists = dynasty
-					dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-				}
-				scope:actor = {
-					gold >= scope:secondary_recipient.slightly_increased_barter_cost_value
-				}
+			scope:recipient = {
+				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
+			}
+			scope:actor = {
+				gold >= scope:secondary_recipient.slightly_increased_barter_cost_value
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1225,28 +1170,21 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor }
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					NOT = { is_at_war_with = scope:actor }
-				}
-				scope:recipient = {
-					exists = dynasty
-					dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-				}
-				scope:actor ?= {
-					gold < scope:secondary_recipient.slightly_increased_barter_cost_value
-					gold >= 1
-				}
+			scope:recipient = {
+				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
+			}
+			scope:actor ?= {
+				gold < scope:secondary_recipient.slightly_increased_barter_cost_value
+				gold >= 1
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1265,29 +1203,20 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					NOT = { is_at_war_with = scope:actor }
-				}
-				scope:recipient = {
-					OR = {
-						is_lowborn = yes
-						NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-					}
-				}
-				scope:actor = {
-					gold >= scope:secondary_recipient.barter_cost_value
-				}
+			scope:recipient = {
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
+			}
+			scope:actor = {
+				gold >= scope:secondary_recipient.barter_cost_value
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1306,30 +1235,21 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
+			exists = scope:secondary_recipient
+			scope:secondary_recipient ?= { 
+				NOT = { is_at_war_with = scope:actor } 
 			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= { 
-					NOT = { is_at_war_with = scope:actor }
-				}
-				scope:recipient = {
-					OR = {
-						is_lowborn = yes
-						NOT = { dynasty = {	has_dynasty_perk = fp1_pillage_legacy_3	} }
-					}
-				}
-				scope:actor = {
-					gold < scope:secondary_recipient.barter_cost_value
-					gold >= 1
-				}
+			scope:recipient = {
+				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
+			}
+			scope:actor = {
+				gold < scope:secondary_recipient.barter_cost_value
+				gold >= 1
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1348,41 +1268,25 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
+			exists = scope:secondary_recipient
 			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
-			}
-			AND = {
-				exists = scope:secondary_recipient
+				scope:secondary_recipient ?= { is_at_war_with = scope:actor }
 				scope:secondary_recipient ?= {
-					OR = {
-						is_at_war_with = scope:actor
-						any_held_title = {
-							tier >= tier_kingdom
-							custom_tooltip = { 
-								# Workaround just to mute this specific localization error. 
-								# Why does it have to be designed this way?
-								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_COLON
-							}
+					any_held_title = {
+						tier >= tier_kingdom
+						custom_tooltip = { 
+							# Workaround just to mute this specific localization error. 
+							# Why does it have to be designed this way?
+							scope:actor = { has_strong_claim_on = prev }
+							text = DEBUG_COLON
 						}
 					}
 				}
 			}
-			NOR = {
-				AND = {
-					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
-					scope:actor = { has_strong_hook = scope:recipient }
-				}
-				AND = {
-					scope:recipient = { is_vassal_of = scope:actor }
-					scope:actor = { has_usable_hook = scope:recipient }
-				}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1403,6 +1307,12 @@ demand_prisoner_interaction = {
 					type = loyalty_hook
 				}
 			}
+			trigger_if = {
+				limit = { scope:hook ?= yes }
+				scope:actor = { 
+					NOT = { has_usable_hook = scope:recipient } 
+				}
+			}
 		}
 
 		flag = strong_hook
@@ -1411,41 +1321,25 @@ demand_prisoner_interaction = {
 
 	send_option = {
 		is_shown = {
-			OR = {
-				scope:actor = { is_ai = yes }
-				AND = {
-					scope:actor = { is_ai = no }
-					scope:recipient = {
-						NOT = { is_vassal_of = scope:actor }
-					}	
-				}
-			}
-			AND = {
-				exists = scope:secondary_recipient
-				scope:secondary_recipient ?= {
-					NOR = {
-						is_at_war_with = scope:actor
-						any_held_title = {
-							tier >= tier_kingdom
-							custom_tooltip = { 
-								# Workaround just to mute this specific localization error. 
-								# Why does it have to be designed this way?
-								scope:actor = { has_strong_claim_on = prev }
-								text = DEBUG_COLON
-							}
-						}
-					}	
-				}
-			}
+			exists = scope:secondary_recipient
 			NOR = {
-				AND = {
-					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
-					scope:actor = { has_strong_hook = scope:recipient }
+				scope:secondary_recipient ?= { is_at_war_with = scope:actor }
+				scope:secondary_recipient ?= {
+					any_held_title = {
+						tier >= tier_kingdom
+						custom_tooltip = { 
+							# Workaround just to mute this specific localization error. 
+							# Why does it have to be designed this way?
+							scope:actor = { has_strong_claim_on = prev }
+							text = DEBUG_COLON
+						}
+					}
 				}
-				AND = {
-					scope:recipient = { is_vassal_of = scope:actor }
-					scope:actor = { has_usable_hook = scope:recipient }
-				}
+			}
+			## Hidden against vassals (auto-accept). Player Only.
+			trigger_if = {
+				limit = { scope:actor = { is_ai = no } }
+				scope:recipient = { not = { is_vassal_of = scope:actor } }
 			}
 		}
 
@@ -1466,6 +1360,12 @@ demand_prisoner_interaction = {
 					type = favor_hook
 				}
 			}
+			trigger_if = {
+				limit = { scope:hook ?= yes }
+				scope:actor = { 
+					NOT = { has_usable_hook = scope:recipient } 
+				}
+			}
 		}
 
 		flag = favor
@@ -1478,13 +1378,31 @@ demand_prisoner_interaction = {
 			exists = scope:secondary_recipient
 			OR = {
 				AND = {
-					NOT = { scope:recipient = { is_vassal_of = scope:actor } }
+					scope:recipient = { NOT = { is_vassal_of = scope:actor } }
 					scope:actor = { has_strong_hook = scope:recipient }
 				}
 				AND = {
 					scope:recipient = { is_vassal_of = scope:actor }
 					scope:actor = { has_usable_hook = scope:recipient }
 				}
+			}
+		}
+
+		is_valid = {
+			custom_tooltip = {
+				NOR = {
+					scope:very_high_gold ?= yes
+					scope:high_gold ?= yes
+					scope:medium_gold ?= yes
+					scope:gold ?= yes
+					scope:very_high_current_gold ?= yes
+					scope:high_current_gold ?= yes
+					scope:medium_current_gold ?= yes
+					scope:current_gold ?= yes
+					scope:strong_hook ?= yes
+					scope:favor ?= yes
+				}
+				text = "maximum_opinion_reached"
 			}
 		}
 
@@ -1763,7 +1681,7 @@ demand_prisoner_interaction = {
 				max = 100
 				min = -100
 			}
-			desc = INTERACTION_AI_PRISONER_REASON_VALUE_RECIPIENT
+			desc = INTERACTION_AI_PRISONER_REASON_APPROVAL
 		}
 	}
 
