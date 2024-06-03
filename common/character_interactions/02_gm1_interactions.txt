@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -592,7 +592,7 @@ offer_prisoner_interaction = {
 					}
 				}
 				divide = {
-					value = interaction_actor_prisoner_value
+					value = gm1_offer_prisoner_value
 					min = 1
 				}
 				subtract = 1
@@ -781,7 +781,7 @@ offer_prisoner_interaction = {
 					}
 				}
 				divide = {
-					value = interaction_actor_prisoner_value
+					value = gm1_offer_prisoner_value
 					min = 1
 				}
 				subtract = 1
@@ -1627,7 +1627,7 @@ demand_prisoner_interaction = {
 					}
 				}
 				divide = {
-					value = interaction_recipient_prisoner_value
+					value = gm1_demand_prisoner_value
 					min = 1
 				}
 				subtract = 1
