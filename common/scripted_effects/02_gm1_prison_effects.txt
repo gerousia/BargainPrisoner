@@ -435,7 +435,7 @@ change_imprisoner_consequences_war_effect = {
 			else = {
 				custom_description = {
 					text = "change_imprisoner_war_tooltip"
-					subject = scope:imprisonment_target
+					subject = this
 					object = scope:new_imprisoner
 				}
 				add_opinion = {
