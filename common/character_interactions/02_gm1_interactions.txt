@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -470,6 +470,11 @@ offer_prisoner_interaction = {
 	ai_accept = {
 		base = 0
 
+		### Receiver's Traits
+		gm1_transfer_prisoner_interaction_trait_modifier = {
+			WHO = scope:recipient
+			TARGET = scope:actor
+		}
 		## Receiver's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
@@ -519,11 +524,6 @@ offer_prisoner_interaction = {
 			WHO = scope:actor
 			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
-		}
-		### Receiver accepts based on traits.
-		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:recipient
-			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -671,6 +671,11 @@ offer_prisoner_interaction = {
 			add = 100
 		}
 
+		### AI's Traits
+		gm1_transfer_prisoner_interaction_trait_modifier = {
+			WHO = scope:recipient
+			TARGET = scope:actor
+		}
 		## AI's Personality
 		gm1_offer_prisoner_interaction_personality_modifier = {
 			WHO = scope:actor
@@ -716,11 +721,6 @@ offer_prisoner_interaction = {
 			WHO = scope:actor
 			TARGET = scope:recipient
 			PRISONER = scope:secondary_actor
-		}
-		### AI sends based on traits.
-		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:recipient
-			TARGET = scope:actor
 		}
 
 		## Modifiers towards the Prisoner.
@@ -1517,6 +1517,11 @@ demand_prisoner_interaction = {
 	ai_accept = {
 		base = 0
 
+		### Sender's Traits
+		gm1_transfer_prisoner_interaction_trait_modifier = {
+			WHO = scope:actor
+			TARGET = scope:recipient
+		}
 		## Sender's Personality
 		gm1_demand_prisoner_interaction_personality_modifier = {
 			WHO = scope:recipient
@@ -1577,11 +1582,6 @@ demand_prisoner_interaction = {
 			WHO = scope:actor
 			TARGET = scope:recipient
 			PRISONER = scope:secondary_recipient
-		}
-		### Sender accepts based on traits.
-		gm1_transfer_prisoner_interaction_trait_modifier = {
-			WHO = scope:actor
-			TARGET = scope:recipient
 		}
 
 		## Modifiers towards the Prisoner.
