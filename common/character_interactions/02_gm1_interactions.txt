@@ -415,12 +415,6 @@ offer_prisoner_interaction = {
 		scope:actor = {
 			trigger_event = gm1_interaction.0016
 		}
-
-		transfer_prisoner_interaction_payment_effect = {
-			PRISONER = scope:secondary_actor
-			SENDER = scope:actor
-			RECEIVER = scope:recipient
-		}
 	}
 
 	on_decline = {	
@@ -1428,12 +1422,6 @@ demand_prisoner_interaction = {
 		## Notification Event.
 		scope:actor = {
 			trigger_event = gm1_interaction.0026
-		}
-
-		transfer_prisoner_interaction_payment_effect = {
-			PRISONER = scope:secondary_recipient
-			SENDER = scope:recipient
-			RECEIVER = scope:actor
 		}
 	}
 
