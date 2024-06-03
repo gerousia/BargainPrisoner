@@ -70,12 +70,6 @@ transfer_prisoner_interaction_effect = {
 			PRISONER = $PRISONER$
 		}
 	}
-
-	if = {
-		limit = { debug_only = yes }
-		debug_log_date = yes
-		debug_log_scopes = yes
-	}
 }
 
 
@@ -200,82 +194,71 @@ transfer_prisoner_interaction_payment_effect = {
 	switch = {
 		trigger = always
 		scope:very_high_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.highly_increased_barter_cost_value
-					target = $SENDER$
-				}
-			}
-			$SENDER$ = {
-				add_prestige = $PRISONER$.highly_increased_barter_cost_value
-			}
-		}
-		scope:very_high_current_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.barter_cost_value
-					target = $SENDER$
-				}
-			}
-			$SENDER$ = {
-				add_prestige = $PRISONER$.barter_cost_value
+			save_scope_value_as = {
+				name = gold_amount
+				value = $PRISONER$.highly_increased_barter_cost_value
 			}
 		}
 		scope:high_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.increased_barter_cost_value
-					target = $SENDER$
-				}
-			}
-		}
-		scope:high_current_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.barter_cost_value
-					target = $SENDER$
-				}
+			save_scope_value_as = {
+				name = gold_amount
+				value = $PRISONER$.increased_barter_cost_value
 			}
 		}
 		scope:medium_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.slightly_increased_barter_cost_value
-					target = $SENDER$
-				}
-			}
-			$SENDER$ = { 
-				add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
-			}
-		}
-		scope:medium_current_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.barter_cost_value
-					target = $SENDER$
-				}
-			}
-			$SENDER$ = {
-				add_prestige = $PRISONER$.barter_cost_value
+			save_scope_value_as = {
+				name = gold_amount
+				value = $PRISONER$.slightly_increased_barter_cost_value
 			}
 		}
 		scope:gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.barter_cost_value
-					target = $SENDER$
-				}
+			save_scope_value_as = {
+				name = gold_amount
+				value = $PRISONER$.barter_cost_value
+			}
+		}
+		scope:very_high_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = $RECEIVER$.gold
+			}
+		}
+		scope:high_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = $RECEIVER$.gold
+			}
+		}
+		scope:medium_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = $RECEIVER$.gold
 			}
 		}
 		scope:current_gold = {
-			$RECEIVER$ = {
-				pay_short_term_gold = {
-					gold = $PRISONER$.barter_cost_value
-					target = $SENDER$
-				}
+			save_scope_value_as = {
+				name = gold_amount
+				value = $RECEIVER$.gold
 			}
 		}
 	}
+
+	if = {
+		limit = { exists = scope:gold_amount }
+		$RECEIVER$ = {
+			pay_short_term_gold = {
+				gold = scope:gold_amount
+				target = $SENDER$
+			}
+		}
+		if = {
+			limit = { $SENDER$.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } }
+			$SENDER$ = {
+				add_prestige = scope:gold_amount
+			}
+		}
+	}
+
 	switch = {
 		trigger = always
 		scope:strong_hook = {
@@ -294,5 +277,11 @@ transfer_prisoner_interaction_payment_effect = {
 				}
 			}
 		}
+	}
+
+	if = {
+		limit = { debug_only = yes }
+		debug_log_date = yes
+		debug_log_scopes = yes
 	}
 }
