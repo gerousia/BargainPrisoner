@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -420,23 +420,6 @@ offer_prisoner_interaction = {
 			PRISONER = scope:secondary_actor
 			SENDER = scope:actor
 			RECEIVER = scope:recipient
-		}
-
-		## Clan Unity.
-		scope:actor = {
-			if = {
-				limit = {
-					government_has_flag = government_is_clan
-					house = scope:recipient.house
-				}
-				add_clan_unity_interaction_effect = {
-					CHARACTER = scope:actor
-					TARGET = scope:recipient
-					VALUE = medium_unity_loss
-					DESC = clan_unity_hostage.desc
-					REVERSE_NON_HOUSE_TARGET = no
-				}
-			}
 		}
 	}
 
@@ -1451,23 +1434,6 @@ demand_prisoner_interaction = {
 			PRISONER = scope:secondary_recipient
 			SENDER = scope:recipient
 			RECEIVER = scope:actor
-		}
-
-		## Clan Unity.
-		scope:actor = {
-			if = {
-				limit = {
-					government_has_flag = government_is_clan
-					house = scope:recipient.house
-				}
-				add_clan_unity_interaction_effect = {
-					CHARACTER = scope:actor
-					TARGET = scope:recipient
-					VALUE = medium_unity_loss
-					DESC = clan_unity_hostage.desc
-					REVERSE_NON_HOUSE_TARGET = no
-				}
-			}
 		}
 	}
 

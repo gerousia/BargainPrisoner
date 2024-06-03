@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 
@@ -63,6 +63,12 @@ change_imprisoner_character_effect = {
 					old_imprisoner = scope:old_imprisoner
 					new_imprisoner = scope:new_imprisoner
 				}
+			}
+
+			## PENALTIES
+			change_imprisoner_consequences_clan_effect = {
+				CHARACTER = scope:old_imprisoner
+				TARGET = this
 			}
 		}
 
@@ -226,6 +232,64 @@ change_imprisoner_consequences_lover_effect = {
 				trigger_event = {
 					id = lover.0101
 					days = { 14 30 }
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## CHARACTER (character)
+## TARGET (character)
+change_imprisoner_consequences_clan_effect = {
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
+
+	scope:imprisoner = {
+		if = {
+			limit = { 
+				government_has_flag = government_is_clan
+				house = scope:imprisonment_target.house
+			}
+			## Target does not have an imprisonment reason, and the prisoner is landed.
+			## The clan loses more unity.
+			if = {
+				limit = {
+					NOT = { has_imprisonment_reason = scope:imprisonment_target }
+					scope:imprisonment_target = { is_landed = yes }
+				}
+				add_clan_unity_interaction_effect = {
+					CHARACTER = scope:imprisoner
+					TARGET = scope:imprisonment_target
+					VALUE = major_unity_loss
+					DESC = clan_unity_transfer_prisoner.desc
+					REVERSE_NON_HOUSE_TARGET = no
+				}
+			}
+			## Target does not have an imprisonment reason, and the prisoner is unlanded.
+			## The clan loses less unity.
+			else_if = {
+				limit = {
+					NOT = { has_imprisonment_reason = scope:imprisonment_target }
+					scope:imprisonment_target = { is_landed = no }
+				}
+				add_clan_unity_interaction_effect = {
+					CHARACTER = scope:imprisoner
+					TARGET = scope:imprisonment_target
+					VALUE = medium_unity_loss
+					DESC = clan_unity_transfer_prisoner.desc
+					REVERSE_NON_HOUSE_TARGET = no
+				}
+			}
+			## Target does have an imprisonment reason, but the prisoner is still family.
+			## The clan loses a tiny bit of unity.
+			else = {
+				add_clan_unity_interaction_effect = {
+					CHARACTER = scope:imprisoner
+					TARGET = scope:imprisonment_target
+					VALUE = minor_unity_loss
+					DESC = clan_unity_transfer_prisoner.desc
+					REVERSE_NON_HOUSE_TARGET = no
 				}
 			}
 		}
