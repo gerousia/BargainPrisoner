@@ -3,13 +3,13 @@
 ##############################
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-# TARGET (character)
+# PRISONER (character)
 # IMPRISONER (character)
 # NEW_IMPRISONER (character)
 change_imprisoner_character_effect = {
-	$TARGET$ = { save_scope_as = imprisonment_target }
-	$OLD_IMPRISONER$ = { save_scope_as = old_imprisoner }
-	$NEW_IMPRISONER$ = { save_scope_as = new_imprisoner }	
+	$PRISONER$ = { save_temporary_scope_as = imprisonment_target }
+	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
+	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }	
 
 	if = {
 		limit = {
@@ -67,17 +67,12 @@ change_imprisoner_character_effect = {
 
 			## PENALTIES
 			change_imprisoner_consequences_family_effect = {
+				TARGET = this
 				OLD_IMPRISONER = scope:old_imprisoner
 				NEW_IMPRISONER = scope:new_imprisoner
-				TARGET = this
 			}
 			change_imprisoner_consequences_clan_effect = {
 				CHARACTER = scope:old_imprisoner
-				TARGET = this
-			}
-			change_imprisoner_consequences_war_effect = {
-				OLD_IMPRISONER = scope:old_imprisoner
-				NEW_IMPRISONER = scope:new_imprisoner
 				TARGET = this
 			}
 		}
@@ -209,6 +204,13 @@ change_imprisoner_character_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
 			}
+		}
+
+		## ADDITIONAL
+		change_imprisoner_consequences_war_effect = {
+			OLD_IMPRISONER = scope:old_imprisoner
+			NEW_IMPRISONER = scope:new_imprisoner
+			TARGET = scope:imprisonment_target
 		}
 	}
 }
