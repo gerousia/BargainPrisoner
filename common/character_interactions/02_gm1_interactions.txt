@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -315,16 +315,6 @@ offer_prisoner_interaction = {
 		}
 
 		is_valid = {
-			## Modifier is already tapped out at this point.
-			custom_tooltip = {
-				NOR = {
-					scope:very_high_gold ?= yes
-					scope:medium_gold ?= yes
-					scope:high_gold ?= yes
-					scope:gold ?= yes
-				}
-				text = "maximum_opinion_reached"
-			}
 			scope:actor = {
 				can_add_hook = {
 					target = scope:recipient
@@ -357,16 +347,6 @@ offer_prisoner_interaction = {
 		}
 
 		is_valid = {
-			## Modifier is already tapped out at this point.
-			custom_tooltip = {
-				NOR = {
-					scope:very_high_gold ?= yes
-					scope:medium_gold ?= yes
-					scope:high_gold ?= yes
-					scope:gold ?= yes
-				}
-				text = "maximum_opinion_reached"
-			}
 			scope:actor = {
 				can_add_hook = {
 					target = scope:recipient
@@ -1268,16 +1248,6 @@ demand_prisoner_interaction = {
 		}
 
 		is_valid = {
-			## Modifier is already tapped out at this point.
-			custom_tooltip = {
-				NOR = {
-					scope:very_high_gold ?= yes
-					scope:medium_gold ?= yes
-					scope:high_gold ?= yes
-					scope:gold ?= yes
-				}
-				text = "maximum_opinion_reached"
-			}
 			scope:recipient = {
 				can_add_hook = {
 					target = scope:actor
@@ -1321,16 +1291,6 @@ demand_prisoner_interaction = {
 		}
 
 		is_valid = {
-			## Modifier is already tapped out at this point.
-			custom_tooltip = {
-				NOR = {
-					scope:very_high_gold ?= yes
-					scope:medium_gold ?= yes
-					scope:high_gold ?= yes
-					scope:gold ?= yes
-				}
-				text = "maximum_opinion_reached"
-			}
 			scope:recipient = {
 				can_add_hook = {
 					target = scope:actor
