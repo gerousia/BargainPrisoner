@@ -67,6 +67,9 @@ l_english:
 # TOOLTIP
  maximum_opinion_reached: "Maximum attainable [opinion|E] already reached."
 
+# CLAN UNITY
+ clan_unity_transfer_prisoner.desc: "transferred [unity_target.GetName] to another prison"
+
 # NOTIFICATION
  msg_transfer_prisoner_interaction_title: "Prisoner Transferred!"
 
