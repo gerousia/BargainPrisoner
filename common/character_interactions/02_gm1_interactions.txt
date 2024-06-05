@@ -97,7 +97,7 @@ offer_prisoner_interaction = {
 				scope:actor = { is_ai = no }
 				has_game_rule = transfer_prisoner_always_interaction_acceptance
 			}
-			always = no
+			always = yes
 		}
 		trigger_else = {
 			always = no
