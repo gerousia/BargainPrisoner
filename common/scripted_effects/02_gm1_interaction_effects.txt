@@ -137,34 +137,33 @@ transfer_prisoner_interaction_effect = {
 				TARGET = scope:prisoner
 			}
 			## SPECIAL DEMAND CASE
-			## Direct Vassals are forced to accept against with 'default accept'. Player Only.
+			## Direct Vassals are forced to accept with 'default accept'. Player Only.
 			if = {
 				limit = {
-					is_ai = no
+					scope:receiver = { is_ai = no }
+					is_vassal_of = scope:receiver 
 					exists = scope:hook
 					has_game_rule = transfer_prisoner_default_interaction_acceptance
 				}
-				## No penalties received when a 'hook' is used.
+				## No penalties received when a 'hook' is used-
+				## Or sender has imprisonment reason against their vassal.
 				if = {
-					limit = { is_vassal_of = scope:receiver }
+					limit = { scope:hook ?= no }
 					if = {
-						limit = { scope:hook ?= yes }
-						scope:receiver = { use_hook = prev }
-					}
-					## Direct Vassal lower opinion penalty against prisoner with imprisonment reason.
-					else_if = {
-						limit = { has_imprisonment_reason = scope:prisoner }
-						add_opinion = {
-							target = scope:receiver
-							modifier = demanded_transfer_prisoner
+						limit = { 
+							scope:prisoner = { is_vassal_of = prev }
+							NOT = { has_imprisonment_reason = scope:prisoner }
 						}
-					}
-					## Direct Vassal higher opinion penalty against prisoner with imprisonment reason.
-					else = {
 						add_opinion = {
 							target = scope:receiver
 							modifier = demanded_transfer_prisoner
 							opinion = -30
+						}
+					}
+					else = {
+						add_opinion = {
+							target = scope:receiver
+							modifier = demanded_transfer_prisoner
 						}
 					}
 				}
@@ -324,24 +323,24 @@ transfer_prisoner_interaction_dread_effect = {
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_payment_effect = {
-	$SENDER$ = { save_temporary_scope_as = old_imprisoner }
-	$RECEIVER$ = { save_temporary_scope_as = new_imprisoner }
+	$SENDER$ = { save_temporary_scope_as = sender }
+	$RECEIVER$ = { save_temporary_scope_as = receiver }
 
 	if = {
 		limit = { exists = scope:gold_amount }
-		scope:new_imprisoner = {
+		scope:receiver = {
 			pay_short_term_gold = {
 				gold = scope:gold_amount
-				target = scope:old_imprisoner
+				target = scope:sender
 			}
 		}
 		if = {
 			limit = { 
-				scope:old_imprisoner.dynasty ?= {
+				scope:sender.dynasty ?= {
 					has_dynasty_perk = fp1_pillage_legacy_3
 				}
 			}
-			scope:old_imprisoner = {
+			scope:sender = {
 				add_prestige = scope:gold_amount
 			}
 		}
@@ -350,19 +349,24 @@ transfer_prisoner_interaction_payment_effect = {
 	switch = {
 		trigger = always
 		scope:strong_hook = {
-			scope:old_imprisoner = {
+			scope:sender = {
 				add_hook = {
-					target = scope:new_imprisoner
+					target = scope:receiver
 					type = loyalty_hook
 				}
 			}
 		}
 		scope:favor = {
-			scope:old_imprisoner = {
+			scope:sender = {
 				add_hook = {
-					target = scope:new_imprisoner
+					target = scope:receiver
 					type = favor_hook
 				}
+			}
+		}
+		scope:hook = {
+			scope:receiver = {
+				use_hook = scope:sender
 			}
 		}
 	}
