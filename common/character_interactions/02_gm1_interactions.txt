@@ -40,8 +40,11 @@ offer_prisoner_interaction = {
 		scope:recipient.highest_held_title_tier > tier_barony
 		## Disabled for AI with 'limited allowed' game rule on.
 		trigger_if = {
-			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
-			scope:actor = { is_ai = no }
+			limit = {
+				scope:actor = { is_ai = yes }
+				has_game_rule = transfer_prisoner_limited_interaction_allowed
+			}
+			always = no
 		}
 	}
 
@@ -94,7 +97,7 @@ offer_prisoner_interaction = {
 				scope:actor = { is_ai = no }
 				has_game_rule = transfer_prisoner_always_interaction_acceptance
 			}
-			always = yes
+			always = no
 		}
 		trigger_else = {
 			always = no
@@ -148,6 +151,12 @@ offer_prisoner_interaction = {
 			NAND = {
 				scope:actor = { is_allied_in_war = scope:recipient }
 				scope:recipient = { is_at_war_with = scope:secondary_actor }
+			}
+		}
+		custom_description = {
+			text = "character_interactions_hostile_actions_disabled_delay"
+			scope:actor = {
+				NOT = { has_character_flag = flag_hostile_actions_disabled_delay }
 			}
 		}
 	}
@@ -437,6 +446,12 @@ offer_prisoner_interaction = {
 	send_options_exclusive = no
 
 	on_send = {
+		scope:actor = {
+			add_character_flag = {
+				flag = flag_hostile_actions_disabled_delay
+				days = 10
+			}
+		}
 		hidden_effect = {
 			scope:secondary_actor = {
 				add_character_flag = {
@@ -475,6 +490,7 @@ offer_prisoner_interaction = {
 		if = {
 			limit = { debug_only = yes }
 			debug_log = "GM1 - Declined Offer Prisoner Interaction"
+			debug_log_scopes = yes
 		}
 		## This enables queueing and disables concurrency issues.
 		scope:secondary_actor = {
@@ -909,8 +925,11 @@ demand_prisoner_interaction = {
 		scope:recipient.highest_held_title_tier > tier_barony
 		## Disabled for AI with 'limited allowed' game rule on.
 		trigger_if = {
-			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
-			scope:actor = { is_ai = no }
+			limit = {
+				scope:actor = { is_ai = yes }
+				has_game_rule = transfer_prisoner_limited_interaction_allowed
+			}
+			always = no
 		}
 	}
 
@@ -1027,6 +1046,12 @@ demand_prisoner_interaction = {
 			NAND = {
 				scope:actor = { is_allied_in_war = scope:recipient }
 				scope:recipient = { is_at_war_with = scope:secondary_recipient }
+			}
+		}
+		custom_description = {
+			text = "character_interactions_hostile_actions_disabled_delay"
+			scope:actor = {
+				NOT = { has_character_flag = flag_hostile_actions_disabled_delay }
 			}
 		}
 	}
@@ -1539,6 +1564,12 @@ demand_prisoner_interaction = {
 	send_options_exclusive = no
 
 	on_send = {
+		scope:actor = {
+			add_character_flag = {
+				flag = flag_hostile_actions_disabled_delay
+				days = 10
+			}
+		}
 		hidden_effect = {
 			scope:secondary_recipient = {
 				add_character_flag = {
@@ -1577,6 +1608,7 @@ demand_prisoner_interaction = {
 		if = {
 			limit = { debug_only = yes }
 			debug_log = "GM1 - Declined Demand Prisoner Interaction"
+			debug_log_scopes = yes
 		}
 		## This enables queueing and disables concurrency issues.
 		scope:secondary_recipient = {

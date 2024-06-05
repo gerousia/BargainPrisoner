@@ -105,9 +105,17 @@ transfer_prisoner_interaction_effect = {
 		}
 
 		## PENALTIES
-		## Disabled with 'none penalties' game rule on.
+		## Disabled with 'none penalties' game rule on. Player Only.
 		if = {
-			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			limit = {
+				NAND = {
+					OR = {
+						scope:sender = { is_ai = no }
+						scope:receiver = { is_ai = no }
+					}
+					has_game_rule = transfer_prisoner_disabled_interaction_penalties
+				}
+			}
 			transfer_prisoner_interaction_escalates_rivalry_effect = {
 				TARGET = this
 				OLD_IMPRISONER = scope:sender
@@ -124,10 +132,24 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
+
+		if = {
+			limit = { has_character_flag = flag_hostile_actions_disabled_delay }
+			remove_character_flag = flag_hostile_actions_disabled_delay
+		}
+		
 		## PENALTIES
 		## Disabled with 'none penalties' game rule on.
 		if = {
-			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			limit = { 
+				NAND = {
+					OR = {
+						scope:sender = { is_ai = no }
+						scope:receiver = { is_ai = no }
+					}
+					has_game_rule = transfer_prisoner_disabled_interaction_penalties
+				}
+			}
 			transfer_prisoner_interaction_dread_effect = { 
 				CHARACTER = this
 				TARGET = scope:prisoner
@@ -140,9 +162,9 @@ transfer_prisoner_interaction_effect = {
 			## Direct Vassals are forced to accept with 'default accept'. Player Only.
 			if = {
 				limit = {
-					scope:receiver = { is_ai = no }
-					is_vassal_of = scope:receiver 
+					is_vassal_of = scope:receiver
 					exists = scope:hook
+					scope:receiver = { is_ai = no }
 					has_game_rule = transfer_prisoner_default_interaction_acceptance
 				}
 				## No penalties received when a 'hook' is used-
@@ -180,10 +202,23 @@ transfer_prisoner_interaction_effect = {
 			TARGET = scope:prisoner
 		}
 
-		## PENALTIES
-		## Disabled with 'none penalties' game rule on.
 		if = {
-			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			limit = { has_character_flag = flag_hostile_actions_disabled_delay }
+			remove_character_flag = flag_hostile_actions_disabled_delay
+		}
+
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on. Player Only.
+		if = {
+			limit = {
+				NAND = {
+					OR = {
+						scope:sender = { is_ai = no }
+						scope:receiver = { is_ai = no }
+					}
+					has_game_rule = transfer_prisoner_disabled_interaction_penalties
+				}
+			}
 			transfer_prisoner_interaction_dread_effect = { 
 				CHARACTER = this
 				TARGET = scope:prisoner
@@ -191,6 +226,17 @@ transfer_prisoner_interaction_effect = {
 			transfer_prisoner_interaction_stress_effect = { 
 				CHARACTER = this
 				TARGET = scope:prisoner
+			}
+			## SPECIAL DEMAND CASE
+			if = {
+				limit = { 
+					scope:prisoner.liege = this
+					exists = scope:illegal_imprisonment
+				}
+				transfer_prisoner_start_faction_war_if_valid = {
+					IMPRISONER = this
+					PRISONER = scope:prisoner
+				}
 			}
 		}
 
@@ -364,10 +410,15 @@ transfer_prisoner_interaction_payment_effect = {
 				}
 			}
 		}
-		scope:hook = {
-			scope:receiver = {
-				use_hook = scope:sender
-			}
+	}
+
+	if = {
+		limit = { 
+			exists = scope:hook
+			scope:hook ?= yes
+		}
+		scope:receiver = {
+			use_hook = scope:sender
 		}
 	}
 }

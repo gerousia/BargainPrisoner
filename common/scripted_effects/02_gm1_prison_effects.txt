@@ -70,17 +70,25 @@ change_imprisoner_character_effect = {
 			}
 
 			### PENALTIES
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
-			change_imprisoner_consequences_family_effect = {
-				TARGET = this
-				OLD_IMPRISONER = scope:old_imprisoner
-				NEW_IMPRISONER = scope:new_imprisoner
-			}
-			change_imprisoner_consequences_clan_effect = {
-				CHARACTER = scope:old_imprisoner
-				TARGET = this
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
+				change_imprisoner_consequences_family_effect = {
+					TARGET = this
+					OLD_IMPRISONER = scope:old_imprisoner
+					NEW_IMPRISONER = scope:new_imprisoner
+				}
+				change_imprisoner_consequences_clan_effect = {
+					CHARACTER = scope:old_imprisoner
+					TARGET = this
 				}
 			}
 		}
@@ -96,58 +104,74 @@ change_imprisoner_character_effect = {
 			}
 
 			### OPINIONS
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
-			if = {
-				### Prisoner is at risk of execution due to differing faith
-				limit = { 
-					NOT = { scope:imprisonment_target.faith = scope:new_imprisoner.faith } 
-				}
-				reverse_add_opinion = {
-					target = scope:imprisonment_target
-					modifier = transferred_me_different_faith
-				}
-			}
-			else_if = {
-				### Prisoner thinks their previous imprisoner is a PoS
 				limit = {
-					NOT = { 
-						has_any_bad_relationship_with_character_trigger = { 
-							CHARACTER = scope:imprisonment_target
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
 						}
-						OR = {
-							has_trait = sadistic
-							has_trait = callous
-							has_trait = arbitrary
-							has_trait = wrathful
-							has_trait = vengeful
-							has_trait = deceitful
-						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
 					}
 				}
-				reverse_add_opinion = {
-					target = scope:imprisonment_target
-					modifier = transferred_me
+				if = {
+					### Prisoner is at risk of execution due to differing faith
+					limit = { 
+						NOT = { scope:imprisonment_target.faith = scope:new_imprisoner.faith } 
+					}
+					reverse_add_opinion = {
+						target = scope:imprisonment_target
+						modifier = transferred_me_different_faith
+					}
 				}
-			}
+				else_if = {
+					### Prisoner thinks their previous imprisoner is a PoS
+					limit = {
+						NOT = { 
+							has_any_bad_relationship_with_character_trigger = { 
+								CHARACTER = scope:imprisonment_target
+							}
+							OR = {
+								has_trait = sadistic
+								has_trait = callous
+								has_trait = arbitrary
+								has_trait = wrathful
+								has_trait = vengeful
+								has_trait = deceitful
+							}
+						}
+					}
+					reverse_add_opinion = {
+						target = scope:imprisonment_target
+						modifier = transferred_me
+					}
+				}
 			}
 
 			### PENALTIES
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
-			change_imprisoner_consequences_lover_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
-			}
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
+				change_imprisoner_consequences_lover_effect = {
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
+				}
 				change_imprisoner_consequences_head_of_faith_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
-			}
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
+				}
 				change_imprisoner_consequences_vassal_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
 				}
 			}
 
@@ -181,10 +205,6 @@ change_imprisoner_character_effect = {
 					type = dungeon
 				}
 			}
-			if = {
-				limit = { has_character_flag = flag_hostile_actions_disabled_delay }
-				remove_character_flag = flag_hostile_actions_disabled_delay
-			}
 
 			### MEMORY
 			create_character_memory = {
@@ -196,9 +216,17 @@ change_imprisoner_character_effect = {
 			}
 
 			### OPINIONS
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 				if = {
 					limit = {
 						scope:imprisonment_target = {
@@ -225,21 +253,30 @@ change_imprisoner_character_effect = {
 
 			## PENALTIES
 			## Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
-			change_imprisoner_consequences_lover_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
-			}
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
+				change_imprisoner_consequences_lover_effect = {
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
+				}
 				change_imprisoner_consequences_head_of_faith_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
-			}
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
+				}
 				change_imprisoner_consequences_vassal_effect = {
-				CHARACTER = this
-				TARGET = scope:imprisonment_target
+					CHARACTER = this
+					TARGET = scope:imprisonment_target
+				}
 			}
-		}
 
 			## EXTRA
 			imprison_remove_ward_guardian_effect = { 
@@ -249,13 +286,21 @@ change_imprisoner_character_effect = {
 		}
 
 		### ADDITIONAL
-		### Enabled with 'default penalties' game rule on.
+		### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 		if = {
-			limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
-		change_imprisoner_consequences_war_effect = {
-			OLD_IMPRISONER = scope:old_imprisoner
-			NEW_IMPRISONER = scope:new_imprisoner
-			TARGET = scope:imprisonment_target
+			limit = {
+				OR = {
+					AND = {
+						scope:sender = { is_ai = yes }
+						scope:receiver = { is_ai = yes }
+					}
+					has_game_rule = transfer_prisoner_default_interaction_penalties
+				}
+			}
+			change_imprisoner_consequences_war_effect = {
+				OLD_IMPRISONER = scope:old_imprisoner
+				NEW_IMPRISONER = scope:new_imprisoner
+				TARGET = scope:imprisonment_target
 			}
 		}
 	}
@@ -503,7 +548,7 @@ change_imprisoner_consequences_head_of_faith_effect = {
 ## TARGET (character)
 change_imprisoner_consequences_vassal_effect = {
 	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
-	$TARGET$ = { save_temporary_scope_as = imprissonment_target }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 
 	scope:imprisoner = {
 		if = {
@@ -515,12 +560,6 @@ change_imprisoner_consequences_vassal_effect = {
 				text = "change_imprisoner_vassal_tooltip"
 				subject = this
 				object = scope:imprisonment_target
-				if = {
-					limit = { is_a_faction_member = yes }
-					scope:imprisonment_target = {
-						joined_faction = { save_scope_as = retaliating_faction }
-					}
-				}
 			}
 			if = {
 				limit = { is_at_war_with = scope:imprisonment_target }
@@ -552,12 +591,6 @@ change_imprisoner_consequences_vassal_effect = {
 					save_scope_value_as = {
 						name = illegal_imprisonment
 						value = yes
-					}
-				}
-				if = {
-					limit = { exists = scope:retaliating_faction }
-					scope:retaliating_faction = {
-						imprisonment_retribution_start_faction_war_if_valid = yes
 					}
 				}
 			}
