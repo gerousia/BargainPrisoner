@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -151,6 +151,12 @@ offer_prisoner_interaction = {
 			NAND = {
 				scope:actor = { is_allied_in_war = scope:recipient }
 				scope:recipient = { is_at_war_with = scope:secondary_actor }
+			}
+		}
+		custom_description = {
+			text = "character_interactions_hostile_actions_disabled_delay"
+			scope:actor = {
+				NOT = { has_character_flag = flag_hostile_actions_disabled_delay }
 			}
 		}
 	}
@@ -440,6 +446,12 @@ offer_prisoner_interaction = {
 	send_options_exclusive = no
 
 	on_send = {
+		scope:actor = {
+			add_character_flag = {
+				flag = flag_hostile_actions_disabled_delay
+				days = 10
+			}
+		}
 		hidden_effect = {
 			scope:secondary_actor = {
 				add_character_flag = {
@@ -1036,6 +1048,12 @@ demand_prisoner_interaction = {
 				scope:recipient = { is_at_war_with = scope:secondary_recipient }
 			}
 		}
+		custom_description = {
+			text = "character_interactions_hostile_actions_disabled_delay"
+			scope:actor = {
+				NOT = { has_character_flag = flag_hostile_actions_disabled_delay }
+			}
+		}
 	}
 	
 	can_be_blocked = {
@@ -1546,6 +1564,12 @@ demand_prisoner_interaction = {
 	send_options_exclusive = no
 
 	on_send = {
+		scope:actor = {
+			add_character_flag = {
+				flag = flag_hostile_actions_disabled_delay
+				days = 10
+			}
+		}
 		hidden_effect = {
 			scope:secondary_recipient = {
 				add_character_flag = {

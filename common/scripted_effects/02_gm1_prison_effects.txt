@@ -205,10 +205,6 @@ change_imprisoner_character_effect = {
 					type = dungeon
 				}
 			}
-			if = {
-				limit = { has_character_flag = flag_hostile_actions_disabled_delay }
-				remove_character_flag = flag_hostile_actions_disabled_delay
-			}
 
 			### MEMORY
 			create_character_memory = {
