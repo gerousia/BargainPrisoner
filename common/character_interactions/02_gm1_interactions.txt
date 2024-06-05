@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -40,8 +40,11 @@ offer_prisoner_interaction = {
 		scope:recipient.highest_held_title_tier > tier_barony
 		## Disabled for AI with 'limited allowed' game rule on.
 		trigger_if = {
-			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
-			scope:actor = { is_ai = no }
+			limit = {
+				scope:actor = { is_ai = yes }
+				has_game_rule = transfer_prisoner_limited_interaction_allowed
+			}
+			always = no
 		}
 	}
 
@@ -94,7 +97,7 @@ offer_prisoner_interaction = {
 				scope:actor = { is_ai = no }
 				has_game_rule = transfer_prisoner_always_interaction_acceptance
 			}
-			always = yes
+			always = no
 		}
 		trigger_else = {
 			always = no
@@ -475,6 +478,7 @@ offer_prisoner_interaction = {
 		if = {
 			limit = { debug_only = yes }
 			debug_log = "GM1 - Declined Offer Prisoner Interaction"
+			debug_log_scopes = yes
 		}
 		## This enables queueing and disables concurrency issues.
 		scope:secondary_actor = {
@@ -909,8 +913,11 @@ demand_prisoner_interaction = {
 		scope:recipient.highest_held_title_tier > tier_barony
 		## Disabled for AI with 'limited allowed' game rule on.
 		trigger_if = {
-			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
-			scope:actor = { is_ai = no }
+			limit = {
+				scope:actor = { is_ai = yes }
+				has_game_rule = transfer_prisoner_limited_interaction_allowed
+			}
+			always = no
 		}
 	}
 
@@ -1577,6 +1584,7 @@ demand_prisoner_interaction = {
 		if = {
 			limit = { debug_only = yes }
 			debug_log = "GM1 - Declined Demand Prisoner Interaction"
+			debug_log_scopes = yes
 		}
 		## This enables queueing and disables concurrency issues.
 		scope:secondary_recipient = {

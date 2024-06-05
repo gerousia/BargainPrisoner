@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 
@@ -70,9 +70,17 @@ change_imprisoner_character_effect = {
 			}
 
 			### PENALTIES
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 			change_imprisoner_consequences_family_effect = {
 				TARGET = this
 				OLD_IMPRISONER = scope:old_imprisoner
@@ -96,9 +104,17 @@ change_imprisoner_character_effect = {
 			}
 
 			### OPINIONS
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 			if = {
 				### Prisoner is at risk of execution due to differing faith
 				limit = { 
@@ -134,9 +150,17 @@ change_imprisoner_character_effect = {
 			}
 
 			### PENALTIES
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 			change_imprisoner_consequences_lover_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
@@ -196,9 +220,17 @@ change_imprisoner_character_effect = {
 			}
 
 			### OPINIONS
-			### Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 				if = {
 					limit = {
 						scope:imprisonment_target = {
@@ -225,8 +257,17 @@ change_imprisoner_character_effect = {
 
 			## PENALTIES
 			## Enabled with 'default penalties' game rule on.
+			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 			if = {
-				limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+				limit = {
+					OR = {
+						AND = {
+							scope:sender = { is_ai = yes }
+							scope:receiver = { is_ai = yes }
+						}
+						has_game_rule = transfer_prisoner_default_interaction_penalties
+					}
+				}
 			change_imprisoner_consequences_lover_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
@@ -249,9 +290,17 @@ change_imprisoner_character_effect = {
 		}
 
 		### ADDITIONAL
-		### Enabled with 'default penalties' game rule on.
+		### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
 		if = {
-			limit = { has_game_rule = transfer_prisoner_default_interaction_penalties }
+			limit = {
+				OR = {
+					AND = {
+						scope:sender = { is_ai = yes }
+						scope:receiver = { is_ai = yes }
+					}
+					has_game_rule = transfer_prisoner_default_interaction_penalties
+				}
+			}
 		change_imprisoner_consequences_war_effect = {
 			OLD_IMPRISONER = scope:old_imprisoner
 			NEW_IMPRISONER = scope:new_imprisoner
