@@ -62,10 +62,7 @@ offer_prisoner_interaction = {
 		scope:recipient = { 
 			is_busy_in_events_localised = yes
 			is_imprisoned = no 
-
-			NOT = {
-				is_at_war_with = scope:actor
-			}
+			NOT = {	is_at_war_with = scope:actor }
 		}
 
 		# AI
@@ -96,7 +93,7 @@ offer_prisoner_interaction = {
 		trigger_if = {
 			limit = { scope:actor = { is_ai = yes }	}
 			scope:secondary_actor = {
-				has_recently_undergone_interaction = no # Enforce.
+				has_recently_undergone_interaction = no
 				OR = {
 					scope:recipient = {
 						NOT = {
@@ -142,7 +139,7 @@ offer_prisoner_interaction = {
 				limit = { 
 					NOT = { scope:recipient = this }
 					gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
-						SENDER = scope:actor
+						SENDER = prev
 					}
 				}
 				add_to_list = characters
@@ -161,12 +158,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-			scope:actor = {
-				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
-			}
+			scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+			scope:actor.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:recipient = {
 				gold >= scope:secondary_actor.highly_increased_barter_cost_value
 			}
@@ -179,12 +172,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-			scope:actor = {
-				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
-			}
+			scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+			scope:actor.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:recipient = {
 				gold < scope:secondary_actor.highly_increased_barter_cost_value
 				gold >= 1
@@ -198,12 +187,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient 
-			}
-			scope:actor = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold >= scope:secondary_actor.increased_barter_cost_value
 			}
@@ -216,12 +201,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				is_at_war_with = scope:recipient
-			}
-			scope:actor = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_actor ?= { is_at_war_with = scope:recipient }
+			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold < scope:secondary_actor.increased_barter_cost_value
 				gold >= 1
@@ -235,12 +216,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-			scope:actor = {
-				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
-			}
+			scope:secondary_actor ?= { NOT = { is_at_war_with = scope:recipient } }
+			scope:actor.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:recipient = {
 				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
 			}
@@ -253,13 +230,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-
-			scope:actor = {
-				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
-			}
+			scope:secondary_actor ?= { NOT = { is_at_war_with = scope:recipient } }
+			scope:actor.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:recipient = {
 				gold < scope:secondary_actor.slightly_increased_barter_cost_value
 				gold >= 1
@@ -273,12 +245,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-			scope:actor = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_actor ?= { NOT = { is_at_war_with = scope:recipient } }
+			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold >= scope:secondary_actor.barter_cost_value
 			}
@@ -291,12 +259,8 @@ offer_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_actor
-			scope:secondary_actor ?= { 
-				NOT = { is_at_war_with = scope:recipient } 
-			}
-			scope:actor = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_actor ?= { NOT = { is_at_war_with = scope:recipient } }
+			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold < scope:secondary_actor.barter_cost_value
 				gold >= 1
@@ -377,7 +341,7 @@ offer_prisoner_interaction = {
 		hidden_effect = {
 			scope:secondary_actor = {
 				add_character_flag = {
-					flag = under_transfer_prisoner_interaction
+					flag = under_prison_transfer
 					months = 3
 				}
 				if = {
@@ -394,35 +358,36 @@ offer_prisoner_interaction = {
 	on_accept = {
 		if = {
 			limit = { debug_only = yes }
-			debug_log = "GM1 - Initiated Offer Prisoner Interaction"
+			debug_log = "GM1 - Accepted Offer Prisoner Interaction"
 		}
-		
+		## This is where all the magic happens.
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_actor
 			SENDER = scope:actor
 			RECEIVER = scope:recipient
 		}
-
-		## Notification Event.
+		## NOTIFICATION
 		scope:actor = {
 			trigger_event = gm1_interaction.0016
 		}
 	}
 
 	on_decline = {	
-		## Notification Event.
+		if = {
+			limit = { debug_only = yes }
+			debug_log = "GM1 - Declined Offer Prisoner Interaction"
+		}
+		## This enables queueing and disables concurrency issues.
+		scope:secondary_actor = {
+			if = {
+				limit = { has_character_flag = under_prison_transfer  }
+				remove_character_flag = under_prison_transfer
+			}
+		}
+		## NOTIFICATION
 		scope:actor = {
 			trigger_event = gm1_interaction.0012 
 		}
-
-		## Prevent concurrencies
-		scope:secondary_actor = {
-			if = {
-				limit = { has_character_flag = under_transfer_prisoner_interaction  }
-				remove_character_flag = under_transfer_prisoner_interaction
-			}
-		}
-	
 	}
 
 	ai_targets = {
@@ -884,12 +849,12 @@ demand_prisoner_interaction = {
 				subject = scope:actor
 				object = scope:recipient
 				OR = {
-					## They have no choice against a strong hook.
+					## AI Ruler has no choice against a strong hook.
 					AND = {
 						scope:actor = { has_strong_hook = scope:recipient }
 						scope:recipient = { NOT = { is_vassal_of = scope:actor } }
 					}
-					## Vassals can't complain against a hook.
+					## AI Direct Vassals can't complain against a hook.
 					AND = {
 						scope:actor = { has_usable_hook = scope:recipient }
 						scope:recipient = { is_vassal_of = scope:actor }
@@ -990,12 +955,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				is_at_war_with = scope:actor
-			}
-			scope:recipient = {
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
+			scope:secondary_recipient ?= { is_at_war_with = scope:actor }
+			scope:recipient.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:actor = {
 				gold >= scope:secondary_recipient.highly_increased_barter_cost_value
 			}
@@ -1008,10 +969,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = {
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1022,12 +983,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				is_at_war_with = scope:actor
-			}
-			scope:recipient = {
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
+			scope:secondary_recipient ?= { is_at_war_with = scope:actor	}
+			scope:recipient.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:actor = {
 				gold < scope:secondary_recipient.highly_increased_barter_cost_value
 				gold >= 1
@@ -1041,10 +998,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1055,12 +1012,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				is_at_war_with = scope:actor
-			}
-			scope:recipient = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_recipient ?= { is_at_war_with = scope:actor	}
+			scope:recipient.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:actor = {
 				gold >= scope:secondary_recipient.increased_barter_cost_value
 			}
@@ -1073,10 +1026,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1087,12 +1040,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				is_at_war_with = scope:actor
-			}
-			scope:recipient = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_recipient ?= { is_at_war_with = scope:actor	}
+			scope:recipient.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:actor = {
 				gold < scope:secondary_recipient.increased_barter_cost_value
 				gold >= 1
@@ -1106,10 +1055,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1120,12 +1069,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				NOT = { is_at_war_with = scope:actor }
-			}
-			scope:recipient = {
-				dynasty = { has_dynasty_perk = fp1_pillage_legacy_3	}
-			}
+			scope:secondary_recipient ?= { NOT = { is_at_war_with = scope:actor } }
+			scope:recipient.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:actor = {
 				gold >= scope:secondary_recipient.slightly_increased_barter_cost_value
 			}
@@ -1138,10 +1083,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1152,12 +1097,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				NOT = { is_at_war_with = scope:actor }
-			}
-			scope:recipient = {
-				dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
-			}
+			scope:secondary_recipient ?= { NOT = { is_at_war_with = scope:actor } }
+			scope:recipient.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:actor ?= {
 				gold < scope:secondary_recipient.slightly_increased_barter_cost_value
 				gold >= 1
@@ -1171,10 +1112,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1185,12 +1126,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				NOT = { is_at_war_with = scope:actor } 
-			}
-			scope:recipient = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_recipient ?= { NOT = { is_at_war_with = scope:actor } }
+			scope:recipient.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:actor = {
 				gold >= scope:secondary_recipient.barter_cost_value
 			}
@@ -1203,10 +1140,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1217,12 +1154,8 @@ demand_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
-			scope:secondary_recipient ?= { 
-				NOT = { is_at_war_with = scope:actor } 
-			}
-			scope:recipient = {
-				dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			}
+			scope:secondary_recipient ?= { NOT = { is_at_war_with = scope:actor } }
+			scope:recipient.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:actor = {
 				gold < scope:secondary_recipient.barter_cost_value
 				gold >= 1
@@ -1236,10 +1169,10 @@ demand_prisoner_interaction = {
 
 		is_valid = {
 			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+		is_valid = {
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1278,11 +1211,9 @@ demand_prisoner_interaction = {
 					type = loyalty_hook
 				}
 			}
-			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1321,11 +1252,9 @@ demand_prisoner_interaction = {
 					type = favor_hook
 				}
 			}
-			trigger_if = {
-				limit = { scope:hook ?= yes }
-				scope:actor = { 
-					NOT = { has_usable_hook = scope:recipient } 
-				}
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:hook ?= no
 			}
 		}
 
@@ -1363,7 +1292,7 @@ demand_prisoner_interaction = {
 					scope:strong_hook ?= yes
 					scope:favor ?= yes
 				}
-				text = "maximum_opinion_reached"
+				text = "option_cannot_be_selected"
 			}
 		}
 
@@ -1377,7 +1306,7 @@ demand_prisoner_interaction = {
 		hidden_effect = {
 			scope:secondary_recipient = {
 				add_character_flag = {
-					flag = under_transfer_prisoner_interaction
+					flag = under_prison_transfer
 					months = 3
 				}
 				if = {
@@ -1394,33 +1323,35 @@ demand_prisoner_interaction = {
 	on_accept = {	
 		if = {
 			limit = { debug_only = yes }
-			debug_log = "GM1 - Initiated Demand Prisoner Interaction"
+			debug_log = "GM1 - Accepted Demand Prisoner Interaction"
 		}
-
+		## This is where all the magic happens.
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_recipient
 			SENDER = scope:recipient
 			RECEIVER = scope:actor
 		}
-
-		## Notification Event.
+		## NOTIFICATION
 		scope:actor = {
 			trigger_event = gm1_interaction.0026
 		}
 	}
 
 	on_decline = {	
-		## Notification Event.
-		scope:actor = {
-			trigger_event = gm1_interaction.0022 
+		if = {
+			limit = { debug_only = yes }
+			debug_log = "GM1 - Declined Demand Prisoner Interaction"
 		}
-
-		## Prevent concurrencies
+		## This enables queueing and disables concurrency issues.
 		scope:secondary_recipient = {
 			if = {
-				limit = { has_character_flag = under_transfer_prisoner_interaction }
-				remove_character_flag = under_transfer_prisoner_interaction
+				limit = { has_character_flag = under_prison_transfer }
+				remove_character_flag = under_prison_transfer
 			}
+		}
+		## NOTIFICATION
+		scope:actor = {
+			trigger_event = gm1_interaction.0022 
 		}
 	}
 

@@ -1,11 +1,11 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_character_effect
-# PRISONER (character)
-# IMPRISONER (character)
-# NEW_IMPRISONER (character)
+## PRISONER (character)
+## IMPRISONER (character)
+## NEW_IMPRISONER (character)
 change_imprisoner_character_effect = {
 	$PRISONER$ = { save_temporary_scope_as = imprisonment_target }
 	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
@@ -20,10 +20,10 @@ change_imprisoner_character_effect = {
 		}
 
 		scope:imprisonment_target = {
-			## We won't modify `on_release_from_prison` for compatibiity.
-			## Adding a `escaped_from_prison_flag` flag does the following:
-			## - `release_from_prison_memory` prevented from being created
-			## - `imprisoned_me` -> `imprisoned_me_past` in `prison.0001`
+			### We won't modify `on_release_from_prison` for compatibiity.
+			### Adding a `escaped_from_prison_flag` flag does the following:
+			### - `release_from_prison_memory` prevented from being created
+			### - `imprisoned_me` -> `imprisoned_me_past` in `prison.0001`
 			custom_description = { 
 				text = "release_tooltip"
 				subject = scope:old_imprisoner
@@ -50,13 +50,17 @@ change_imprisoner_character_effect = {
 
 			custom_description = {
 				text = "move_tooltip"
+				if = {
+					limit = { has_character_flag = under_prison_transfer }
+					remove_character_flag = under_prison_transfer
+				}
 				add_character_flag = {
 					flag = recently_prison_transferred
 					years = 3
 				}
 			}
 
-			## MEMORY
+			### MEMORY
 			create_character_memory = {
 				type = change_imprisoner_prisoner_memory
 				participants = {
@@ -126,11 +130,11 @@ change_imprisoner_character_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
 			}
-			change_imprisoner_consequences_vassal_effect = {
+				change_imprisoner_consequences_head_of_faith_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
 			}
-			change_imprisoner_consequences_HoF_effect = {
+				change_imprisoner_consequences_vassal_effect = {
 				CHARACTER = this
 				TARGET = scope:imprisonment_target
 			}
@@ -159,30 +163,7 @@ change_imprisoner_character_effect = {
 					type = dungeon
 				}
 			}
-
-			## OPINIONS
-			if = {
-				limit = {
-					scope:imprisonment_target = {
-						has_opinion_modifier = {
-							modifier = imprisoned_me_past
-							target = scope:new_imprisoner
-						}
-					}
-				}
-				scope:imprisonment_target = {
-					remove_opinion = {
-						target = scope:new_imprisoner
-						modifier = imprisoned_me
-					}
-				}
-			}
-			reverse_add_opinion = {
-				target = scope:imprisonment_target
-				modifier = imprisoned_me
-			}
-
-			## MEMORY
+			### MEMORY
 			create_character_memory = {
 				type = change_imprisoner_new_imprisoner_memory
 				participants = {

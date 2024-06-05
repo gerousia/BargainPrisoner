@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -17,6 +17,23 @@ receive_prisoner = {
 		text = "receive_prisoner_tooltip_effect"
 		subject = $RECEIVER$
 		object = $PRISONER$
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## CHARACTER (character)
+## TARGET (character)
+disband_all_schemes_effect = {
+	hidden_effect = {
+		$CHARACTER$ = {
+			if = {
+				limit = { any_scheme = { scheme_target = $TARGET$ } }
+				every_scheme = {
+					limit = { scheme_target = $TARGET$ }
+					end_scheme = yes
+				}
+			}
+		}
 	}
 }
 
@@ -81,11 +98,6 @@ transfer_prisoner_interaction_effect = {
 	}
 
 	scope:prisoner = {
-		if = {
-			limit = { has_character_flag = under_transfer_prisoner_interaction }
-			remove_character_flag = under_transfer_prisoner_interaction
-		}
-
 		change_imprisoner_character_effect = { 
 			PRISONER = this
 			OLD_IMPRISONER = scope:sender
@@ -104,8 +116,7 @@ transfer_prisoner_interaction_effect = {
 	}
 	
 	scope:sender = {
-		## PENALTIES
-		transfer_prisoner_interaction_dread_effect = { 
+		disband_all_schemes_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
@@ -137,8 +148,10 @@ transfer_prisoner_interaction_effect = {
 	}
 
 	scope:receiver = {
-		## PENALTIES
-		transfer_prisoner_interaction_dread_effect = { 
+		disband_all_schemes_effect = {
+			CHARACTER = this
+			TARGET = scope:prisoner
+		}
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
@@ -146,9 +159,6 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-		transfer_prisoner_interaction_scheme_effect = {
-			CHARACTER = this
-			TARGET = scope:prisoner
 		}
 
 		## NOTIFICATION
@@ -158,6 +168,12 @@ transfer_prisoner_interaction_effect = {
 	transfer_prisoner_interaction_payment_effect = {
 		SENDER = scope:sender
 		RECEIVER = scope:receiver
+	}
+
+	if = {
+		limit = { debug_only = yes }
+		debug_log_date = yes
+		debug_log_scopes = yes
 	}
 }
 
@@ -213,9 +229,7 @@ transfer_prisoner_interaction_stress_effect = {
 
 	scope:imprisoner  = {
 		if = {
-			limit = { 
-				has_imprisonment_reason = scope:imprisonment_target
-			}
+			limit = { has_imprisonment_reason = scope:imprisonment_target }
 			stress_impact = {
 				compassionate = minor_stress_impact_gain
 				forgiving = minor_stress_impact_gain
@@ -269,26 +283,6 @@ transfer_prisoner_interaction_dread_effect = {
 	}
 }
 
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## CHARACTER (character)
-## TARGET (character)
-transfer_prisoner_interaction_scheme_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
-	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
-
-	hidden_effect = {
-		scope:imprisoner = {
-			if = {
-				limit = { any_scheme = { scheme_target = scope:imprisonment_target } }
-				every_scheme = {
-					limit = { scheme_target = scope:imprisonment_target }
-					end_scheme = yes
-				}
-			}
-		}
-	}
-}
-
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_payment_effect = {
@@ -333,11 +327,5 @@ transfer_prisoner_interaction_payment_effect = {
 				}
 			}
 		}
-	}
-
-	if = {
-		limit = { debug_only = yes }
-		debug_log_date = yes
-		debug_log_scopes = yes
 	}
 }

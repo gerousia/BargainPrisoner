@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -69,7 +69,7 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 				min = 1
 			}													# 1828 / 1382 = 1.32
 			subtract = 1									 	# 1.32 - 1 = 0.32
-			multiply = -50 										# 0.32 * 50 = -16
+			multiply = -50 										# 0.32 * -50 = -16
 			max = 50
 			min = -50
 		}
@@ -626,33 +626,27 @@ gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_loss = {
 	### This ruler is more likely to accept
 	modifier = {
 		$WHO$ = {
-			any_held_title = {
-				tier >= tier_county 
-				save_temporary_scope_as = title_temp
+			has_claim_on_held_title_trigger = {
+				CHARACTER = $PRISONER$
 			}
 		}
-		$PRISONER$ = { has_claim_on = scope:title_temp }
 		add = {
 			value = 0
 			$WHO$ = {
 				every_held_title = {
-					limit = {
-						any_claimant = { this = $PRISONER$ }
-						save_temporary_scope_as = title_temp
-					}
+					limit = { $PRISONER$ = { has_claim_on = prev } }
 					add = {
-						value = -5
-						#### The prisoner's strong claims worth more for the ruler.
+						value = 5
+						#### Strong claims are worth more.
 						if = {
-							limit = { $PRISONER$ = { has_strong_claim_on = scope:title_temp } }
+							limit = { $PRISONER$ = { has_strong_claim_on = prev } }
 							multiply = 2
 						}
-						#### The prisoner's higher title claims are worth more.
+						#### Higher titles are worth more.
 						multiply = {
-							value = {
 								value = tier
-								add = -1
-							}
+							subtract = 1
+							min = 1
 						}
 					}
 				}
@@ -710,7 +704,7 @@ gm1_transfer_prisoner_interaction_prisoner_faith_modifier = {
 		desc = INTERACTION_AI_PRISONER_REASON_FAITH_ASTRAY
 	}
 	modifier = {
-		$PRISONER$ = { is_head_of_faith_of = { WHO = $WHO$ } }
+		$PRISONER$ = { is_head_of_faith_of = { CHARACTER = $WHO$ } }
 		add = {
 			value = -500
 			if = {

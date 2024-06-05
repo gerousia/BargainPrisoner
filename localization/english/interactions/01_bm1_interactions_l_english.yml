@@ -69,3 +69,7 @@ l_english:
  #GIVE_HOOK_REASON: "Gives a [hook|E]: $VALUE|=+0$"
  #GAIN_GOLD_REASON: "Receives [gold|E]: $VALUE|=+0$"
  #LOSE_GOLD_REASON: "Pays [gold|E]: $VALUE|=+0$"
+
+# TOOLTIP
+ #maximum_opinion_reached: "Maximum attainable [opinion|E] already reached."
+ option_cannot_be_selected: "Cannot be selected with another already selected option"
