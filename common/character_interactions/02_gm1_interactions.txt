@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -38,6 +38,11 @@ offer_prisoner_interaction = {
 		# Only significant rulers are allowed to use this interaction.
 		scope:actor.highest_held_title_tier > tier_barony
 		scope:recipient.highest_held_title_tier > tier_barony
+		## Disabled for AI with 'limited allowed' game rule on.
+		trigger_if = {
+			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
+			scope:actor = { is_ai = no }
+		}
 	}
 
 	is_valid_showing_failures_only = {
@@ -80,6 +85,20 @@ offer_prisoner_interaction = {
 
 	can_be_picked = {
 		gm1_valid_for_transfer_prisoner_interaction_trigger = yes
+	}
+
+	auto_accept = {
+		## Hidden with 'always accept' game rule on. Player Only.
+		trigger_if = {
+			limit = {
+				scope:actor = { is_ai = no }
+				has_game_rule = transfer_prisoner_always_interaction_acceptance
+			}
+			always = yes
+		}
+		trigger_else = {
+			always = no
+		}
 	}
 
 	can_send = {
@@ -163,6 +182,14 @@ offer_prisoner_interaction = {
 			scope:recipient = {
 				gold >= scope:secondary_actor.highly_increased_barter_cost_value
 			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
+			}
 		}
 
 		flag = very_high_gold
@@ -178,6 +205,14 @@ offer_prisoner_interaction = {
 				gold < scope:secondary_actor.highly_increased_barter_cost_value
 				gold >= 1
 			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
+			}
 		}
 
 		flag = very_high_current_gold
@@ -191,6 +226,14 @@ offer_prisoner_interaction = {
 			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold >= scope:secondary_actor.increased_barter_cost_value
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -207,6 +250,14 @@ offer_prisoner_interaction = {
 				gold < scope:secondary_actor.increased_barter_cost_value
 				gold >= 1
 			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
+			}
 		}
 
 		flag = high_current_gold
@@ -220,6 +271,14 @@ offer_prisoner_interaction = {
 			scope:actor.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 }
 			scope:recipient = {
 				gold >= scope:secondary_actor.slightly_increased_barter_cost_value
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -236,6 +295,14 @@ offer_prisoner_interaction = {
 				gold < scope:secondary_actor.slightly_increased_barter_cost_value
 				gold >= 1
 			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
+			}
 		}
 
 		flag = medium_current_gold
@@ -249,6 +316,14 @@ offer_prisoner_interaction = {
 			scope:actor.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			scope:recipient = {
 				gold >= scope:secondary_actor.barter_cost_value
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -264,6 +339,14 @@ offer_prisoner_interaction = {
 			scope:recipient = {
 				gold < scope:secondary_actor.barter_cost_value
 				gold >= 1
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -287,6 +370,14 @@ offer_prisoner_interaction = {
 						}
 					}
 				}
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -319,6 +410,14 @@ offer_prisoner_interaction = {
 						}
 					}
 				}
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -771,9 +870,25 @@ demand_prisoner_interaction = {
 	pause_on_receive = yes
 
 	should_use_extra_icon = {
-		scope:actor = { has_usable_hook = scope:recipient }
+		trigger_if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_always_interaction_acceptance } }
+			OR = {
+				## Hook against Direct Vassals.
+				AND = {
+					scope:actor = { has_usable_hook = scope:recipient }
+					scope:recipient = { is_vassal_of = scope:actor }
+				}
+				## Strong Hook against AI Rulers.
+				AND = {
+					scope:actor = { has_strong_hook = scope:recipient }
+					scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+				}
+			}
+		}
+		trigger_else = {
+			always = no
+		}
 	}
-
 	extra_icon = "gfx/interface/icons/character_interactions/hook_icon.dds"
 
 	ai_maybe = yes
@@ -792,6 +907,11 @@ demand_prisoner_interaction = {
 		# Only significant rulers are allowed to use this interaction.
 		scope:actor.highest_held_title_tier > tier_barony
 		scope:recipient.highest_held_title_tier > tier_barony
+		## Disabled for AI with 'limited allowed' game rule on.
+		trigger_if = {
+			limit = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
+			scope:actor = { is_ai = no }
+		}
 	}
 
 	is_valid_showing_failures_only = {
@@ -841,9 +961,12 @@ demand_prisoner_interaction = {
 	}
 
 	auto_accept = {
-		## The things I do for localization.
+		## Auto-accept with hooks with 'default accept'. Player Only.
 		trigger_if = {
-			limit = { scope:hook ?= yes }
+			limit = { 
+				scope:hook ?= yes
+				scope:actor = { is_ai = no }
+			}
 			custom_description = {
 				text = "spending_hook"
 				subject = scope:actor
@@ -862,14 +985,25 @@ demand_prisoner_interaction = {
 				}
 			}
 		}
+		## Auto-accept against Direct Vassals with 'default accept'. Player Only.
 		trigger_else_if = {
 			limit = {
-				scope:hook ?= no
 				scope:actor = { is_ai = no }
+				has_game_rule = transfer_prisoner_default_interaction_acceptance
 			}
 			scope:recipient = { is_vassal_of = scope:actor }
 		}
-		trigger_else = { always = no }
+		## Enabled with 'always accept' game rule on. Player Only.
+		trigger_else_if = {
+			limit = {
+				scope:actor = { is_ai = no }
+				has_game_rule = transfer_prisoner_always_interaction_acceptance
+			}
+			always = yes
+		}
+		trigger_else = {
+			always = no
+		}
 	}
 
 	can_send = {
@@ -960,15 +1094,24 @@ demand_prisoner_interaction = {
 			scope:actor = {
 				gold >= scope:secondary_recipient.highly_increased_barter_cost_value
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -989,15 +1132,24 @@ demand_prisoner_interaction = {
 				gold < scope:secondary_recipient.highly_increased_barter_cost_value
 				gold >= 1
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1017,15 +1169,24 @@ demand_prisoner_interaction = {
 			scope:actor = {
 				gold >= scope:secondary_recipient.increased_barter_cost_value
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1046,15 +1207,24 @@ demand_prisoner_interaction = {
 				gold < scope:secondary_recipient.increased_barter_cost_value
 				gold >= 1
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1074,15 +1244,24 @@ demand_prisoner_interaction = {
 			scope:actor = {
 				gold >= scope:secondary_recipient.slightly_increased_barter_cost_value
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1103,15 +1282,24 @@ demand_prisoner_interaction = {
 				gold < scope:secondary_recipient.slightly_increased_barter_cost_value
 				gold >= 1
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1131,15 +1319,24 @@ demand_prisoner_interaction = {
 			scope:actor = {
 				gold >= scope:secondary_recipient.barter_cost_value
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1160,15 +1357,24 @@ demand_prisoner_interaction = {
 				gold < scope:secondary_recipient.barter_cost_value
 				gold >= 1
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
-		is_valid = {
-			trigger_if = {
 		is_valid = {
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
@@ -1197,10 +1403,21 @@ demand_prisoner_interaction = {
 					}
 				}
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -1238,10 +1455,21 @@ demand_prisoner_interaction = {
 					}
 				}
 			}
-			## Hidden against vassals (auto-accept). Player Only.
+			## Hidden against vassals with 'default accept'. Player Only.
 			trigger_if = {
-				limit = { scope:actor = { is_ai = no } }
-				scope:recipient = { not = { is_vassal_of = scope:actor } }
+				limit = { 
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				scope:recipient = { NOT = { is_vassal_of = scope:actor } }
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -1275,6 +1503,14 @@ demand_prisoner_interaction = {
 					scope:recipient = { is_vassal_of = scope:actor }
 					scope:actor = { has_usable_hook = scope:recipient }
 				}
+			}
+			## Hidden with 'always accept' game rule on. Player Only.
+			trigger_if = {
+				limit = {
+					scope:actor = { is_ai = no }
+					has_game_rule = transfer_prisoner_always_interaction_acceptance
+				}
+				always = no
 			}
 		}
 
@@ -1316,7 +1552,7 @@ demand_prisoner_interaction = {
 						years = 3
 					}
 				}
-			}	
+			}
 		}
 	}
 

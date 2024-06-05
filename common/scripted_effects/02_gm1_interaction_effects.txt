@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -105,10 +105,14 @@ transfer_prisoner_interaction_effect = {
 		}
 
 		## PENALTIES
-		transfer_prisoner_interaction_escalates_rivalry_effect = {
-			TARGET = this
-			OLD_IMPRISONER = scope:sender
-			NEW_IMPRISONER = scope:receiver
+		## Disabled with 'none penalties' game rule on.
+		if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_escalates_rivalry_effect = {
+				TARGET = this
+				OLD_IMPRISONER = scope:sender
+				NEW_IMPRISONER = scope:receiver
+			}
 		}
 
 		## NOTIFICATION
@@ -120,21 +124,33 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-			transfer_prisoner_interaction_dread_effect = { 
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
-			transfer_prisoner_interaction_stress_effect = { 
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
-
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on.
 		if = {
-			limit = { is_vassal_of = scope:receiver }
-			if = {
-				limit = { scope:hook ?= yes }
-				scope:receiver = { use_hook = prev }
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_dread_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
 			}
+			transfer_prisoner_interaction_stress_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+			## SPECIAL DEMAND CASE
+			## Direct Vassals are forced to accept against with 'default accept'. Player Only.
+			if = {
+				limit = {
+					is_ai = no
+					exists = scope:hook
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				## No penalties received when a 'hook' is used.
+				if = {
+					limit = { is_vassal_of = scope:receiver }
+					if = {
+						limit = { scope:hook ?= yes }
+						scope:receiver = { use_hook = prev }
+					}
 					## Direct Vassal lower opinion penalty against prisoner with imprisonment reason.
 					else_if = {
 						limit = { has_imprisonment_reason = scope:prisoner }
@@ -144,10 +160,10 @@ transfer_prisoner_interaction_effect = {
 						}
 					}
 					## Direct Vassal higher opinion penalty against prisoner with imprisonment reason.
-			else = {
-				add_opinion = {
-					target = scope:receiver
-					modifier = demanded_transfer_prisoner
+					else = {
+						add_opinion = {
+							target = scope:receiver
+							modifier = demanded_transfer_prisoner
 							opinion = -30
 						}
 					}
@@ -164,13 +180,19 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
-		transfer_prisoner_interaction_stress_effect = { 
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
+
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on.
+		if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_dread_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+			transfer_prisoner_interaction_stress_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
 		}
 
 		## NOTIFICATION
@@ -204,10 +226,10 @@ transfer_prisoner_interaction_escalates_rivalry_effect = {
 			limit = {
 				scope:imprisonment_target = {
 					NOT = { has_relation_rival = prev }
-				OR = {
-					has_opinion_modifier = {
+					OR = {
+						has_opinion_modifier = {
 							target = scope:old_imprisoner
-						modifier = revoked_title
+							modifier = revoked_title
 						}
 						has_requested_excommunication = { 
 							CHARACTER = scope:new_imprisoner 
