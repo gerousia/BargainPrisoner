@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -162,7 +162,7 @@ transfer_prisoner_interaction_effect = {
 			## Direct Vassals are forced to accept with 'default accept'. Player Only.
 			if = {
 				limit = {
-					is_vassal_of = scope:receiver 
+					is_vassal_of = scope:receiver
 					exists = scope:hook
 					scope:receiver = { is_ai = no }
 					has_game_rule = transfer_prisoner_default_interaction_acceptance
@@ -226,6 +226,17 @@ transfer_prisoner_interaction_effect = {
 			transfer_prisoner_interaction_stress_effect = { 
 				CHARACTER = this
 				TARGET = scope:prisoner
+			}
+			## SPECIAL DEMAND CASE
+			if = {
+				limit = { 
+					scope:prisoner.liege = this
+					exists = scope:illegal_imprisonment
+				}
+				transfer_prisoner_start_faction_war_if_valid = {
+					IMPRISONER = this
+					PRISONER = scope:prisoner
+				}
 			}
 		}
 
@@ -406,8 +417,8 @@ transfer_prisoner_interaction_payment_effect = {
 			exists = scope:hook
 			scope:hook ?= yes
 		}
-			scope:receiver = {
-				use_hook = scope:sender
+		scope:receiver = {
+			use_hook = scope:sender
 		}
 	}
 }
