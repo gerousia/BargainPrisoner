@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -6,6 +6,18 @@ offer_prisoner_interaction = {
 	common_interaction = no
 	category = interaction_category_diplomacy
 	icon = prison # icon_gold
+
+	is_highlighted = {
+		scope:actor = {
+			any_prisoner = {
+				gm1_valid_for_transfer_prisoner_interaction_trigger_highlighted = {
+					SENDER = scope:actor
+					RECEIVER = scope:recipient
+				}
+			}
+		}
+	}
+	highlighted_reason = OFFER_PRISONER_INTERACTION_HIGHLIGHTED_REASON
 
 	popup_on_receive = yes
 	pause_on_receive = yes
@@ -777,6 +789,18 @@ demand_prisoner_interaction = {
 	common_interaction = no
 	category = interaction_category_diplomacy
 	icon = prison
+
+	is_highlighted = {
+		scope:recipient = {
+			any_prisoner = {
+				gm1_valid_for_transfer_prisoner_interaction_trigger_highlighted = {
+					SENDER = scope:recipient
+					RECEIVER = scope:actor
+				}
+			}
+		}
+	}
+	highlighted_reason = DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON
 
 	popup_on_receive = yes
 	pause_on_receive = yes

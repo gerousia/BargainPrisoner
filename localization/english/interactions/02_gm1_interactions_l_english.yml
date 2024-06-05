@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 interactions
 ##############################
 
@@ -17,7 +17,8 @@ l_english:
  offer_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  actor_secondary_offer_prisoner_interaction: "[prisoner|E]"
  OFFER_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "For the sake of trade, I offer my [prisoner|E], [secondary_actor.GetTitledFirstName], to keep as your own [prisoner|E]."
- OFFER_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to offer" 
+ OFFER_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to offer"
+ OFFER_PRISONER_INTERACTION_HIGHLIGHTED_REASON: "#EMP You [CharHaveHas(actor)] a [prisoner|E] of interest available for [recipient.GetShortUIName]#!"
 
 ## demand_prisoner_interaction
  demand_prisoner_interaction: "Demand Prisoner"
@@ -28,6 +29,7 @@ l_english:
  recipient_secondary_demand_prisoner_interaction: "[prisoner|E]"
  DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I must demand you send your [prisoner|E], [secondary_recipient.GetTitledFirstName], to my court as my own [prisoner|E]."
  DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
+ DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON: "#EMP [recipient.GetShortUIName|U] [CharHaveHas(recipient)] a [prisoner|E] of interest for you"
 
 # AI REASONS
  INTERACTION_AI_PRISONER_REASON_VALUE_ACTOR: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
