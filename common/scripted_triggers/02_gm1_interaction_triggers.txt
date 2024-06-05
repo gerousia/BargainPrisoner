@@ -24,6 +24,28 @@ gm1_valid_for_transfer_prisoner_interaction_trigger = {
 	health > dying_health
 }
 
+# ROOT
+# SENDER
+# RECEIVER
+gm1_valid_for_transfer_prisoner_interaction_trigger_highlighted = {
+	gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
+		SENDER = $SENDER$
+	}
+	gm1_valid_for_transfer_prisoner_interaction_trigger = yes
+
+	$RECEIVER$ = {
+		OR = {
+			is_at_war_with = prev
+			AND = {
+				has_revoke_title_reason = prev
+				has_claim_on_held_title_trigger = {
+					CHARACTER = prev
+				}
+			}
+		}
+	}
+}
+
 gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
 	NOT = { is_allied_to = root }
 }

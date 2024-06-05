@@ -2,37 +2,8 @@
 ## GM1 script_values
 ##############################
 
-# based on ./common/script_values/05/bp2_hostage_values.txt/actor_current_military_strength
-interaction_prisoner_current_military_strength = {
-	value = {
-		add = scope:prisoner.current_military_strength
-	}
-}
-
-# based on ./common/script_values/05/bp2_hostage_values.txt/actor_current_military_strength
-interaction_receiver_current_military_strength = {
-	value = {
-		add = scope:recipient.current_military_strength
-	}
-}
-
-# based on ./common/script_values/05/bp2_hostage_values.txt/actor_ally_military_strength
-interaction_prisoner_ally_military_strength = {
-	value = 0
-	scope:prisoner = {
-		every_ally = { add = current_military_strength }
-	}
-}
-
-# based on ./common/script_values/05/bp2_hostage_values.txt/actor_ally_military_strength
-interaction_receiver_ally_military_strength = {
-	value = 0
-	scope:receiver = {
-		every_ally = { add = current_military_strength }
-	}
-}
-
-interaction_ransom_value = {
+# based on ./common/script_values/05/bp2_hostage_values.txt/hostage_value
+base_ransom_value = {
 	value = 0
 	if = {
 		limit = { gold >= half_increased_ransom_cost_value }
@@ -42,304 +13,357 @@ interaction_ransom_value = {
 		limit = { gold >= half_ransom_cost_value }
 		add = half_ransom_cost_value
 	}
-	else = { add = current_gold_value }
+	else = { 
+		add = current_gold_value
+	}
 }
 
-# based on ./common/script_values/05/bp2_hostage_values.txt/actor_ally_military_strength
-## Sorts prisoners by relevance in various character lists
-interaction_prisoner_value = {
-	### Prisoner's Base Value
-	value = scope:prisoner.interaction_ransom_value
+# based on ./common/script_values/05/bp2_hostage_values.txt/hostage_value
+base_prisoner_value = {
+	value = scope:prisoner.base_ransom_value
 
-	### Prisoner is of higher tier
+	### Dynasty Level Difference
 	if = {
 		limit = {
-			scope:receiver.highest_held_title_tier < scope:prisoner.highest_held_title_tier
-			NOR = {
-				scope:receiver.liege = scope:prisoner
-				scope:prisoner.liege = scope:receiver
+			scope:prisoner = { exists = dynasty }
+			scope:imprisoner = { exists = dynasty }
+			scope:prisoner.dynasty.dynasty_prestige_level > scope:imprisoner.dynasty.dynasty_prestige_level
+		}
+		add = {
+			value = 20
+			multiply = {
+				value = scope:prisoner.dynasty.dynasty_prestige_level
+				subtract = scope:imprisoner.dynasty.dynasty_prestige_level
+				min = 1
 			}
+		}
+	}
+	if = {
+		limit = {
+			scope:prisoner = { exists = dynasty }
+			scope:imprisoner = { exists = dynasty }
+			scope:prisoner.dynasty.dynasty_prestige_level < scope:imprisoner.dynasty.dynasty_prestige_level
+		}
+		add = {
+			value = -20
+			multiply = {
+				value = scope:imprisoner.dynasty.dynasty_prestige_level
+				subtract = scope:prisoner.dynasty.dynasty_prestige_level
+				min = 1
+			}
+		}
+	}
+	### Tier Level Difference
+	if = {
+		limit = {
+			scope:prisoner.highest_held_title_tier > scope:imprisoner.highest_held_title_tier
 		}
 		add = {
 			value = 20
 			multiply = {
 				value = scope:prisoner.highest_held_title_tier
-				subtract = scope:receiver.highest_held_title_tier
+				subtract = scope:imprisoner.highest_held_title_tier
 				min = 1
 			}
 		}
 	}
-
-	### Prisoner is of lower tier
 	if = {
 		limit = {
-			scope:receiver.highest_held_title_tier > scope:prisoner.highest_held_title_tier
-			NOR = {
-				scope:receiver.liege = scope:prisoner
-				scope:prisoner.liege = scope:receiver
-			}
+			scope:prisoner.highest_held_title_tier < scope:imprisoner.highest_held_title_tier
 		}
 		add = {
 			value = -20
 			multiply = {
-				value = scope:receiver.highest_held_title_tier
+				value = scope:imprisoner.highest_held_title_tier
 				subtract = scope:prisoner.highest_held_title_tier
 				min = 1
 			}
 		}
 	}
-
-	### Prisoner is an independent ruler
+	### Prestige Level Difference
+	if = {
+		limit = {
+			scope:prisoner.prestige_level > scope:imprisoner.prestige_level
+		}
+		add = {
+			value = 20
+			multiply = {
+				value = scope:prisoner.prestige_level
+				subtract = scope:imprisoner.prestige_level
+				min = 1
+			}
+		}
+	}
+	if = {
+		limit = {
+			scope:prisoner.prestige_level < scope:imprisoner.prestige_level
+		}
+		add = {
+			value = -20
+			multiply = {
+				value = scope:imprisoner.prestige_level
+				subtract = scope:prisoner.prestige_level
+				min = 1
+			}
+		}
+	}
+	### Prisoner Independece
 	if = {
 		limit = {
 			scope:prisoner = { is_independent_ruler = yes }
 		}
 		add = 10
 	}
-
-	### Prisoner is not an independent ruler
-	if = {
-		limit = {
-			scope:prisoner = { is_independent_ruler = no }
-		}
+	else = {
 		add = {
 			value = 10
-			multiply = -2
+			multiply = -1
 		}
 	}
-
-	### Prisoner is their neighbor
+	### Prisoner Neighboring
 	if = {
 		limit = {
-			scope:receiver = { character_is_land_realm_neighbor = scope:prisoner }
+			scope:prisoner = { character_is_land_realm_neighbor = scope:imprisoner }
 		}
 		add = 10
 	}
-
-	### Prisoner is not their neighbor
+	else = {
+		add = {
+			value = 20
+			multiply = -1
+		}
+	}
+	### Prisoner is their liege.
 	if = {
-		if = {
-			limit = {
-				scope:receiver = { NOT = { character_is_land_realm_neighbor = scope:prisoner } }
+		limit = { scope:imprisoner = { is_vassal_of = scope:prisoner } }
+		add = -50
+	}
+	## Prisoner is their direct vassal.
+	if = {
+		limit = { scope:prisoner = { is_vassal_of = scope:imprisoner } }
+		add = {
+			value = -20
+			if = {
+				limit = { scope:imprisoner = { is_rightful_liege_of = scope:prisoner } }
+				multiply = 2
 			}
-			add = {
-				value = 10
-				multiply = -2
+			if = {
+				limit = { scope:imprisoner = { has_imprisonment_reason = scope:prisoner } }
+				multiply = -1
 			}
 		}
 	}
-
-	### Both are close in Military Strength
+	## Prisoner is their powerful vassal.
+	if = {
+		limit = { scope:prisoner = { is_powerful_vassal_of = scope:imprisoner } }
+		add = {
+			value = -40
+			if = {
+				limit = { scope:imprisoner = { is_rightful_liege_of = scope:prisoner } }
+				multiply = 2
+			}
+			if = {
+				limit = { scope:imprisoner = { has_imprisonment_reason = scope:prisoner } }
+				multiply = -1
+			}
+		}
+	}
+	### Both are close in power.
 	if = {
 		limit = {
 			NOR = {
-				scope:receiver.interaction_current_strength_ninety_percent_value > scope:prisoner.current_military_strength
-				scope:receiver.current_military_strength < scope:prisoner.interaction_current_strength_ninety_percent_value
+				scope:imprisoner.interaction_current_strength_ninety_percent_value > scope:prisoner.current_military_strength
+				scope:imprisoner.current_military_strength < scope:prisoner.interaction_current_strength_ninety_percent_value
 			}
 		}
-		add = {
-			value = -10
-			if = {
-				limit = { scope:receiver.ai_boldness > 0 }
-				multiply = -1
-			}
-		}
-		desc = INTERACTION_AI_PRISONER_REASON_SIMILAR_MILITARY_STRENGTH
+		add = -10
 	}
-
-	### Prisoner is more powerful in Military Strength
+	### Prisoner is more powerful.
 	if = {
 		limit = {
-			scope:receiver.interaction_current_strength_ninety_percent_value > scope:prisoner.current_military_strength
+			scope:prisoner.interaction_current_strength_ninety_percent_value > scope:imprisoner.current_military_strength
 		}
 		add = {
-			value = scope:receiver.current_military_strength # 1828
+			value = scope:prisoner.current_military_strength 		# 1828
 			divide = {
-				value = scope:prisoner.current_military_strength # 1382
+				value = scope:imprisoner.current_military_strength	# 1382
 				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = -50 # 0.32 * 50 = 16
-			if = {
-				limit = { scope:receiver.ai_boldness > 0 }
-				multiply = -1
-			}
-			max = 50
-			min = -50
-		}
-		desc = INTERACTION_AI_PRISONER_REASON_RELATIVE_MILITARY_STRENGTH
-	}
-
-	### Prisoner is less powerful in Military Strength
-	if = {
-		limit = {
-			scope:receiver.current_military_strength < scope:prisoner.interaction_current_strength_ninety_percent_value
-		}
-		add = {
-			value = scope:prisoner.current_military_strength # 1828
-			divide = {
-				value = scope:receiver.current_military_strength # 1382
-				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = 50 # 0.32 * -50 = -16
+			}														# 1828 / 1382 = 1.32
+			subtract = 1									 		# 1.32 - 1 = 0.32
+			multiply = -50 											# 0.32 * -50 = -16
 			max = 50
 			min = -50
 		}
 	}
-
+	### Prisoner is less powerful.
+	if = {
+		limit = {
+			scope:prisoner.current_military_strength < scope:imprisoner.interaction_current_strength_ninety_percent_value
+		}
+		add = {
+			value = scope:imprisoner.current_military_strength 		# 1828
+			divide = {
+				value = scope:prisoner.current_military_strength	# 1382
+				min = 1
+			}														# 1828 / 1382 = 1.32
+			subtract = 1									 		# 1.32 - 1 = 0.32
+			multiply = 50 											# 0.32 * 50 = 16
+			max = 50
+			min = -50
+		}
+	}
 	### Both allies' Military Strength
 	if = {
 		limit = {
-			#### Some allies must exist
+			#### Some allies must exist.
 			OR = {
-				scope:receiver = { any_ally = { exists = this } }
 				scope:prisoner = { any_ally = { exists = this } }
+				scope:imprisoner = { any_ally = { exists = this } }
 			}
-			#### Strength with allies must be greater than enemies base strength
+			#### Strength with allies must be greater than enemies base strength.
 			OR = {
-				scope:receiver.interaction_current_strength_with_allies_value >= scope:prisoner.interaction_current_strength_ninety_percent_value
-				scope:prisoner.interaction_current_strength_with_allies_value >= scope:receiver.interaction_current_strength_ninety_percent_value
+				scope:prisoner.interaction_current_strength_with_allies_value >= scope:imprisoner.interaction_current_strength_ninety_percent_value
+				scope:imprisoner.interaction_current_strength_with_allies_value >= scope:prisoner.interaction_current_strength_ninety_percent_value
 			}
 		}
 		add = {
 			value = {
 				value = 0
-				scope:receiver = {
-					every_ally = { add = current_military_strength } # 1828
+				scope:imprisoner = {
+					every_ally = { add = current_military_strength } 		# 1828
 				}
 			}
 			divide = {
 				value = {
 					value = 0
 					scope:prisoner = {
-						every_ally = { add = current_military_strength } # 1382
+						every_ally = { add = current_military_strength } 	# 1382
 					}
 				}
 				min = 1
-			}
-			# 1828 / 1382 = 1.32
-			subtract = 1 # 1.32 - 1 = 0.32
-			multiply = -100 # 0.32 * 100 = 32
-			divide = 2 # 32 / 2 = 16
+			}																# 1828 / 1382 = 1.32
+			subtract = 1 													# 1.32 - 1 = 0.32
+			multiply = -100													# 0.32 * 100 = -32
+			divide = 2 														# -32 / 2 = -16
 			max = 25
 			min = -25
 		}
 	}
-
-	### They have casus belli against the prisoner
+	### Imprisoner Line of Succession
 	if = {
 		limit = {
-			scope:receiver = { has_any_cb_on = scope:prisoner }
+			scope:imprisoner = { exists = primary_title }
 		}
 		add = {
+			scope:imprisoner.primary_title = {
+				if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner
+							value == 1 
+						}
+					}
+					value = 4
+				}
+				else_if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner
+							value == 12
+						}
+					}
+					value = 3
+				}
+				else_if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner 
+							value == 3
+						}
+					}
+					value = 2
+				}
+				else = { 
+					value = 0 
+				}
+			}
+			multiply = 5
+		}
+	}
+	### Imprisoner have casus belli against the prisoner.
+	#### They can't wage war against their own prisoner
+	if = {
+		limit = { scope:imprisoner = { has_any_cb_on = scope:prisoner } }
+		add = {
 			value = 15
-
-			#### They can't wage war against their own prisoner
 			if = {
 				limit = { NOT = { is_at_war_with = scope:prisoner } }
 				multiply = -1
 			}
 		}
 	}
-
 	### They have claims against the prisoner
 	if = {
 		limit = {
-			scope:prisoner = {
-				any_held_title = {
-					tier >= tier_county 
-					save_temporary_scope_as = title_temp
+			scope:imprisoner = {
+				has_claim_on_held_title_trigger = {
+					CHARACTER = scope:prisoner
 				}
 			}
-			scope:receiver = { has_claim_on = scope:title_temp }
 		}
 		add = {
 			value = 0
 			scope:prisoner = {
 				every_held_title = {
-					limit = {
-						any_claimant = { this = scope:receiver }
-						save_temporary_scope_as = title_temp
-					}
+					limit = { scope:imprisoner = { has_claim_on = prev } }
 					add = {
 						value = 5
-
-						#### Strong claims are worth more
+						#### Strong claims are worth more.
 						if = {
-							limit = {
-								scope:receiver = { has_strong_claim_on = scope:title_temp }
-							}
+							limit = { scope:imprisoner = { has_strong_claim_on = prev } }
 							multiply = 2
 						}
-						#### Higher titles are worth more
+						#### Higher titles are worth more.
 						multiply = {
-							value = {
 								value = tier
-								add = -1
-							}
+							subtract = 1
+							min = 1
 						}
 					}
 				}
-			}
-		}
-	}
-
-	### They are their direct liege
-	if = {
-		limit = { scope:receiver = { is_vassal_of = scope:prisoner } }
-		add = -20
-	}
-	
-	### Prisoner is their direct vassal
-	if = {
-		limit = { scope:prisoner = { is_vassal_of = scope:receiver } }
-		add = {
-			value = -20
-			if = {
-				limit = { scope:receiver = { has_imprisonment_reason = scope:prisoner } }
-				multiply = -1
-			}
-		}
-	}
-
-	### Prisoner is their powerful vassal
-	if = {
-		limit = { scope:prisoner = { is_powerful_vassal_of = scope:receiver } }
-		add = {
-			value = -20
-			if = {
-				limit = { scope:receiver = { has_imprisonment_reason = scope:prisoner } }
-				multiply = -1
 			}
 		}
 	}
 }
 
 # based on ./common/script_values/05/bp2_hostage_values.txt/interaction_actor_hostage_value
-interaction_actor_prisoner_value = {
+gm1_offer_prisoner_value = {
 	value = 0
 	if = {
 		limit = { exists = scope:secondary_actor }
-		scope:actor = { save_temporary_scope_as = sender }
-		scope:recipient = { save_temporary_scope_as = receiver }
-		scope:secondary_actor ?= { save_temporary_scope_as = prisoner }
-		add = scope:prisoner.interaction_prisoner_value
+		scope:recipient = { 
+			save_temporary_scope_as = imprisoner
+		}
+		scope:secondary_actor ?= {
+			save_temporary_scope_as = prisoner
+		}
+		add = scope:prisoner.base_prisoner_value
 		ceiling = yes
 	}
 }
 
 # based on ./common/script_values/05/bp2_hostage_values.txt/interaction_recipient_hostage_value
-interaction_recipient_prisoner_value = {
+gm1_demand_prisoner_value = {
 	value = 0
 	if = {
 		limit = { exists = scope:secondary_recipient }
-		scope:recipient = { save_temporary_scope_as = sender }
-		scope:actor = { save_temporary_scope_as = receiver }
-		scope:secondary_recipient ?= { save_temporary_scope_as = prisoner }
-		add = scope:prisoner.interaction_prisoner_value
+		scope:actor = { 
+			save_temporary_scope_as = imprisoner
+		}
+		scope:secondary_recipient ?= {
+			save_temporary_scope_as = prisoner
+		}
+		add = scope:prisoner.base_prisoner_value
 		ceiling = yes
 	}
 }

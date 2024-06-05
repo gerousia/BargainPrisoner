@@ -2,14 +2,14 @@
 ## BM1 scripted_triggers
 ##############################
 
-has_requested_excommunication_by = {
+has_requested_excommunication = {
 	exists = var:requested_my_excommunication
-	var:requested_my_excommunication = $WHO$
+	var:requested_my_excommunication = $CHARACTER$
 }
 
 # WHO (character)
 is_head_of_faith_of = {
-	$WHO$ = {
+	$CHARACTER$ = {
 		exists = faith.religious_head
 		faith.religious_head = prev
 	}
@@ -20,4 +20,18 @@ is_being_tortured = {
 		text = "currently_being_tortured"
 		has_character_flag = is_being_tortured
 	}
-}	
+}
+
+# CHARACTER (character)
+has_claim_on_held_title_trigger = {
+	any_held_title = {
+		$CHARACTER$ = { has_claim_on = prev }
+	}
+}
+
+# CHARACTER (character)
+has_strong_claim_on_held_title_trigger = {
+	any_held_title = {
+		$CHARACTER$ = { has_strong_claim_on = prev }
+	}
+}

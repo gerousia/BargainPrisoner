@@ -4,23 +4,91 @@
 ## GM1 interaction_events
 ##############################
 
-### To the author at PDX who wrote this original line, 
-### "- there is no god nor consistency when it comes to localization.", 
-### You're goddamn right.
-	
-# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
-## RECEIVER (character)
-## PRISONER (character)
-scripted_effect receive_prisoner = {
-	custom_description = {
-		text = "receive_prisoner_tooltip_effect"
-		subject = $RECEIVER$
-		object = $PRISONER$
+#------------------------------
+# Transfer Prisoner Notifications
+# 0001 - 0009
+#------------------------------
+
+# Notification: PRISONER
+gm1_interaction.0001 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_bad
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:receiver
+			right_icon = scope:sender
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+			}
+		}
+	}
+}
+
+# Notification: SENDER
+gm1_interaction.0002 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_neutral
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:prisoner
+			right_icon = scope:receiver
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+		
+				transfer_prisoner_interaction_payment_effect = {
+					SENDER = scope:sender
+					RECEIVER = scope:receiver
+				}
+			}				
+		}
+	}
+}
+
+# Notification: Receiver
+gm1_interaction.0003 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_prison_neutral
+			title = msg_transfer_prisoner_interaction_title
+			left_icon = scope:prisoner
+			right_icon = scope:sender
+			
+			show_as_tooltip = {
+				receive_prisoner = {
+					RECEIVER = scope:receiver
+					PRISONER = scope:prisoner
+				}
+		
+				transfer_prisoner_interaction_payment_effect = {
+					SENDER = scope:sender
+					RECEIVER = scope:receiver
+				}
+			}
+		}
+
+		trigger_event = {
+			id = gm1_interaction.0031
+			days = 3
+		}
 	}
 }
 
 #------------------------------
-# Offer Transfer Prisoner Interaction
+# Offer Prisoner Interaction
 # 0010 - 0019
 #------------------------------
 
@@ -42,63 +110,15 @@ gm1_interaction.0016 = {
 	}
 
 	immediate = {
-		send_interface_message = {
-			type = event_prison_neutral
-			title = msg_transfer_prisoner_interaction_title
-			left_icon = scope:secondary_actor
-			right_icon = scope:recipient
-			
-			show_as_tooltip = {	
-				receive_prisoner = {
-					RECEIVER = scope:recipient
-					PRISONER = scope:secondary_actor
-				}
-
-				transfer_prisoner_interaction_bargain_effect = {
-					PRISONER = scope:secondary_actor
-					SENDER = scope:actor
-					RECEIVER = scope:recipient
-				}
+		show_as_tooltip = {	
+			receive_prisoner = {
+				RECEIVER = scope:recipient
+				PRISONER = scope:secondary_actor
 			}
-		}
 
-		hidden_effect = {
-			scope:recipient = {
-				send_interface_message = {
-					type = event_prison_good
-					title = msg_transfer_prisoner_interaction_title
-					left_icon = scope:secondary_actor
-					right_icon = scope:actor
-					
-					show_as_tooltip = {
-						receive_prisoner = {
-							RECEIVER = scope:recipient
-							PRISONER = scope:secondary_actor
-						}
-
-						transfer_prisoner_interaction_bargain_effect = {
-							PRISONER = scope:secondary_actor
-							SENDER = scope:actor
-							RECEIVER = scope:recipient
-						}
-					}
-				}
-			}
-	
-			scope:secondary_actor = {
-				send_interface_message = {
-					type = event_prison_bad
-					title = msg_transfer_prisoner_interaction_title
-					left_icon = scope:actor
-					right_icon = scope:recipient
-					
-					show_as_tooltip = {
-						receive_prisoner = {
-							RECEIVER = scope:recipient
-							PRISONER = scope:secondary_actor
-						}
-					}
-				}
+			transfer_prisoner_interaction_payment_effect = {
+				SENDER = scope:actor
+				RECEIVER = scope:recipient
 			}
 		}
 	}
@@ -128,7 +148,7 @@ gm1_interaction.0012 = {
 }
 
 #------------------------------
-# Demand Transfer Prisoner Interaction
+# Demand Prisoner Interaction
 # 0020 - 0029
 #------------------------------
 
@@ -150,65 +170,15 @@ gm1_interaction.0026 = {
 	}
 
 	immediate = {
-		scope:actor = {
-			send_interface_message = {
-				type = event_prison_good
-				title = msg_transfer_prisoner_interaction_title
-				left_icon = scope:secondary_recipient
-				right_icon = scope:recipient
-				
-				show_as_tooltip = {
-					receive_prisoner = {
-						RECEIVER = scope:actor
-						PRISONER = scope:secondary_recipient
-					}
-
-					transfer_prisoner_interaction_bargain_effect = {
-						PRISONER = scope:secondary_recipient
-						SENDER = scope:recipient
-						RECEIVER = scope:actor
-					}
-				}
+		show_as_tooltip = {
+			receive_prisoner = {
+				RECEIVER = scope:actor
+				PRISONER = scope:secondary_recipient
 			}
-		}
 
-		hidden_effect = {
-			scope:recipient = {
-				send_interface_message = {
-					type = event_prison_neutral
-					title = msg_transfer_prisoner_interaction_title
-					left_icon = scope:secondary_recipient
-					right_icon = scope:actor
-					
-					show_as_tooltip = {
-						receive_prisoner = {
-							RECEIVER = scope:actor
-							PRISONER = scope:secondary_recipient
-						}
-
-						transfer_prisoner_interaction_bargain_effect = {
-							PRISONER = scope:secondary_recipient
-							SENDER = scope:recipient
-							RECEIVER = scope:actor
-						}
-					}					
-				}
-			}
-	
-			scope:secondary_recipient = {
-				send_interface_message = {
-					type = event_prison_bad
-					title = msg_transfer_prisoner_interaction_title
-					left_icon = scope:actor
-					right_icon = scope:recipient
-					
-					show_as_tooltip = {
-						receive_prisoner = {
-							RECEIVER = scope:actor
-							PRISONER = scope:secondary_recipient
-						}
-					}
-				}
+			transfer_prisoner_interaction_payment_effect = {
+				SENDER = scope:recipient
+				RECEIVER = scope:actor
 			}
 		}
 	}
@@ -248,5 +218,52 @@ gm1_interaction.0022 = {
 
 	option = {
 		name = gm1_interaction.0022.a
+	}
+}
+
+#------------------------------
+# Transfer Prisoner Interaction
+# 0030 - 0049
+#------------------------------
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0231
+## Direct Vassal Received. 
+gm1_interaction.0031 = {
+	type = character_event
+	title = gm1_interaction.0031.title
+	desc = { 
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:prisoner = { is_in_prison_type = house_arrest }
+				}
+				desc = gm1_interaction.0031.desc_house_arrest
+			}
+			desc = gm1_interaction.0031.desc_prison
+		}
+	}
+		
+	right_portrait = {
+		character = scope:prisoner
+		animation = sadness
+	}
+	theme = prison
+	
+	trigger = {
+		exists = scope:prisoner.liege
+		scope:prisoner.liege ?= this
+	}
+	
+	immediate = {
+		show_as_tooltip = {
+			if = {
+				limit = { exists = scope:illegal_imprisonment }
+				add_legitimacy = miniscule_legitimacy_loss
+			}
+		}
+	}
+
+	option = {
+		name = gm1_interaction.0031.a
 	}
 }

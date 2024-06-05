@@ -2,82 +2,205 @@
 ## GM1 scripted_effects
 ##############################
 #------------------------------
-# list
-#------------------------------
-# transfer_prisoner_interaction_effect
-# transfer_prisoner_interaction_stress_effect
-# transfer_prisoner_interaction_dread_effect
-# transfer_prisoner_interaction_escalate_rivalry_effect
-# transfer_prisoner_interaction_bargain_effect
-# disband_all_schemes_effect
-
-#------------------------------
 # interaction-related
 #------------------------------
+
+### To the author at PDX who wrote this original line, 
+### "- there is no god nor consistency when it comes to localization.", 
+### You're goddamn right.
+	
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## RECEIVER (character)
+## PRISONER (character)
+receive_prisoner = {
+	custom_description = {
+		text = "receive_prisoner_tooltip_effect"
+		subject = $RECEIVER$
+		object = $PRISONER$
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## CHARACTER (character)
+## TARGET (character)
+disband_all_schemes_effect = {
+	hidden_effect = {
+		$CHARACTER$ = {
+			if = {
+				limit = { any_scheme = { scheme_target = $TARGET$ } }
+				every_scheme = {
+					limit = { scheme_target = $TARGET$ }
+					end_scheme = yes
+				}
+			}
+		}
+	}
+}
 
 # PRISONER (character)
 # SENDER (character)
 # RECEIVER (character)
 transfer_prisoner_interaction_effect = {
-	if = {
-		limit = {
-			OR = {
-				scope:exploitive_extortionate_current_gold ?= yes
-				scope:extortionate_current_gold ?= yes
-				scope:exploitive_current_gold ?= yes
-				scope:current_gold ?= yes
+	$PRISONER$ = { save_scope_as = prisoner }
+	$SENDER$ = { save_scope_as = sender }
+	$RECEIVER$ = { save_scope_as = receiver }
+
+	switch = {
+		trigger = always
+		scope:very_high_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:prisoner.highly_increased_barter_cost_value
 			}
 		}
-		$RECEIVER$ = {
+		scope:high_gold = {
 			save_scope_value_as = {
-				name = barter_saved_gold_value
-				value = $RECEIVER$.current_gold_value
+				name = gold_amount
+				value = scope:prisoner.increased_barter_cost_value
+			}
+		}
+		scope:medium_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:prisoner.slightly_increased_barter_cost_value
+			}
+		}
+		scope:gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:prisoner.barter_cost_value
+			}
+		}
+		scope:very_high_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:receiver.gold
+			}
+		}
+		scope:high_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:receiver.gold
+			}
+		}
+		scope:medium_current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:receiver.gold
+			}
+		}
+		scope:current_gold = {
+			save_scope_value_as = {
+				name = gold_amount
+				value = scope:receiver.gold
 			}
 		}
 	}
 
-	change_imprisoner_character_effect = { 
-		TARGET = $PRISONER$
-		IMPRISONER = $SENDER$
-		NEW_IMPRISONER = $RECEIVER$
+	scope:prisoner = {
+		change_imprisoner_character_effect = { 
+			PRISONER = this
+			OLD_IMPRISONER = scope:sender
+			NEW_IMPRISONER = scope:receiver
+		}
+
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on.
+		if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_escalates_rivalry_effect = {
+				TARGET = this
+				OLD_IMPRISONER = scope:sender
+				NEW_IMPRISONER = scope:receiver
+			}
+		}
+
+		## NOTIFICATION
+		trigger_event = gm1_interaction.0001
 	}
 	
-	## Apply immediate effects towards the prisoner's current imprisoner
-	transfer_prisoner_interaction_dread_effect = { 
-		IMPRISONER = $SENDER$
-		PRISONER = $PRISONER$
+	scope:sender = {
+		disband_all_schemes_effect = {
+			CHARACTER = this
+			TARGET = scope:prisoner
+		}
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on.
+		if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_dread_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+			transfer_prisoner_interaction_stress_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+			## SPECIAL DEMAND CASE
+			## Direct Vassals are forced to accept with 'default accept'. Player Only.
+			if = {
+				limit = {
+					scope:receiver = { is_ai = no }
+					is_vassal_of = scope:receiver 
+					exists = scope:hook
+					has_game_rule = transfer_prisoner_default_interaction_acceptance
+				}
+				## No penalties received when a 'hook' is used-
+				## Or sender has imprisonment reason against their vassal.
+				if = {
+					limit = { scope:hook ?= no }
+					if = {
+						limit = { 
+							scope:prisoner = { is_vassal_of = prev }
+							NOT = { has_imprisonment_reason = scope:prisoner }
+						}
+						add_opinion = {
+							target = scope:receiver
+							modifier = demanded_transfer_prisoner
+							opinion = -30
+						}
+					}
+					else = {
+						add_opinion = {
+							target = scope:receiver
+							modifier = demanded_transfer_prisoner
+						}
+					}
+				}
+			}
+		}
+
+		## NOTIFICATION
+		trigger_event = gm1_interaction.0002
 	}
 
-	transfer_prisoner_interaction_stress_effect = { 
-		IMPRISONER = $SENDER$
-		PRISONER = $PRISONER$
+	scope:receiver = {
+		disband_all_schemes_effect = {
+			CHARACTER = this
+			TARGET = scope:prisoner
+		}
+
+		## PENALTIES
+		## Disabled with 'none penalties' game rule on.
+		if = {
+			limit = { NOT = { has_game_rule = transfer_prisoner_disabled_interaction_penalties } }
+			transfer_prisoner_interaction_dread_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+			transfer_prisoner_interaction_stress_effect = { 
+				CHARACTER = this
+				TARGET = scope:prisoner
+			}
+		}
+
+		## NOTIFICATION
+		trigger_event = gm1_interaction.0003
 	}
 
-	disband_all_schemes_effect = {
-		WHO = $SENDER$
-		TARGET = $PRISONER$
-	}
-
-	## Apply immediate effects towards the prisoner's next imprisoner
-	transfer_prisoner_interaction_dread_effect = { 
-		PRISONER = $PRISONER$
-		IMPRISONER = $RECEIVER$
-	}
-
-	transfer_prisoner_interaction_stress_effect = { 
-		PRISONER = $PRISONER$
-		IMPRISONER = $RECEIVER$
-	}
-
-	transfer_prisoner_interaction_escalate_rivalry_effect = {
-		PRISONER = $PRISONER$
-		OLD_IMPRISONER = $SENDER$
-		NEW_IMPRISONER = $RECEIVER$
-	}
-
-	disband_all_schemes_effect = {
-		WHO = $RECEIVER$
-		TARGET = $PRISONER$
+	transfer_prisoner_interaction_payment_effect = {
+		SENDER = scope:sender
+		RECEIVER = scope:receiver
 	}
 
 	if = {
@@ -87,13 +210,63 @@ transfer_prisoner_interaction_effect = {
 	}
 }
 
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## IMPRISONER (character)
-## PRISONER (character)
-transfer_prisoner_interaction_stress_effect = {
-	 $IMPRISONER$ = {
+
+# based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
+## OLD_IMPRISONER (character)
+## NEW_IMPRISONER (character)
+## TARGET (character)
+transfer_prisoner_interaction_escalates_rivalry_effect = {
+	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
+	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
+
+	scope:old_imprisoner = {
 		if = {
-			limit = { has_imprisonment_reason = $PRISONER$ }
+			limit = {
+				scope:imprisonment_target = {
+					NOT = { has_relation_rival = prev }
+					OR = {
+						has_opinion_modifier = {
+							target = scope:old_imprisoner
+							modifier = revoked_title
+						}
+						has_requested_excommunication = { 
+							CHARACTER = scope:new_imprisoner 
+						}
+						is_at_war_with = scope:new_imprisoner
+					}
+				}
+			}
+			hidden_effect = {
+				if = {
+					limit = { has_relation_potential_rival = scope:old_imprisoner }
+					remove_relation_potential_rival = scope:old_imprisoner
+				}
+			}
+			set_relation_rival = scope:imprisonment_target
+		}
+		else = {
+			hidden_effect = {
+				progress_towards_rival_effect = {
+					CHARACTER = scope:imprisonment_target
+					REASON = rival_imprisoned
+					OPINION = 0
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## CHARACTER (character)
+## TARGET (character)
+transfer_prisoner_interaction_stress_effect = {
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
+
+	scope:imprisoner  = {
+		if = {
+			limit = { has_imprisonment_reason = scope:imprisonment_target }
 			stress_impact = {
 				compassionate = minor_stress_impact_gain
 				forgiving = minor_stress_impact_gain
@@ -109,18 +282,23 @@ transfer_prisoner_interaction_stress_effect = {
 }
 
 # based on ./common/scripted_effects/00_interaction_effects.txt/illegal_imprisonment_dread_effect
-## IMPRISONER (character)
-## PRISONER (character)
+## CHARACTER (character)
+## TARGET (character)
 transfer_prisoner_interaction_dread_effect = {
-	$IMPRISONER$ = {
+	$CHARACTER$ = { save_temporary_scope_as = imprisoner }
+	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
+
+	scope:imprisoner = {
 		if = {
-			limit = { NOT = { has_imprisonment_reason = $PRISONER$ } }
+			limit = { 
+				NOT = { has_imprisonment_reason = scope:imprisonment_target } 
+			}
 			if = {
 				limit = {
-					$PRISONER$ = {
+					scope:imprisonment_target = {
 						OR = {
-							is_spouse_of = $IMPRISONER$
-							is_close_family_of = $IMPRISONER$
+							is_spouse_of = prev
+							is_close_family_of = prev
 							tier_or_related_liege_tier_greater_or_equal_trigger = { TIER = tier_kingdom }
 						}
 					}
@@ -129,7 +307,7 @@ transfer_prisoner_interaction_dread_effect = {
 			}
 			else_if = {
 				limit = {
-					$PRISONER$ = {
+					scope:imprisonment_target = {
 						OR = {
 							tier_or_related_liege_tier_equal_trigger = { TIER = tier_duchy }
 							tier_or_related_liege_tier_equal_trigger = { TIER = tier_county }
@@ -142,236 +320,53 @@ transfer_prisoner_interaction_dread_effect = {
 	}
 }
 
-# based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
-## OLD_IMPRISONER(character)
-## NEW_IMPRISONER (character)
-## PRISONER (character)
-transfer_prisoner_interaction_escalate_rivalry_effect = {
-	$PRISONER$ = {
-		if = {
-			limit = {
-				NOT = { has_relation_rival = $OLD_IMPRISONER$ }
-				OR = {
-					$NEW_IMPRISONER$ = { is_at_war_with = $PRISONER$ }
-					has_requested_excommunication_by = { WHO = $OLD_IMPRISONER$ }
-					has_opinion_modifier = {
-						modifier = revoked_title
-						target = $OLD_IMPRISONER$
-					}
-				}
-			}
-			hidden_effect = {
-				if = {
-					limit = { has_relation_potential_rival = $OLD_IMPRISONER$ }
-					remove_relation_potential_rival = $OLD_IMPRISONER$
-				}
-			}
-			set_relation_rival = $OLD_IMPRISONER$
-		}
-		else = {
-			hidden_effect = {
-				progress_towards_rival_effect = {
-					CHARACTER = $OLD_IMPRISONER$
-					REASON = rival_imprisoned
-					OPINION = 0
-				}
-			}
-		}
-	}
-}
-
-# PRISONER (character)
 # SENDER (character)
 # RECEIVER (character)
-transfer_prisoner_interaction_bargain_effect = {
-	## War
-	## FP3 Perk 
-	### Full Gold Amount
-	### Full Prestige Amount 
+transfer_prisoner_interaction_payment_effect = {
+	$SENDER$ = { save_temporary_scope_as = sender }
+	$RECEIVER$ = { save_temporary_scope_as = receiver }
+
 	if = {
-		limit = { scope:exploitive_extortionate_gold ?= yes	}
-		$RECEIVER$ = {
+		limit = { exists = scope:gold_amount }
+		scope:receiver = {
 			pay_short_term_gold = {
-				gold = $PRISONER$.highly_increased_barter_cost_value
-				target = $SENDER$
+				gold = scope:gold_amount
+				target = scope:sender
 			}
 		}
-		$SENDER$ = { 
-			add_prestige = $PRISONER$.highly_increased_barter_cost_value
-		}
-	}
-
-	## War
-	## FP3 Perk 
-	### Partial Gold Amount
-	### Partial Prestige Amount 
-	if = {
-		limit = { scope:exploitive_extortionate_current_gold ?= yes	}
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = scope:barter_saved_gold_value
-		}
-	}
-
-	## FP3 Perk 
-	### Full Gold Amount
-	### Full Prestige Amount 
-	if = {
-		limit = { scope:extortionate_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.slightly_increased_barter_cost_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = $PRISONER$.slightly_increased_barter_cost_value 
-		}
-	}
-
-	## FP3 Perk 
-	### Partial Gold Amount
-	### Partial Prestige Amount 
-	if = {
-		limit = { scope:extortionate_current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-		$SENDER$ = { 
-			add_prestige = scope:barter_saved_gold_value 
-		}
-	}
-
-	## War 
-	### Full Gold Amount
-	if = {
-		limit = { scope:exploitive_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.increased_barter_cost_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## War 
-	### Partial Gold Amount
-	if = {
-		limit = { scope:exploitive_current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Full Gold Amount
-	if = {
-		limit = { scope:gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = $PRISONER$.barter_cost_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Partial Gold Amount
-	if = {
-		limit = { scope:current_gold ?= yes }
-		$RECEIVER$ = {
-			pay_short_term_gold = {
-				gold = scope:barter_saved_gold_value
-				target = $SENDER$
-			}
-		}
-	}
-
-	## Default
-	### Strong Hook
-	if = {
-		limit = { scope:strong_hook ?= yes }
-		$SENDER$ = {
-			add_hook = {
-				target = $RECEIVER$
-				type = loyalty_hook
-			}
-		}
-	}
-
-	## Default
-	### Weak Hook
-	if = {
-		limit = { scope:favor ?= yes }
-		$SENDER$ = {
-			add_hook = {
-				target = $RECEIVER$
-				type = favor_hook
-			}
-		}
-	}
-
-	## Auto-accept
-	if = {
-		limit = { scope:hook ?= yes }
-		$SENDER$ = {
-			if = {
-				limit = {
-					NOT = { is_vassal_of = $RECEIVER$ }
-					NOT = { $RECEIVER$ = { has_strong_hook = $SENDER$ } }
-				}
-				add_opinion = {
-					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
-				}
-			}
-		}
-		$RECEIVER$ = { use_hook = $SENDER$ }
-	}
-	else_if = {
-		limit = { scope:hook ?= no }
-		$SENDER$ = {
-			if = {
-				limit = { is_vassal_of = $RECEIVER$ }
-				add_opinion = {
-					target = $RECEIVER$
-					modifier = demanded_transfer_prisoner
-				}
-			}
-		}
-	}
-	
-	$PRISONER$ = {
 		if = {
-			limit = { has_character_flag = under_transfer_prisoner_interaction }
-			remove_character_flag = under_transfer_prisoner_interaction
+			limit = { 
+				scope:sender.dynasty ?= {
+					has_dynasty_perk = fp1_pillage_legacy_3
+				}
+			}
+			scope:sender = {
+				add_prestige = scope:gold_amount
+			}
 		}
 	}
-}
 
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## TARGET (character)
-## WHO (character)
-disband_all_schemes_effect = {
-	hidden_effect = {
-		$WHO$ = {
-			if = {
-				limit = { any_scheme = { scheme_target = $TARGET$ } }
-				every_scheme = {
-					limit = { scheme_target = $TARGET$ }
-					end_scheme = yes
+	switch = {
+		trigger = always
+		scope:strong_hook = {
+			scope:sender = {
+				add_hook = {
+					target = scope:receiver
+					type = loyalty_hook
 				}
+			}
+		}
+		scope:favor = {
+			scope:sender = {
+				add_hook = {
+					target = scope:receiver
+					type = favor_hook
+				}
+			}
+		}
+		scope:hook = {
+			scope:receiver = {
+				use_hook = scope:sender
 			}
 		}
 	}

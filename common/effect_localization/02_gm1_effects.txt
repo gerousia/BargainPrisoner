@@ -33,18 +33,22 @@ move_tooltip = {
 	third_past = CHARACTER_MOVED_TOOLTIP_EFFECT
 }
 
-change_imprisoner_war_tooltip = {
-	global = CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT
+change_imprisoner_court_chaplain_tooltip = {
+	global = CHANGE_IMPRISONER_COURT_CHAPLAIN_TOOLTIP_EFFECT
 }
 
-change_imprisoner_war_leader_tooltip = {
-	global = CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT
+change_imprisoner_head_of_faith_tooltip = {
+	global = CHANGE_IMPRISONER_HEAD_OF_FAITH_TOOLTIP_EFFECT
 }
 
 change_imprisoner_vassal_tooltip = {
 	global = CHANGE_IMPRISONER_VASSAL_TOOLTIP_EFFECT
 }
 
-change_imprisoner_head_of_faith_tooltip = {
-	global = CHANGE_IMPRISONER_HEAD_OF_FAITH_TOOLTIP_EFFECT
+change_imprisoner_war_tooltip = {
+	global = CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT
+}
+
+change_imprisoner_war_leader_tooltip = {
+	global = CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT
 }
