@@ -77,7 +77,12 @@ gm1_interaction.0003 = {
 					SENDER = scope:sender
 					RECEIVER = scope:receiver
 				}
-			}				
+			}
+		}
+
+		trigger_event = {
+			id = gm1_interaction.0031
+			days = 3
 		}
 	}
 }
@@ -213,5 +218,52 @@ gm1_interaction.0022 = {
 
 	option = {
 		name = gm1_interaction.0022.a
+	}
+}
+
+#------------------------------
+# Transfer Prisoner Interaction
+# 0030 - 0049
+#------------------------------
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0231
+## Direct Vassal Received. 
+gm1_interaction.0031 = {
+	type = character_event
+	title = gm1_interaction.0031.title
+	desc = { 
+		first_valid = {
+			triggered_desc = {
+				trigger = {
+					scope:prisoner = { is_in_prison_type = house_arrest }
+				}
+				desc = gm1_interaction.0031.desc_house_arrest
+			}
+			desc = gm1_interaction.0031.desc_prison
+		}
+	}
+		
+	right_portrait = {
+		character = scope:prisoner
+		animation = sadness
+	}
+	theme = prison
+	
+	trigger = {
+		exists = scope:prisoner.liege
+		scope:prisoner.liege ?= this
+	}
+	
+	immediate = {
+		show_as_tooltip = {
+			if = {
+				limit = { exists = scope:illegal_imprisonment }
+				add_legitimacy = miniscule_legitimacy_loss
+			}
+		}
+	}
+
+	option = {
+		name = gm1_interaction.0031.a
 	}
 }

@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 interactions
 ##############################
 
@@ -90,3 +90,9 @@ l_english:
  gm1_interaction.0022.desc_a: "I can only reject your tactless demand to bargain for my prisoner, [secondary_recipient.GetTitledFirstName], as your own."
  gm1_interaction.0022.desc_b: "I'm afraid I must still keep my prisoner, [secondary_recipient.GetTitledFirstName], in [recipient.GetCapitalLocation.GetNameNoTooltip] for a little while longer."
  gm1_interaction.0022.a: "It's like that, is it?"
+
+## The receiver imprisoned their direct vassal.
+ gm1_interaction.0031.title: "Justice"
+ gm1_interaction.0031.desc_prison: "[prisoner.GetTitledFirstName] has been apprehended and awaits [prisoner.GetHerHis] fate safely locked in my dungeons."
+ gm1_interaction.0031.desc_house_arrest: "As per my orders, [prisoner.GetTitledFirstName] is now to be confined to [prisoner.GetHerHis] home. I've posted some of my guards to ensure [prisoner.GetSheHe] is compliant with the house arrest."
+ gm1_interaction.0031.a: "Good."

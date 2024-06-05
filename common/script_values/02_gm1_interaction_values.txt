@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 script_values
 ##############################
 
@@ -144,7 +144,11 @@ base_prisoner_value = {
 		add = {
 			value = -20
 			if = {
-				limit = { scope:receiver = { has_imprisonment_reason = scope:prisoner } }
+				limit = { scope:imprisoner = { is_rightful_liege_of = scope:prisoner } }
+				multiply = 2
+			}
+			if = {
+				limit = { scope:imprisoner = { has_imprisonment_reason = scope:prisoner } }
 				multiply = -1
 			}
 		}
@@ -155,7 +159,11 @@ base_prisoner_value = {
 		add = {
 			value = -40
 			if = {
-				limit = { scope:receiver = { has_imprisonment_reason = scope:prisoner } }
+				limit = { scope:imprisoner = { is_rightful_liege_of = scope:prisoner } }
+				multiply = 2
+			}
+			if = {
+				limit = { scope:imprisoner = { has_imprisonment_reason = scope:prisoner } }
 				multiply = -1
 			}
 		}
@@ -241,7 +249,48 @@ base_prisoner_value = {
 			min = -25
 		}
 	}
-	### Receiver have casus belli against the prisoner.
+	### Imprisoner Line of Succession
+	if = {
+		limit = {
+			scope:imprisoner = { exists = primary_title }
+		}
+		add = {
+			scope:imprisoner.primary_title = {
+				if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner
+							value == 1 
+						}
+					}
+					value = 4
+				}
+				else_if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner
+							value == 12
+						}
+					}
+					value = 3
+				}
+				else_if = {
+					limit = {
+						place_in_line_of_succession = { 
+							target = scope:prisoner 
+							value == 3
+						}
+					}
+					value = 2
+				}
+				else = { 
+					value = 0 
+				}
+			}
+			multiply = 5
+		}
+	}
+	### Imprisoner have casus belli against the prisoner.
 	#### They can't wage war against their own prisoner
 	if = {
 		limit = { scope:imprisoner = { has_any_cb_on = scope:prisoner } }

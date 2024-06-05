@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -644,7 +644,7 @@ gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_loss = {
 						}
 						#### Higher titles are worth more.
 						multiply = {
-								value = tier
+							value = tier
 							subtract = 1
 							min = 1
 						}
@@ -733,7 +733,13 @@ gm1_transfer_prisoner_interaction_prisoner_realm_modifier = {
 	modifier = {
 		$PRISONER$ = { is_vassal_of = $WHO$ }
 		NOT = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
-		add = -30
+		add = {
+			value = -30
+			if = {
+				limit = { $WHO$ = { is_rightful_liege_of = $PRISONER$ } }
+				multiply = 2
+			}
+		}
 		desc = INTERACTION_AI_PRISONER_REASON_VASSAL
 	}
 }

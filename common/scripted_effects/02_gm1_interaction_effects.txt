@@ -120,11 +120,11 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-		transfer_prisoner_interaction_stress_effect = { 
+			transfer_prisoner_interaction_dread_effect = { 
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-		transfer_prisoner_interaction_scheme_effect = {
+			transfer_prisoner_interaction_stress_effect = { 
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
@@ -135,10 +135,22 @@ transfer_prisoner_interaction_effect = {
 				limit = { scope:hook ?= yes }
 				scope:receiver = { use_hook = prev }
 			}
+					## Direct Vassal lower opinion penalty against prisoner with imprisonment reason.
+					else_if = {
+						limit = { has_imprisonment_reason = scope:prisoner }
+						add_opinion = {
+							target = scope:receiver
+							modifier = demanded_transfer_prisoner
+						}
+					}
+					## Direct Vassal higher opinion penalty against prisoner with imprisonment reason.
 			else = {
 				add_opinion = {
 					target = scope:receiver
 					modifier = demanded_transfer_prisoner
+							opinion = -30
+						}
+					}
 				}
 			}
 		}
@@ -187,16 +199,20 @@ transfer_prisoner_interaction_escalates_rivalry_effect = {
 	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
 	$TARGET$ = { save_temporary_scope_as = imprisonment_target }
 
-	scope:imprisonment_target = {
+	scope:old_imprisoner = {
 		if = {
 			limit = {
-				NOT = { has_relation_rival = scope:old_imprisoner }
+				scope:imprisonment_target = {
+					NOT = { has_relation_rival = prev }
 				OR = {
-					scope:new_imprisoner = { is_at_war_with = scope:imprisonment_target }
-					has_requested_excommunication_by = { WHO = scope:old_imprisoner }
 					has_opinion_modifier = {
+							target = scope:old_imprisoner
 						modifier = revoked_title
-						target = scope:old_imprisoner
+						}
+						has_requested_excommunication = { 
+							CHARACTER = scope:new_imprisoner 
+						}
+						is_at_war_with = scope:new_imprisoner
 					}
 				}
 			}
@@ -206,12 +222,12 @@ transfer_prisoner_interaction_escalates_rivalry_effect = {
 					remove_relation_potential_rival = scope:old_imprisoner
 				}
 			}
-			set_relation_rival = scope:old_imprisoner
+			set_relation_rival = scope:imprisonment_target
 		}
 		else = {
 			hidden_effect = {
 				progress_towards_rival_effect = {
-					CHARACTER = scope:old_imprisoner
+					CHARACTER = scope:imprisonment_target
 					REASON = rival_imprisoned
 					OPINION = 0
 				}
