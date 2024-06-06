@@ -90,7 +90,11 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			multiply = {
 				value = 50										# 0.32 * 50 = 16
 				if = {
-					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					limit = { 
+						#$WHO$.ai_boldness >= very_high_positive_ai_value
+						$WHO$.ai_rationality < -100
+						$WHO$.ai_boldness >= 25
+					}
 					multiply = -1
 				}
 			}
@@ -134,7 +138,11 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			multiply = {
 				value = -100												# 0.32 * 100 = -32
 				if = {
-					limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+					limit = { 
+						#$WHO$.ai_boldness >= very_high_positive_ai_value
+						$WHO$.ai_rationality < -100
+						$WHO$.ai_boldness >= 25
+					}
 					multiply = -1
 				}
 			}
@@ -467,7 +475,11 @@ gm1_transfer_prisoner_interaction_prisoner_relative_strength_modifier = {
 					multiply = {
 						value = -100												# 0.32 * 100 = -32
 						if = {
-							limit = { $WHO$.ai_boldness >= very_high_positive_ai_value }
+							limit = { 
+								#$WHO$.ai_boldness >= very_high_positive_ai_value
+								$WHO$.ai_rationality < -100
+								$WHO$.ai_boldness >= 25
+							}
 							multiply = -1
 						}
 					}
