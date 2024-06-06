@@ -1,0 +1,51 @@
+##############################
+## GM1 custom_loc
+##############################
+#------------------------------
+# interaction-related
+#------------------------------
+
+# based on ./common/customizable_localization/00_interactions_custom_loc.txt/ImprisonCharacterDeclineSummary
+DemandPrisonerDeclineSummary = {
+	type = character
+
+	text = {
+		trigger = {
+			exists = scope:secondary_recipient
+			always = yes
+			#rv_is_loaded = yes
+		}
+		localization_key = DEMAND_PRISONER_INTERACTION_DECLINE_SUMMARY_RV
+	}
+
+	#text = {
+	#	localization_key = imprison_decline_summary_no_war
+	#	fallback = yes
+	#}
+}
+
+#------------------------------
+# script-effects-related
+#------------------------------
+
+ChangeImprisonerGetWarInvolvement = {
+	type = character
+
+	text = {
+		trigger = {
+			is_at_war_with = scope:second
+			any_character_war = { NOT = { is_war_leader = prev } }
+		}
+		localization_key = CHANGE_IMPRISONER_WAR_PARTICIPANT
+	}
+
+	text = {
+		trigger = {
+			is_at_war_with = scope:second
+			any_character_war = { is_war_leader = prev }
+		}
+		localization_key = CHANGE_IMPRISONER_WAR_LEADER
+	}
+
+	random_valid = yes
+}

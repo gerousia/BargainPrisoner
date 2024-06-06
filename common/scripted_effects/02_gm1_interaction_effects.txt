@@ -132,11 +132,6 @@ transfer_prisoner_interaction_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
 		}
-
-		if = {
-			limit = { has_character_flag = flag_hostile_actions_disabled_delay }
-			remove_character_flag = flag_hostile_actions_disabled_delay
-		}
 		
 		## PENALTIES
 		## Disabled with 'none penalties' game rule on.
@@ -200,11 +195,6 @@ transfer_prisoner_interaction_effect = {
 		disband_all_schemes_effect = {
 			CHARACTER = this
 			TARGET = scope:prisoner
-		}
-
-		if = {
-			limit = { has_character_flag = flag_hostile_actions_disabled_delay }
-			remove_character_flag = flag_hostile_actions_disabled_delay
 		}
 
 		## PENALTIES

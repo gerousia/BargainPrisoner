@@ -16,7 +16,8 @@ l_english:
  CHANGE_IMPRISONER_HEAD_OF_FAITH_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [TARGET_CHARACTER.GetTitledFirstName|U] [CharAreIs(TARGET_CHARACTER)] [CHARACTER.GetShortUINamePossessiveNoFormat] [head_of_faith|E][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
  CHANGE_IMPRISONER_VASSAL_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@alert_icon! #alert_trial', '@alert_icon!' )] [TARGET_CHARACTER.GetTitledFirstName|U] [CharAreIs(TARGET_CHARACTER)] [CHARACTER.GetShortUINamePossessiveNoFormat] [vassal|E][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
 
- CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] at [war|E] with [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
- CHANGE_IMPRISONER_WAR_LEADER_TOOLTIP_EFFECT: "[Select_CString( CHARACTER.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] a [war_leader|E] against [TARGET_CHARACTER.GetShortUIName|U][Select_CString( CHARACTER.IsLocalPlayer, '#!', '' )]"
+ CHANGE_IMPRISONER_WAR_TOOLTIP_EFFECT: "[CHARACTER.Custom2('ChangeImprisonerGetWarInvolvement', TARGET_CHARACTER.Self)]"
+ CHANGE_IMPRISONER_WAR_PARTICIPANT: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] at [war|E] with [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
+ CHANGE_IMPRISONER_WAR_LEADER: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] a [war_leader|E] against [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
 
- all_war_allies: "[THIS.GetCharacter.GetShortUINamePossessive|U] ] in [war|E]"
+ all_war_allies: "[THIS.GetCharacter.GetShortUINamePossessive|U] in [war|E]"

@@ -209,7 +209,7 @@ gm1_interaction.0022 = {
 
 	immediate = {
 		if = {
-			limit = { has_global_variable = rv_is_loaded }
+			limit = { rv_is_loaded = yes}
 			create_character_rescuable_effect = {
 				TARGET = scope:secondary_recipient
 			}
