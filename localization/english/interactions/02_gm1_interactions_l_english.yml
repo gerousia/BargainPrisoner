@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 interactions
 ##############################
 
@@ -12,7 +12,7 @@ l_english:
 ## offer_prisoner_interaction
  offer_prisoner_interaction: "Offer Prisoner"
  offer_prisoner_interaction_desc: "Offer [recipient.GetShortUINameNoTooltip] one of your [prisoners|E] for a sum of [gold|E] or a [favor|E]\n\n$offer_prisoner_interaction_desc_1$"
- offer_prisoner_interaction_desc_1: "#Low [lieges|E] will concede [imprisonment_reasons|E].#!"
+ offer_prisoner_interaction_desc_1: "#Low [lieges|E] will concede their [imprisonment_reasons|E] against the prisoner.#!"
  offer_prisoner_interaction_notification: "Offered Prisoner"
  offer_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
  actor_secondary_offer_prisoner_interaction: "[prisoner|E]"

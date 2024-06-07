@@ -1,4 +1,4 @@
-namespace = gm1_interaction
+﻿namespace = gm1_interaction
 
 ##############################
 ## GM1 interaction_events
@@ -36,7 +36,7 @@ gm1_interaction.0001 = {
 	immediate = {
 		send_interface_message = {
 			type = event_prison_bad
-			title = msg_transfer_prisoner_interaction_title
+			title = notification_transfer_prisoner_interaction_title
 			left_icon = scope:receiver
 			right_icon = scope:sender
 			
@@ -61,7 +61,7 @@ gm1_interaction.0002 = {
 	immediate = {
 		send_interface_message = {
 			type = event_prison_neutral
-			title = msg_transfer_prisoner_interaction_title
+			title = notification_transfer_prisoner_interaction_title
 			left_icon = scope:prisoner
 			right_icon = scope:receiver
 			
@@ -93,7 +93,7 @@ gm1_interaction.0003 = {
 	immediate = {
 		send_interface_message = {
 			type = event_prison_neutral
-			title = msg_transfer_prisoner_interaction_title
+			title = notification_transfer_prisoner_interaction_title
 			left_icon = scope:prisoner
 			right_icon = scope:sender
 			
