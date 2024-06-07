@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -869,7 +869,7 @@ gm1_offer_prisoner_interaction_prisoner_relation_modifier = {
 		$WHO$ = { has_relation_nemesis = $PRISONER$ } 
 		add = {
 			value = -50
-			multiply = -2
+			multiply = -6
 		}
 		desc = INTERACTION_AI_PRISONER_REASON_RELATION_NEMESIS
 	}
@@ -934,7 +934,7 @@ gm1_demand_prisoner_interaction_prisoner_relation_modifier = {
 		$WHO$ = { has_relation_nemesis = $PRISONER$ } 
 		add = {
 			value = -50
-			multiply = 2
+			multiply = 6
 		}
 		desc = INTERACTION_AI_PRISONER_REASON_RELATION_NEMESIS
 	}
