@@ -90,7 +90,7 @@ interaction_tier_check_value = {
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost
 barter_cost = {
 	value = ransom_cost
-	multiply = 0.8
+	multiply = 1.2
 }
 
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost_value
@@ -115,7 +115,7 @@ barter_cost_value = {
 slightly_increased_barter_cost_value = {
 	value = {
 		add = barter_cost_value
-		multiply = 1.5
+		multiply = 1.2
 	}
 }
 
@@ -123,22 +123,14 @@ slightly_increased_barter_cost_value = {
 increased_barter_cost_value = {
 	value = {
 		add = barter_cost_value
-		multiply = 2
+		multiply = 1.5
 	}
 }
 
 highly_increased_barter_cost_value = {
 	value = {
-		add = increased_barter_cost_value
-		multiply = 1.5
-	}
-}
-
-half_barter_cost = {
-	value = {
-		add = barter_cost
-		divide = 2
-		min = 1
+		add = barter_cost_value
+		multiply = 2
 	}
 }
 
