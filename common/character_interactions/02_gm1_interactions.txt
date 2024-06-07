@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -124,6 +124,7 @@ offer_prisoner_interaction = {
 		}
 		trigger_if = {
 			limit = { scope:actor = { is_ai = yes }	}
+			scope:actor = { NOT = { is_at_war_with = scope:secondary_actor } }
 			scope:secondary_actor = {
 				gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
 					RECEIVER = scope:recipient
