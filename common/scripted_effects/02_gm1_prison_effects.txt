@@ -770,9 +770,169 @@ change_imprisoner_consequences_war_effect = {
 		if = {
 			limit = { is_at_war_with = scope:imprisonment_target }
 			custom_description = {
-				text = "change_imprisoner_war_leader_tooltip"
+				text = "change_imprisoner_war_tooltip"
 				subject = this
 				object = scope:imprisonment_target
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+# based on ./common/scripted_effects/00_prison_effects.txt/ransom_interaction_effect
+## PRISONER (character)
+## IMPRISONER (character)
+## PETITIONER (character)
+release_imprisoned_character_effect = {
+	$PRISONER$ = { save_temporary_scope_as = release_target }
+	$IMPRISONER$ = { save_temporary_scope_as = target_imprisoner }
+	$PETITIONER$ = { save_temporary_scope_as = target_petitioner }
+
+	scope:release_target = {
+		custom_description = { 
+			text = "release_tooltip_effect"
+			subject = scope:target_imprisoner
+			object = this
+
+			add_character_flag = {
+				flag = block_for_prison_release_notification
+				days = 1
+			}
+		}
+		release_from_prison = yes
+
+		### OPINIONS
+		add_opinion = {
+			target = scope:target_petitioner
+			modifier = ransomed_from_prison
+			years = 1
+		}
+	}
+
+	scope:target_imprisoner = {
+		## REWARDS
+		release_imprisoned_consequences_struggle_effect = {
+			CHARACTER = this
+			TARGET = scope:release_target
+		}
+	}
+
+	scope:target_petitioner = {
+		if = {
+			limit = {
+				scope:release_target = {
+					is_ai = yes
+					ai_honor >= 25
+					ai_greed <= 0
+				}
+			}
+			if = {
+				limit = {
+					can_add_hook = {
+						target = scope:release_target
+						type = favor_hook
+					}
+				}
+				add_hook = {
+					target = scope:release_target
+					type = indebted_hook
+				}
+			}
+		}
+		else = {
+			progress_towards_hook_effect = {
+				CHARACTER = scope:release_target
+				HOOK_TYPE = indebted_hook
+			}
+		}
+
+		## REWARDS
+		release_imprisoned_consequences_clan_effect = {
+			CHARACTER = this
+			TARGET = scope:release_target
+		}
+	}
+}
+
+# based on ./common/scripted_effects/00_prison_effects.txt/ransom_interaction_effect
+## CHARACTER (character)
+## TARGET (character)
+release_imprisoned_consequences_struggle_effect = {
+	$CHARACTER$ = {
+		if = {
+			limit = {
+				any_character_struggle = {
+					involvement = involved
+					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+						CATALYST = catalyst_ransom_important
+						CHAR = $TARGET$
+					}
+				}
+			}
+			every_character_struggle = {
+				involvement = involved
+				limit = {
+					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+						CATALYST = catalyst_ransom_important
+						CHAR = $TARGET$
+					}
+				}
+				activate_struggle_catalyst = {
+					catalyst = catalyst_ransom_important
+					character = $CHARACTER$
+				}
+			}
+		}
+		if = {
+			limit = {
+				fp3_struggle_involves_one_supporter_and_one_detractor = {
+					FIRST = this
+					SECOND = $TARGET$
+				}
+				any_character_struggle = {
+					involvement = involved
+					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+						CATALYST = catalyst_ransom_supporter_detractor
+						CHAR = $TARGET$
+					}
+				}
+			}
+			every_character_struggle = {
+				involvement = involved
+				limit = {
+					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
+						CATALYST = catalyst_ransom_supporter_detractor
+						CHAR = $TARGET$
+					}
+				}
+				activate_struggle_catalyst = {
+					catalyst = catalyst_ransom_supporter_detractor
+					character = $CHARACTER$
+				}
+				log_debug_variable_for_persian_struggle_effect = { 
+					VAR = concession_catalyst_ransom_supporter_detractor
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## CHARACTER (character)
+## TARGET (character)
+release_imprisoned_consequences_clan_effect = {
+	$CHARACTER$ = {
+		if = {
+			limit = { 
+				government_has_flag = government_is_clan
+				house = $TARGET$.house
+			}
+			add_clan_unity_interaction_effect = {
+				CHARACTER = $CHARACTER$
+				TARGET = $TARGET$
+				VALUE = medium_unity_gain
+				DESC = clan_unity_ransom.desc
+				REVERSE_NON_HOUSE_TARGET = no
 			}
 		}
 	}

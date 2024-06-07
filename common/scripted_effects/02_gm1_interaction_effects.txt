@@ -5,21 +5,6 @@
 # interaction-related
 #------------------------------
 
-### To the author at PDX who wrote this original line, 
-### "- there is no god nor consistency when it comes to localization.", 
-### You're goddamn right.
-	
-# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
-## RECEIVER (character)
-## PRISONER (character)
-receive_prisoner = {
-	custom_description = {
-		text = "receive_prisoner_tooltip_effect"
-		subject = $RECEIVER$
-		object = $PRISONER$
-	}
-}
-
 # based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
 ## CHARACTER (character)
 ## TARGET (character)
@@ -49,50 +34,50 @@ transfer_prisoner_interaction_effect = {
 		trigger = always
 		scope:very_high_gold = {
 			save_scope_value_as = {
-				name = gold_amount
+				name = saved_gold_value
 				value = scope:prisoner.highly_increased_barter_cost_value
 			}
 		}
 		scope:high_gold = {
 			save_scope_value_as = {
-				name = gold_amount
+				name = saved_gold_value
 				value = scope:prisoner.increased_barter_cost_value
 			}
 		}
 		scope:medium_gold = {
 			save_scope_value_as = {
-				name = gold_amount
+				name = saved_gold_value
 				value = scope:prisoner.slightly_increased_barter_cost_value
 			}
 		}
 		scope:gold = {
 			save_scope_value_as = {
-				name = gold_amount
+				name = saved_gold_value
 				value = scope:prisoner.barter_cost_value
 			}
 		}
 		scope:very_high_current_gold = {
 			save_scope_value_as = {
-				name = gold_amount
-				value = scope:receiver.gold
+				name = saved_gold_value
+				value = scope:receiver.current_gold_value
 			}
 		}
 		scope:high_current_gold = {
 			save_scope_value_as = {
-				name = gold_amount
-				value = scope:receiver.gold
+				name = saved_gold_value
+				value = scope:receiver.current_gold_value
 			}
 		}
 		scope:medium_current_gold = {
 			save_scope_value_as = {
-				name = gold_amount
-				value = scope:receiver.gold
+				name = saved_gold_value
+				value = scope:receiver.current_gold_value
 			}
 		}
 		scope:current_gold = {
 			save_scope_value_as = {
-				name = gold_amount
-				value = scope:receiver.gold
+				name = saved_gold_value
+				value = scope:receiver.current_gold_value
 			}
 		}
 	}
@@ -234,18 +219,11 @@ transfer_prisoner_interaction_effect = {
 		trigger_event = gm1_interaction.0003
 	}
 
-	transfer_prisoner_interaction_payment_effect = {
-		SENDER = scope:sender
-		RECEIVER = scope:receiver
-	}
-
-	if = {
-		limit = { debug_only = yes }
-		debug_log_date = yes
-		debug_log_scopes = yes
+	prisoner_interaction_payment_effect = {
+		PAYER = scope:receiver
+		PAYEE = scope:sender
 	}
 }
-
 
 # based on ./common/scripted_effects/00_prison_effects.txt/imprison_attempt_escalates_rivalry_effect
 ## OLD_IMPRISONER (character)
@@ -356,59 +334,181 @@ transfer_prisoner_interaction_dread_effect = {
 	}
 }
 
-# SENDER (character)
-# RECEIVER (character)
-transfer_prisoner_interaction_payment_effect = {
-	$SENDER$ = { save_temporary_scope_as = sender }
-	$RECEIVER$ = { save_temporary_scope_as = receiver }
-
-	if = {
-		limit = { exists = scope:gold_amount }
-		scope:receiver = {
-			pay_short_term_gold = {
-				gold = scope:gold_amount
-				target = scope:sender
-			}
-		}
-		if = {
-			limit = { 
-				scope:sender.dynasty ?= {
-					has_dynasty_perk = fp1_pillage_legacy_3
-				}
-			}
-			scope:sender = {
-				add_prestige = scope:gold_amount
-			}
-		}
-	}
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## PRISONER (character)
+## IMPRISONER (character)
+## PETITIONER (character)
+ransom_prisoner_interaction_effect = {
+	$PRISONER$ = { save_scope_as = prisoner }
+	$IMPRISONER$ = { save_scope_as = imprisoner }
+	$PETITIONER$ = { save_scope_as = petitioner }
 
 	switch = {
 		trigger = always
-		scope:strong_hook = {
-			scope:sender = {
-				add_hook = {
-					target = scope:receiver
-					type = loyalty_hook
-				}
+		scope:extortionate_gold = {
+			save_scope_value_as = {
+				name = saved_gold_value
+				value = scope:prisoner.increased_ransom_cost_value
 			}
 		}
-		scope:favor = {
-			scope:sender = {
-				add_hook = {
-					target = scope:receiver
-					type = favor_hook
-				}
+		scope:extortionate_current_gold = {
+			save_scope_value_as = {
+				name = saved_gold_value
+				value = scope:petitioner.current_gold_value
+			}
+		}
+		scope:gold = {
+			save_scope_value_as = {
+				name = saved_gold_value
+				value = scope:prisoner.ransom_cost_value
+			}
+		}
+		scope:current_gold = {
+			save_scope_value_as = {
+				name = saved_gold_value
+				value = scope:petitioner.current_gold_value
 			}
 		}
 	}
 
-	if = {
-		limit = { 
-			exists = scope:hook
-			scope:hook ?= yes
+	scope:prisoner = {
+		release_imprisoned_character_effect = {
+			PRISONER = this
+			IMPRISONER = scope:imprisoner
+			PETITIONER = scope:petitioner
 		}
-		scope:receiver = {
-			use_hook = scope:sender
+
+		## NOTIFICATION
+		trigger_event = gm1_interaction.1001
+	}
+
+	scope:imprisoner = {
+		## NOTIFICATION
+		trigger_event = gm1_interaction.1002
+	}
+
+	scope:petitioner = {
+		ransom_prisoner_interaction_stress_effect = {
+			CHARACTER = this
+			TARGET = scope:prisoner
+		}
+
+		## NOTIFICATION
+		trigger_event = gm1_interaction.1003
+	}
+
+	prisoner_interaction_payment_effect = {
+		PAYER = scope:petitioner
+		PAYEE = scope:imprisoner
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## CHARACTER (character)
+## TARGET (character)
+ransom_prisoner_interaction_stress_effect = {
+	$CHARACTER$ = {
+		if = {
+			limit = {
+				$TARGET$ = {
+					OR = {
+						is_vassal_of = prev
+						is_consort_of = prev
+						is_close_family_of = prev
+						dynasty ?= prev.dynasty
+						any_spouse = {
+							OR = {
+								is_close_family_of = $CHARACTER$
+								dynasty ?= $CHARACTER$.dynasty
+							}
+						}
+						has_relation_lover = prev
+						has_relation_friend = prev
+					}
+				}
+			}
+			stress_impact = {
+				compassionate = medium_stress_impact_loss
+				generous = minor_stress_impact_loss
+				just = minor_stress_impact_loss
+			}
+		}
+		else = {
+			stress_impact = {
+				compassionate = minor_stress_impact_loss
+				generous = medium_stress_impact_loss
+			}
+		}
+
+		if = {
+			limit = { has_relation_lover = $TARGET$ }
+			stress_impact = {
+				lustful = major_stress_impact_loss
+			}
+		}
+
+		if = {
+			limit = { 
+				has_relation_lover = $TARGET$
+				has_relation_friend = $TARGET$
+			}
+			stress_impact = {
+				loyal = major_stress_impact_loss
+			}
+		}
+
+		if = {
+			limit = { is_close_family_of = $TARGET$ }
+			stress_impact = {
+				family_first = miniscule_stress_impact_loss
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+# PAYER (character)
+# PAYEE (character)
+prisoner_interaction_payment_effect = {
+	$PAYER$ = { save_scope_as = payer }
+	$PAYEE$ = { save_scope_as = payee }
+	
+	scope:payer = {
+		if = {
+			limit = { exists = scope:saved_gold_value }
+			pay_short_term_gold = {
+				gold = scope:saved_gold_value
+				target = scope:payee
+			}
+
+			if = {
+				limit = { scope:payee.dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } }
+				scope:payee = {	add_prestige = scope:saved_gold_value }
+			}
+		}
+
+		if = {
+			limit = { scope:hook ?= yes	}
+			use_hook = scope:payee
+		}
+
+	}
+	
+	scope:payee = {
+		if = {
+			limit = { scope:strong_hook ?= yes }
+			add_hook = {
+				target = scope:payer
+				type = loyalty_hook
+			}
+		}
+
+		if = {
+			limit = { scope:favor ?= yes }
+			add_hook = {
+				target = scope:payer
+				type = favor_hook
+			}
 		}
 	}
 }

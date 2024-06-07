@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -335,7 +335,7 @@ gm1_transfer_prisoner_interaction_relation_modifier = {
 # based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
 ## WHO (character)
 ## TARGET (character)
-gm1_transfer_prisoner_interaction_dread_modifier = {
+gm1_prisoner_interaction_dread_modifier = {
 	modifier = {
 		$WHO$ = {
 			has_dread_level_towards = {
@@ -343,7 +343,15 @@ gm1_transfer_prisoner_interaction_dread_modifier = {
 				level = 1
 			}
 		}
-		add = intimidated_halved_reason_value
+		add = {
+			if = {
+				limit = { $TARGET$ = { target_is_liege_or_above = $WHO$ } }
+				value = intimidated_reason_value
+			}
+			else = {
+				value = intimidated_halved_reason_value
+			}
+		}
 		desc = INTIMIDATED_REASON
 	}
 	modifier = {
@@ -353,7 +361,15 @@ gm1_transfer_prisoner_interaction_dread_modifier = {
 				level = 2
 			}
 		}
-		add = cowed_halved_reason_value
+		add = {
+			if = {
+				limit = { $TARGET$ = { target_is_liege_or_above = $WHO$ } }
+				value = cowed_reason_value
+			}
+			else = {
+				value = cowed_halved_reason_value
+			}
+		}
 		desc = COWED_REASON
 	}
 }
@@ -433,6 +449,52 @@ gm1_transfer_prisoner_interaction_trait_modifier = {
 #------------------------------
 # PRISONER
 #------------------------------
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## WHO (character)
+## PRISONER (character)
+gm1_offer_prisoner_interaction_prisoner_war_modifier = {
+	modifier = {
+		$WHO$ = { is_at_war_with = $PRISONER$ }
+		add = 500
+		desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## WHO (character)
+## PRISONER (character)
+gm1_demand_prisoner_interaction_prisoner_war_modifier = {
+	modifier = {
+		$WHO$ = { is_at_war_with = $PRISONER$ }
+		add = -500
+		desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## WHO (character)
+## PRISONER (character)
+gm1_ransom_prisoner_interaction_prisoner_war_modifier = {
+	modifier = {
+		$WHO$ = { is_at_war_with = $PRISONER$ }
+		add = {
+			value = -300
+			if = {
+				limit = {
+					$WHO$ = { 
+						OR = {
+							any_primary_war_enemy = { $PRISONER$.liege ?= prev }
+							any_character_war = { is_war_leader = $PRISONER$ }
+						}
+					}
+				}
+				add = -300
+			}
+		}
+		desc = INTERACTION_AI_PRISONER_REASON_WAR_AGAINST
+	}
+}
 
 # based on ./common/scripted_modifiers/05_bp2_scripted_modifiers.txt/bp2_hostage_relative_strength_modifier
 ## WHO (character)
@@ -883,6 +945,29 @@ gm1_demand_prisoner_interaction_prisoner_relation_modifier = {
 			multiply = -2
 		}
 		desc = INTERACTION_AI_PRISONER_REASON_DYNASTY_SAME_DYNASTY
+	}
+}
+
+# based on ./common/character_interactions/00_character_interactions.txt/offer_vassalization_interaction/ai_accept
+## WHO (character)
+## PRISONER (character)
+gm1_ransom_prisoner_interaction_prisoner_relation_modifier = {
+	modifier = {
+		$WHO$ = { has_relation_rival = $PRISONER$ }
+		$WHO$ = { NOT = { has_relation_nemesis = $PRISONER$ } }
+		add = {
+			value = -25
+			multiply = 2
+		}
+		desc = INTERACTION_AI_PRISONER_REASON_RELATION_RIVAL
+	}
+	modifier = {
+		$WHO$ = { has_relation_nemesis = $PRISONER$ } 
+		add = {
+			value = -50
+			multiply = 6
+		}
+		desc = INTERACTION_AI_PRISONER_REASON_RELATION_NEMESIS
 	}
 }
 

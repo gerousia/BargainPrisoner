@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 interactions
 ##############################
 
@@ -30,6 +30,16 @@ l_english:
  DEMAND_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "I must demand you send your [prisoner|E], [secondary_recipient.GetTitledFirstName], to my court as my own [prisoner|E]."
  DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
  DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON: "#EMP [recipient.GetShortUIName|U] [CharHaveHas(recipient)] a [prisoner|E] of interest for you"
+
+
+## ransom_prisoner_interaction
+ ransom_prisoner_interaction: "$pay_ransom_interaction$"
+ ransom_prisoner_interaction_desc: "Offer to pay the ransom for an [imprisoned|E] [ruler|E] or [courtier|E]"
+ #ransom_prisoner_interaction_notification: ""
+ #ransom_prisoner_interaction_extra_icon: "$pay_ransom_interaction_extra_icon$"
+ ransom_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
+ recipient_secondary_ransom_prisoner_interaction: "$recipient_secondary_pay_ransom_interaction$"
+ RANSOM_PRISONER_INTERACTION_PROPOSAL_NOTIFICATION_TEXT: "$PAY_RANSOM_PROPOSAL$" 
 
 # AI REASONS
  INTERACTION_AI_PRISONER_REASON_VALUE_ACTOR: "[secondary_actor.GetTitledFirstNamePossessive|V] value as a [prisoner|E]: $VALUE|=+0$"
@@ -70,7 +80,11 @@ l_english:
  clan_unity_transfer_prisoner.desc: "transferred [unity_target.GetName] to another prison"
 
 # NOTIFICATION
- msg_transfer_prisoner_interaction_title: "Prisoner Transferred!"
+ notification_transfer_prisoner_interaction_title: "Prisoner Transferred"
+ notification_ransom_prisoner_interaction_title: "Prisoner Released"
+ notification_ransom_prisoner_interaction_title_prisoner: "Your [prisoner.Custom2('RelationToMeShort', SCOPE.sC('petitioner'))] [petitioner.GetShortUIName] Ransomed you!@prison_icon!"
+ notification_ransom_prisoner_interaction_title_prisoner_liege: "[prisoner.liege.GetChar.Custom2('RelationToMeShort', SCOPE.sC('prisoner'))|U] Ransomed!@prison_icon!"
+ notification_ransom_prisoner_interaction_prisoner_liege_desc: "[petitioner.GetShortUIName] Ransomed your [prisoner.liege.GetChar.Custom2('RelationToMeShort', SCOPE.sC('prisoner'))] [prisoner.GetShortUIName] from the dungeons of [imprisoner.GetShortUIName]!"
 
 ## The recipient accepts offer prisoner interaction.
  gm1_interaction.0011.desc_1: "I would gladly bargain for your prisoner, [secondary_actor.GetTitledFirstName], as my own."

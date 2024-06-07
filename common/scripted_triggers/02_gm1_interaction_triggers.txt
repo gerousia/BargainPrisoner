@@ -6,10 +6,10 @@
 #------------------------------
 
 # ROOT (character)
-# SENDER (character)
-gm1_valid_for_transfer_prisoner_interaction_trigger = {
+# IMPRISONER (character)
+gm1_valid_prisoner_for_interaction_trigger = {
 	is_imprisoned = yes
-	is_imprisoned_by = $SENDER$
+	is_imprisoned_by = $IMPRISONER$
 	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
 		PRISONER = this
 		REGENT = this.var:imprisoned_by_diarch
@@ -18,7 +18,8 @@ gm1_valid_for_transfer_prisoner_interaction_trigger = {
 
 # ROOT (character)
 # This is basically for tooltip.
-gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
+gm1_valid_prisoner_for_interaction_trigger_basic = {
+	is_busy_in_events_localised = yes
 	is_under_ongoing_interaction = no
 	is_being_tortured = no
 	health > dying_health
@@ -27,11 +28,11 @@ gm1_valid_for_transfer_prisoner_interaction_trigger_basic = {
 # ROOT
 # SENDER
 # RECEIVER
-gm1_valid_for_transfer_prisoner_interaction_trigger_highlighted = {
-	gm1_valid_for_transfer_prisoner_interaction_trigger = {
-		SENDER = $SENDER$
+gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
+	gm1_valid_prisoner_for_interaction_trigger = {
+		IMPRISONER = $SENDER$
 	}
-	gm1_valid_for_transfer_prisoner_interaction_trigger_basic = yes
+	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 
 	$RECEIVER$ = {
 		OR = {
@@ -48,8 +49,8 @@ gm1_valid_for_transfer_prisoner_interaction_trigger_highlighted = {
 
 # ROOT
 # RECEIVER
-gm1_valid_for_transfer_prisoner_interaction_trigger_strict = {
-	gm1_valid_for_transfer_prisoner_interaction_trigger_basic = yes
+gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
+	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 	has_recently_undergone_interaction = no
 	OR = {
 		$RECEIVER$ = {
@@ -70,26 +71,51 @@ gm1_valid_for_transfer_prisoner_interaction_trigger_strict = {
 	has_no_particular_noble_roots_trigger = no
 }
 
-gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
-	NOT = { is_allied_to = root }
-}
+# ROOT
+# PETITIONER
+gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
+	gm1_valid_prisoner_for_interaction_trigger_basic = yes
+	#has_recently_undergone_interaction = no
 
-gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
-	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
-
-	root = {
-		any_prisoner = {
-			count >= 1
-			gm1_valid_for_transfer_prisoner_interaction_trigger = { 
-				SENDER = $SENDER$
-				RECEIVER = $RECEIVER$
+	## We block out the original ransomables to avoid- 
+	## conflict with the vanilla ransom_interaction.
+	
+	## This is for the originally non-ransomable.
+	NOR = {
+		liege ?= $PETITIONER$
+		is_close_family_of = $PETITIONER$
+		dynasty ?= $PETITIONER$.dynasty
+		any_spouse = {
+			OR = {
+				is_close_family_of = $PETITIONER$
+				dynasty ?= $PETITIONER$.dynasty
 			}
-			save_temporary_scope_as = prisoner
 		}
-		is_character_interaction_potentially_accepted = {
-			interaction = offer_prisoner_interaction
-			recipient = $RECEIVER$
-			secondary_actor = scope:prisoner
-		}
+		has_relation_lover = $PETITIONER$
+		has_relation_friend = $PETITIONER$
 	}
 }
+
+#gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
+#	NOT = { is_allied_to = root }
+#}
+
+#gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
+#	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
+#
+#	root = {
+#		any_prisoner = {
+#			count >= 1
+#			gm1_valid_prisoner_for_interaction_trigger = { 
+#				SENDER = $SENDER$
+#				RECEIVER = $RECEIVER$
+#			}
+#			save_temporary_scope_as = prisoner
+#		}
+#		is_character_interaction_potentially_accepted = {
+#			interaction = offer_prisoner_interaction
+#			recipient = $RECEIVER$
+#			secondary_actor = scope:prisoner
+#		}
+#	}
+#}

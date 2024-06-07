@@ -1,15 +1,35 @@
-﻿namespace = gm1_interaction
+namespace = gm1_interaction
 
 ##############################
 ## GM1 interaction_events
 ##############################
+
+### To the author at PDX who wrote this original line, 
+### "- there is no god nor consistency when it comes to localization.", 
+### You're goddamn right.
+
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## RECEIVER (character)
+## PRISONER (character)
+scripted_effect receive_prisoner = {
+	custom_description = {
+		text = "receive_prisoner_tooltip_effect"
+		subject = $RECEIVER$
+		object = $PRISONER$
+	}
+}
 
 #------------------------------
 # Transfer Prisoner Notifications
 # 0001 - 0009
 #------------------------------
 
-# Notification: PRISONER
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## scopes:
+## - prisoner
+## - sender
+## - receiver
+### This is the notification for the imprisoned prisoner.
 gm1_interaction.0001 = {
 	hidden = yes
 
@@ -30,7 +50,11 @@ gm1_interaction.0001 = {
 	}
 }
 
-# Notification: SENDER
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## - prisoner
+## - sender
+## - receiver
+### This is the notification for the prisoner's sender.
 gm1_interaction.0002 = {
 	hidden = yes
 
@@ -46,17 +70,23 @@ gm1_interaction.0002 = {
 					RECEIVER = scope:receiver
 					PRISONER = scope:prisoner
 				}
+
+				#opinion
 		
-				transfer_prisoner_interaction_payment_effect = {
-					SENDER = scope:sender
-					RECEIVER = scope:receiver
+				prisoner_interaction_payment_effect = {
+					PAYER = scope:receiver
+					PAYEE = scope:sender
 				}
 			}				
 		}
 	}
 }
 
-# Notification: Receiver
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## - prisoner
+## - sender
+## - receiver
+### This is the notification for the prisoner's receiver.
 gm1_interaction.0003 = {
 	hidden = yes
 
@@ -72,10 +102,12 @@ gm1_interaction.0003 = {
 					RECEIVER = scope:receiver
 					PRISONER = scope:prisoner
 				}
+
+				# opinion
 		
-				transfer_prisoner_interaction_payment_effect = {
-					SENDER = scope:sender
-					RECEIVER = scope:receiver
+				prisoner_interaction_payment_effect = {
+					PAYER = scope:receiver
+					PAYEE = scope:sender
 				}
 			}
 		}
@@ -104,10 +136,7 @@ gm1_interaction.0016 = {
 		desc = gm1_interaction.0011.desc_2
 	}
 		
-	sender = {
-		character = scope:recipient
-		animation = dismissal
-	}
+	sender = scope:recipient
 
 	immediate = {
 		show_as_tooltip = {	
@@ -116,9 +145,9 @@ gm1_interaction.0016 = {
 				PRISONER = scope:secondary_actor
 			}
 
-			transfer_prisoner_interaction_payment_effect = {
-				SENDER = scope:actor
-				RECEIVER = scope:recipient
+			prisoner_interaction_payment_effect = {
+				PAYER = scope:receiver
+				PAYEE = scope:sender
 			}
 		}
 	}
@@ -164,10 +193,7 @@ gm1_interaction.0026 = {
 		desc = gm1_interaction.0021.desc_2
 	}
 		
-	sender = {
-		character = scope:recipient
-		animation = dismissal
-	}
+	sender = scope:recipient
 
 	immediate = {
 		show_as_tooltip = {
@@ -176,9 +202,9 @@ gm1_interaction.0026 = {
 				PRISONER = scope:secondary_recipient
 			}
 
-			transfer_prisoner_interaction_payment_effect = {
-				SENDER = scope:recipient
-				RECEIVER = scope:actor
+			prisoner_interaction_payment_effect = {
+				PAYER = scope:receiver
+				PAYEE = scope:sender
 			}
 		}
 	}
@@ -265,5 +291,175 @@ gm1_interaction.0031 = {
 
 	option = {
 		name = gm1_interaction.0031.a
+	}
+}
+
+#------------------------------
+# Ransom Prisoner Notifications
+# 1001 - 1009
+#------------------------------
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## scopes:
+## - prisoner
+## - imprisoner
+## - petitioner
+gm1_interaction.1001 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_toast = {
+			type = event_toast_effect_good
+			title = notification_ransom_prisoner_interaction_title_prisoner
+			left_icon = scope:petitioner
+			right_icon = scope:imprisoner
+
+			show_as_tooltip = {
+				release_imprisoned_character_effect = {
+					PRISONER = this
+					IMPRISONER = scope:imprisoner
+					PETITIONER = scope:petitioner
+				}
+			}
+		}
+
+		liege ?= {
+			if = {
+				limit = {
+					NOT = { this = scope:imprisoner }
+					NOT = { this = scope:petitioner }
+					OR = {
+						is_close_or_extended_family_of = prev
+						is_consort_of = prev
+						has_relation_lover = prev
+						has_relation_friend = prev
+					}
+				}
+				send_interface_toast = {
+					type = event_toast_effect_good
+					title = notification_ransom_prisoner_interaction_title_prisoner_liege
+					left_icon = scope:petitioner
+					right_icon = prev
+	
+					custom_tooltip = notification_ransom_prisoner_interaction_prisoner_liege_desc
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## scopes:
+## - prisoner
+## - imprisoner
+## - petitioner
+### This is the notification for the ransomed prisoner's imprisoner.
+gm1_interaction.1002 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_generic_neutral
+			title = notification_ransom_prisoner_interaction_title
+			right_icon = scope:prisoner
+			left_icon = scope:petitioner
+
+			show_as_tooltip = {
+				release_imprisoned_character_effect = {
+					PRISONER = scope:prisoner
+					IMPRISONER = this
+					PETITIONER = scope:petitioner
+				}
+				prisoner_interaction_payment_effect = {
+					PAYER = scope:petitioner
+					PAYEE = this
+				}
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
+## scopes:
+## - prisoner
+## - imprisoner
+## - petitioner
+### This is the notification for the ransomed prisoner's petitioner.
+gm1_interaction.1003 = {
+	hidden = yes
+
+	immediate = {
+		send_interface_message = {
+			type = event_generic_neutral
+			title = notification_ransom_prisoner_interaction_title
+			right_icon = scope:prisoner
+			left_icon = scope:imprisoner
+
+			show_as_tooltip = {
+				release_imprisoned_character_effect = {
+					PRISONER = scope:prisoner
+					IMPRISONER = scope:imprisoner
+					PETITIONER = this
+				}
+				prisoner_interaction_payment_effect = {
+					PAYER = scope:petitioner
+					PAYEE = this
+				}
+			}
+		}
+	}
+}
+
+#------------------------------
+# Ransom Prisoner Interaction
+# 1010 - 1019
+#------------------------------
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0140
+## Ransom Prisoner: Accepted
+gm1_interaction.1016 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0010.opening
+	}
+	desc = char_interaction.0140.desc
+	
+	sender = scope:recipient
+
+	immediate = {
+		show_as_tooltip = {
+			release_imprisoned_character_effect = {
+				PRISONER = scope:secondary_recipient
+				IMPRISONER = scope:recipient
+				PETITIONER = this
+			}
+			prisoner_interaction_payment_effect = {
+				PAYER = this
+				PAYEE = scope:recipient
+			}
+		}
+	}
+
+	option = {
+		name = gm1_interaction.0011.a
+	}
+}
+
+# based on ./events/interaction_events/character_interaction_events.txt/char_interaction.0141
+## Ransom Prisoner: Declined
+gm1_interaction.1012 = {
+	type = letter_event
+	opening = {
+		desc = char_interaction.0001.opening
+	}
+	desc = char_interaction.0141.desc
+		
+	sender = {
+		character = scope:recipient
+		animation = dismissal
+	}
+
+	option = {
+		name = gm1_interaction.0012.a
 	}
 }
