@@ -31,6 +31,8 @@ l_english:
  DEMAND_PRISONER_INTERACTION_SELECT_TARGET: "Select [prisoner|E] to demand"
  DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON: "#EMP [recipient.GetShortUIName|U] [CharHaveHas(recipient)] a [prisoner|E] of interest for you"
 
+ demand_prisoner_interaction_decline_summary: "[secondary_recipient.Custom('DemandPrisonerDeclineSummary')]"
+ DEMAND_PRISONER_INTERACTION_DECLINE_SUMMARY_RV: "@warning_icon! #X If you fail to demand [secondary_recipient.GetShortUINameNoTooltip] you can blah blah#!"
 
 ## ransom_prisoner_interaction
  ransom_prisoner_interaction: "$pay_ransom_interaction$"

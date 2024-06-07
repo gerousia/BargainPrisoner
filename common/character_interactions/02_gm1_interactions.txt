@@ -893,6 +893,7 @@ demand_prisoner_interaction = {
 	}
 	highlighted_reason = DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON
 
+	on_decline_summary = demand_prisoner_interaction_decline_summary
 	popup_on_receive = yes
 	pause_on_receive = yes
 	use_diplomatic_range = no

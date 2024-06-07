@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 custom_loc
 ##############################
 #------------------------------
@@ -11,17 +11,12 @@ DemandPrisonerDeclineSummary = {
 
 	text = {
 		trigger = {
-			exists = scope:secondary_recipient
-			always = yes
 			#rv_is_loaded = yes
+			#exists = scope:secondary_recipient
+			always = no
 		}
 		localization_key = DEMAND_PRISONER_INTERACTION_DECLINE_SUMMARY_RV
 	}
-
-	#text = {
-	#	localization_key = imprison_decline_summary_no_war
-	#	fallback = yes
-	#}
 }
 
 #------------------------------
