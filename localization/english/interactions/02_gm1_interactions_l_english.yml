@@ -69,8 +69,10 @@ l_english:
  INTERACTION_AI_PRISONER_REASON_COWED: "$BULLET_WITH_TAB$ [terrified_i][cowed|E] of [prisoner|E]: $VALUE|=+0$"
 
 # EFFECT
- CHARACTER_RECEIVE_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] becomes [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
- CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT: "[TARGET_CHARACTER.GetShortUIName|U] became [CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+ TAKE_PRISONER_TOOLTIP_EFFECT: "Becomes [TARGET_CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+ CHARACTER_TAKE_PRISONER_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName|U] become[_s(CHARACTER)] [TARGET_CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+ TOOK_PRISONER_TOOLTIP_EFFECT: "Became [TARGET_CHARACTER.GetShortUINamePossessive] [prisoner|E]"
+ CHARACTER_TOOK_PRISONER_TOOLTIP_EFFECT: "[CHARACTER.GetShortUIName|U] became [TARGET_CHARACTER.GetShortUINamePossessive] [prisoner|E]"
 
 # TRIGGER
  NOT_AT_IMPRISONER_CAPITAL_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] currently #bold not#! at [TARGET_CHARACTER.GetShortUINamePossessive|V] [prison|E]"
