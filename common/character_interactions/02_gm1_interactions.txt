@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -417,6 +417,16 @@ offer_prisoner_interaction = {
 				can_add_hook = {
 					target = scope:recipient
 					type = favor_hook
+				}
+			}
+			## -----
+			## For dumb-dumbs
+			trigger_if = {
+				limit = { scope:actor = { is_ai = yes } }
+				scope:actor = {
+					can_add_relevant_hook = {
+						CHARACTER = scope:recipient
+					}
 				}
 			}
 		}
@@ -1527,7 +1537,11 @@ demand_prisoner_interaction = {
 					target = scope:actor
 					type = favor_hook
 				}
+				can_add_relevant_hook = {
+					CHARACTER = scope:actor
 			}
+			}
+			## No other option can be selected against a strong hook.
 			custom_tooltip = {
 				text = "option_cannot_be_selected"
 				scope:hook ?= no
@@ -2135,6 +2149,9 @@ ransom_prisoner_interaction = {
 				can_add_hook = {
 					target = scope:actor
 					type = favor_hook
+				}
+				can_add_relevant_hook = {
+					CHARACTER = scope:actor
 				}
 			}
 		}
