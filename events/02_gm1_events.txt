@@ -302,8 +302,9 @@ gm1_interaction.0031 = {
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## scopes:
 ## - prisoner
-## - imprisoner
-## - petitioner
+## - beneficiary
+## - benefactor
+### This is the notification for the ransomed prisoner.
 gm1_interaction.1001 = {
 	hidden = yes
 
@@ -311,14 +312,14 @@ gm1_interaction.1001 = {
 		send_interface_toast = {
 			type = event_toast_effect_good
 			title = notification_ransom_prisoner_interaction_title_prisoner
-			left_icon = scope:petitioner
-			right_icon = scope:imprisoner
+			left_icon = scope:benefactor
+			right_icon = scope:beneficiary
 
 			show_as_tooltip = {
 				release_imprisoned_character_effect = {
 					PRISONER = this
-					IMPRISONER = scope:imprisoner
-					PETITIONER = scope:petitioner
+					IMPRISONER = scope:beneficiary
+					PETITIONER = scope:benefactor
 				}
 			}
 		}
@@ -326,8 +327,8 @@ gm1_interaction.1001 = {
 		liege ?= {
 			if = {
 				limit = {
-					NOT = { this = scope:imprisoner }
-					NOT = { this = scope:petitioner }
+					NOT = { this = scope:beneficiary }
+					NOT = { this = scope:benefactor }
 					OR = {
 						is_close_or_extended_family_of = prev
 						is_consort_of = prev
@@ -338,7 +339,7 @@ gm1_interaction.1001 = {
 				send_interface_toast = {
 					type = event_toast_effect_good
 					title = notification_ransom_prisoner_interaction_title_prisoner_liege
-					left_icon = scope:petitioner
+					left_icon = scope:benefactor
 					right_icon = prev
 	
 					custom_tooltip = notification_ransom_prisoner_interaction_prisoner_liege_desc
@@ -351,9 +352,9 @@ gm1_interaction.1001 = {
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## scopes:
 ## - prisoner
-## - imprisoner
-## - petitioner
-### This is the notification for the ransomed prisoner's imprisoner.
+## - beneficiary
+## - benefactor
+### This is the notification for the ransomed prisoner's beneficiary.
 gm1_interaction.1002 = {
 	hidden = yes
 
@@ -362,16 +363,16 @@ gm1_interaction.1002 = {
 			type = event_generic_neutral
 			title = notification_ransom_prisoner_interaction_title
 			right_icon = scope:prisoner
-			left_icon = scope:petitioner
+			left_icon = scope:benefactor
 
 			show_as_tooltip = {
 				release_imprisoned_character_effect = {
 					PRISONER = scope:prisoner
 					IMPRISONER = this
-					PETITIONER = scope:petitioner
+					PETITIONER = scope:benefactor
 				}
 				prisoner_interaction_payment_effect = {
-					PAYER = scope:petitioner
+					PAYER = scope:benefactor
 					PAYEE = this
 				}
 			}
@@ -382,9 +383,9 @@ gm1_interaction.1002 = {
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## scopes:
 ## - prisoner
-## - imprisoner
-## - petitioner
-### This is the notification for the ransomed prisoner's petitioner.
+## - beneficiary
+## - benefactor
+### This is the notification for the ransomed prisoner's benefactor.
 gm1_interaction.1003 = {
 	hidden = yes
 
@@ -393,16 +394,16 @@ gm1_interaction.1003 = {
 			type = event_generic_neutral
 			title = notification_ransom_prisoner_interaction_title
 			right_icon = scope:prisoner
-			left_icon = scope:imprisoner
+			left_icon = scope:beneficiary
 
 			show_as_tooltip = {
 				release_imprisoned_character_effect = {
 					PRISONER = scope:prisoner
-					IMPRISONER = scope:imprisoner
+					IMPRISONER = scope:beneficiary
 					PETITIONER = this
 				}
 				prisoner_interaction_payment_effect = {
-					PAYER = scope:petitioner
+					PAYER = scope:benefactor
 					PAYEE = this
 				}
 			}

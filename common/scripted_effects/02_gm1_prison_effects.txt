@@ -785,13 +785,13 @@ change_imprisoner_consequences_war_effect = {
 ## PETITIONER (character)
 release_imprisoned_character_effect = {
 	$PRISONER$ = { save_temporary_scope_as = release_target }
-	$IMPRISONER$ = { save_temporary_scope_as = target_imprisoner }
-	$PETITIONER$ = { save_temporary_scope_as = target_petitioner }
+	$IMPRISONER$ = { save_temporary_scope_as = imprisoner }
+	$PETITIONER$ = { save_temporary_scope_as = petitioner }
 
 	scope:release_target = {
 		custom_description = { 
 			text = "release_prisoner_tooltip_effect"
-			subject = scope:target_imprisoner
+			subject = scope:imprisoner
 			object = this
 
 			add_character_flag = {
@@ -803,21 +803,21 @@ release_imprisoned_character_effect = {
 
 		### OPINIONS
 		add_opinion = {
-			target = scope:target_petitioner
+			target = scope:petitioner
 			modifier = ransomed_from_prison
 			years = 1
 		}
 	}
 
-	scope:target_imprisoner = {
+	scope:imprisoner = {
 		## REWARDS
 		release_imprisoned_consequences_struggle_effect = {
 			CHARACTER = this
-			TARGET = scope:release_target
+			TARGET_CHARACTER = scope:release_target
 		}
 	}
 
-	scope:target_petitioner = {
+	scope:petitioner = {
 		if = {
 			limit = {
 				scope:release_target = {
@@ -849,23 +849,26 @@ release_imprisoned_character_effect = {
 		## REWARDS
 		release_imprisoned_consequences_clan_effect = {
 			CHARACTER = this
-			TARGET = scope:release_target
+			TARGET_CHARACTER = scope:release_target
 		}
 	}
 }
 
 # based on ./common/scripted_effects/00_prison_effects.txt/ransom_interaction_effect
 ## CHARACTER (character)
-## TARGET (character)
+## TARGET_CHARACTER (character)
 release_imprisoned_consequences_struggle_effect = {
-	$CHARACTER$ = {
+	$CHARACTER$ = { save_temporary_scope_as = character }
+	$TARGET_CHARACTER$ = { save_temporary_scope_as = target_character }
+
+	scope:character = {
 		if = {
 			limit = {
 				any_character_struggle = {
 					involvement = involved
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_important
-						CHAR = $TARGET$
+						CHAR = scope:target_character
 					}
 				}
 			}
@@ -874,12 +877,12 @@ release_imprisoned_consequences_struggle_effect = {
 				limit = {
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_important
-						CHAR = $TARGET$
+						CHAR = scope:target_character
 					}
 				}
 				activate_struggle_catalyst = {
 					catalyst = catalyst_ransom_important
-					character = $CHARACTER$
+					character = scope:character
 				}
 			}
 		}
@@ -887,13 +890,13 @@ release_imprisoned_consequences_struggle_effect = {
 			limit = {
 				fp3_struggle_involves_one_supporter_and_one_detractor = {
 					FIRST = this
-					SECOND = $TARGET$
+					SECOND = scope:target_character
 				}
 				any_character_struggle = {
 					involvement = involved
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_supporter_detractor
-						CHAR = $TARGET$
+						CHAR = scope:target_character
 					}
 				}
 			}
@@ -902,12 +905,12 @@ release_imprisoned_consequences_struggle_effect = {
 				limit = {
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_supporter_detractor
-						CHAR = $TARGET$
+						CHAR = scope:target_character
 					}
 				}
 				activate_struggle_catalyst = {
 					catalyst = catalyst_ransom_supporter_detractor
-					character = $CHARACTER$
+					character = scope:character
 				}
 				log_debug_variable_for_persian_struggle_effect = { 
 					VAR = concession_catalyst_ransom_supporter_detractor
@@ -919,17 +922,20 @@ release_imprisoned_consequences_struggle_effect = {
 
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## CHARACTER (character)
-## TARGET (character)
+## TARGET_CHARACTER (character)
 release_imprisoned_consequences_clan_effect = {
-	$CHARACTER$ = {
+	$CHARACTER$ = { save_temporary_scope_as = character }
+	$TARGET_CHARACTER$ = { save_temporary_scope_as = target_character }
+
+	scope:character = {
 		if = {
 			limit = { 
 				government_has_flag = government_is_clan
-				house = $TARGET$.house
+				house = scope:target_character.house
 			}
 			add_clan_unity_interaction_effect = {
-				CHARACTER = $CHARACTER$
-				TARGET = $TARGET$
+				CHARACTER = scope:character
+				TARGET = scope:target_character
 				VALUE = medium_unity_gain
 				DESC = clan_unity_ransom.desc
 				REVERSE_NON_HOUSE_TARGET = no

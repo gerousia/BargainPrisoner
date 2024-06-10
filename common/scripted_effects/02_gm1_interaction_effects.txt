@@ -336,12 +336,12 @@ transfer_prisoner_interaction_dread_effect = {
 
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## PRISONER (character)
-## IMPRISONER (character)
-## PETITIONER (character)
+## BENEFICIARY (character)
+## BENEFACTOR (character)
 ransom_prisoner_interaction_effect = {
 	$PRISONER$ = { save_scope_as = prisoner }
-	$IMPRISONER$ = { save_scope_as = imprisoner }
-	$PETITIONER$ = { save_scope_as = petitioner }
+	$BENEFICIARY$ = { save_scope_as = beneficiary }
+	$BENEFACTOR$ = { save_scope_as = benefactor }
 
 	switch = {
 		trigger = always
@@ -351,22 +351,22 @@ ransom_prisoner_interaction_effect = {
 				value = scope:prisoner.increased_ransom_cost_value
 			}
 		}
-		scope:extortionate_current_gold = {
-			save_scope_value_as = {
-				name = saved_gold_value
-				value = scope:petitioner.current_gold_value
-			}
-		}
 		scope:gold = {
 			save_scope_value_as = {
 				name = saved_gold_value
 				value = scope:prisoner.ransom_cost_value
 			}
 		}
+		scope:extortionate_current_gold = {
+			save_scope_value_as = {
+				name = saved_gold_value
+				value = scope:benefactor.current_gold_value
+			}
+		}
 		scope:current_gold = {
 			save_scope_value_as = {
 				name = saved_gold_value
-				value = scope:petitioner.current_gold_value
+				value = scope:benefactor.current_gold_value
 			}
 		}
 	}
@@ -374,23 +374,23 @@ ransom_prisoner_interaction_effect = {
 	scope:prisoner = {
 		release_imprisoned_character_effect = {
 			PRISONER = this
-			IMPRISONER = scope:imprisoner
-			PETITIONER = scope:petitioner
+			IMPRISONER = scope:beneficiary
+			PETITIONER = scope:benefactor
 		}
 
 		## NOTIFICATION
 		trigger_event = gm1_interaction.1001
 	}
 
-	scope:imprisoner = {
+	scope:beneficiary = {
 		## NOTIFICATION
 		trigger_event = gm1_interaction.1002
 	}
 
-	scope:petitioner = {
+	scope:benefactor = {
 		ransom_prisoner_interaction_stress_effect = {
 			CHARACTER = this
-			TARGET = scope:prisoner
+			TARGET_CHARACTER = scope:prisoner
 		}
 
 		## NOTIFICATION
@@ -398,19 +398,22 @@ ransom_prisoner_interaction_effect = {
 	}
 
 	prisoner_interaction_payment_effect = {
-		PAYER = scope:petitioner
-		PAYEE = scope:imprisoner
+		PAYER = scope:benefactor
+		PAYEE = scope:beneficiary
 	}
 }
 
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## CHARACTER (character)
-## TARGET (character)
+## TARGET_CHARACTER (character)
 ransom_prisoner_interaction_stress_effect = {
-	$CHARACTER$ = {
+	$CHARACTER$ = { save_scope_as = character }
+	$TARGET_CHARACTER$ = { save_scope_as = target_character }
+
+	scope:character = {
 		if = {
 			limit = {
-				$TARGET$ = {
+				scope:target_character = {
 					OR = {
 						is_vassal_of = prev
 						is_consort_of = prev
@@ -418,8 +421,8 @@ ransom_prisoner_interaction_stress_effect = {
 						dynasty ?= prev.dynasty
 						any_spouse = {
 							OR = {
-								is_close_family_of = $CHARACTER$
-								dynasty ?= $CHARACTER$.dynasty
+								is_close_family_of = scope:character
+								dynasty ?= scope:character.dynasty
 							}
 						}
 						has_relation_lover = prev
@@ -441,7 +444,7 @@ ransom_prisoner_interaction_stress_effect = {
 		}
 
 		if = {
-			limit = { has_relation_lover = $TARGET$ }
+			limit = { has_relation_lover = scope:target_character }
 			stress_impact = {
 				lustful = major_stress_impact_loss
 			}
@@ -449,8 +452,8 @@ ransom_prisoner_interaction_stress_effect = {
 
 		if = {
 			limit = { 
-				has_relation_lover = $TARGET$
-				has_relation_friend = $TARGET$
+				has_relation_lover = scope:target_character
+				has_relation_friend = scope:target_character
 			}
 			stress_impact = {
 				loyal = major_stress_impact_loss
@@ -458,7 +461,7 @@ ransom_prisoner_interaction_stress_effect = {
 		}
 
 		if = {
-			limit = { is_close_family_of = $TARGET$ }
+			limit = { is_close_family_of = scope:target_character }
 			stress_impact = {
 				family_first = miniscule_stress_impact_loss
 			}
@@ -488,7 +491,12 @@ prisoner_interaction_payment_effect = {
 		}
 
 		if = {
-			limit = { scope:hook ?= yes	}
+			limit = { 
+				OR = {
+					scope:hook ?= yes
+					scope:strong_hook ?= yes
+				}
+			}
 			use_hook = scope:payee
 		}
 
@@ -496,7 +504,7 @@ prisoner_interaction_payment_effect = {
 	
 	scope:payee = {
 		if = {
-			limit = { scope:strong_hook ?= yes }
+			limit = { scope:loyalty ?= yes }
 			add_hook = {
 				target = scope:payer
 				type = loyalty_hook

@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -2378,8 +2378,8 @@ ransom_prisoner_interaction = {
 		## This is where all the magic happens.
 		ransom_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_recipient
-			IMPRISONER = scope:recipient
-			PETITIONER = scope:actor
+			BENEFICIARY = scope:recipient
+			BENEFACTOR = scope:actor
 		}
 
 		## NOTIFICATION

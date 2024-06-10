@@ -62,7 +62,7 @@ l_english:
  BARTER_OPTION_VERY_HIGH_GOLD_CURRENT: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$CURRENT_GOLD|0$ #weak (cannot afford full ransom of [gold_i]$VERY_HIGH_BARTER_COST|0$)#!"
  BARTER_OPTION_FAVOR: "For a [hook_i][hook|E]"
  BARTER_OPTION_OWE_FAVOR: "$RANSOM_OWE_FAVOR_OPTION$"
- BARTER_OPTION_OWE_STRONG_HOOK: "Owe a [hook_i][strong_hook|E]"
+ BARTER_OPTION_OWE_LOYALTY: "Owe a [hook_i][strong_hook|E]"
  
  #GAIN_HOOK_REASON: "Gains a [hook|E]: $VALUE|=+0$"
  #GAIN_STRONG_HOOK_REASON: "Gains a [strong_hook|E]: $VALUE|=+0$"
@@ -71,5 +71,5 @@ l_english:
  #LOSE_GOLD_REASON: "Pays [gold|E]: $VALUE|=+0$"
 
 # TOOLTIP
- #maximum_opinion_reached: "Maximum attainable [opinion|E] already reached."
+ #option_maximum_reached: "Maximum attainable [opinion|E] already reached."
  option_cannot_be_selected: "Cannot be selected with another already selected option"
