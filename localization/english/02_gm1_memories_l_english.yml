@@ -3,7 +3,6 @@
 ##############################
 
 l_english:
-
  change_imprisoner_prisoner_memory: "Moved Prison"
  change_imprisoner_prisoner_desc: "My jailor, [old_imprisoner.GetTitledFirstName], sent me to become [new_imprisoner.GetFullNamePossessive] own prisoner"
  change_imprisoner_prisoner_desc_perspective: "[owner.GetTitledFirstNamePossessive|U] jailor, [old_imprisoner.GetTitledFirstName], sent [owner.GetHerHim] to become [new_imprisoner.GetFullNamePossessive] own prisoner"

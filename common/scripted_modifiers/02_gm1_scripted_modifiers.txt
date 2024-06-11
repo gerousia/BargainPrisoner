@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -24,7 +24,7 @@ gm1_transfer_prisoner_interaction_tier_modifier = {
 				min = 1
 			}
 		}
-		desc = INTERACTION_AI_REASON_RANK_DIFFERENCE_REASON
+		desc = AI_REASON_INDENTED_RANK_DIFFERENCE_REASON
 	}
 	### This ruler is dismissive towards lower tier rulers.
 	modifier = {
@@ -41,7 +41,7 @@ gm1_transfer_prisoner_interaction_tier_modifier = {
 				min = 1
 			}
 		}
-		desc = INTERACTION_AI_REASON_RANK_DIFFERENCE_REASON
+		desc = AI_REASON_INDENTED_RANK_DIFFERENCE_REASON
 	}
 }
 
@@ -57,7 +57,7 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			$WHO$.current_military_strength < $TARGET$.interaction_current_strength_ninety_percent_value
 		}
 		add = -10
-		desc = INTERACTION_AI_REASON_SIMILAR_MILITARY_STRENGTH
+		desc = AI_REASON_INDENTED_SIMILAR_MILITARY_STRENGTH
 	}
 	### This ruler is more powerful than that ruler. 
 	### This ruler is less likely to accept.
@@ -74,7 +74,7 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			max = 50
 			min = -50
 		}
-		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
+		desc = AI_REASON_INDENTED_RELATIVE_MILITARY_STRENGTH
 	}
 	### This ruler is less powerful than that ruler.
 	### This ruler is more likely to accept.
@@ -102,7 +102,7 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			max = 50
 			min = -50
 		}
-		desc = INTERACTION_AI_REASON_RELATIVE_MILITARY_STRENGTH
+		desc = AI_REASON_INDENTED_RELATIVE_MILITARY_STRENGTH
 	}
 	### This evaluates both the ruler's allies strength.
 	### This ruler's alliance is more powerful than the that ruler's alliance.
@@ -151,7 +151,7 @@ gm1_transfer_prisoner_interaction_relative_strength_modifier = {
 			max = 25
 			min = -25
 		}
-		desc = INTERACTION_AI_REASON_ALLY_MILITARY_STRENGTH
+		desc = AI_REASON_INDENTED_ALLY_MILITARY_STRENGTH
 	}
 }
 
@@ -165,7 +165,7 @@ gm1_transfer_prisoner_interaction_government_modifier = {
 		$WHO$ = { government_has_flag = government_is_tribal }
 		$TARGET$ = { NOT = { government_has_flag = government_is_tribal } }
 		add = -20
-		desc = INTERACTION_AI_REASON_TRIBAL_GOVERNMENT
+		desc = AI_REASON_INDENTED_TRIBAL_GOVERNMENT
 	}
 	### This ruler is not tribal while the other ruler is.
 	### This ruler is less likely to approve.
@@ -173,7 +173,7 @@ gm1_transfer_prisoner_interaction_government_modifier = {
 		$WHO$ = { NOT = { government_has_flag = government_is_tribal } }
 		$TARGET$ = { government_has_flag = government_is_tribal }
 		add = -20
-		desc = INTERACTION_AI_REASON_TRIBAL_GOVERNMENT
+		desc = AI_REASON_INDENTED_TRIBAL_GOVERNMENT
 	}
 }
 
@@ -185,13 +185,13 @@ gm1_transfer_prisoner_interaction_realm_modifier = {
 	modifier = {
 		$WHO$ = { is_allied_to = $TARGET$ } 
 		add = 20
-		desc = INTERACTION_AI_REASON_ALLY
+		desc = AI_REASON_INDENTED_ALLY
 	}
 	### This ruler recently fought in a war against that ruler.
 	modifier = {
 		$WHO$ = { any_truce_holder = { $TARGET$ = this } }	
 		add = -50
-		desc = INTERACTION_AI_REASON_RECENT_WAR
+		desc = AI_REASON_INDENTED_RECENT_WAR
 	}
 	### This ruler fought in an independence war against that ruler.
 	modifier = {
@@ -203,7 +203,7 @@ gm1_transfer_prisoner_interaction_realm_modifier = {
 			value = -50
 			multiply = 4
 		}
-		desc = INTERACTION_AI_REASON_RECENT_INDEPENDECE_WAR
+		desc = AI_REASON_INDENTED_RECENT_INDEPENDECE_WAR
 	}
 }
 
@@ -219,7 +219,7 @@ gm1_transfer_prisoner_interaction_culture_modifier = {
 			cultural_acceptance = { target = $TARGET$.culture value >= 50 }
 		}
 		add = -5
-		desc = INTERACTION_AI_REASON_CULTURAL_ACCEPTANCE
+		desc = AI_REASON_INDENTED_CULTURAL_ACCEPTANCE
 	}
 	modifier = {
 		$WHO$.culture = {
@@ -228,7 +228,7 @@ gm1_transfer_prisoner_interaction_culture_modifier = {
 			cultural_acceptance = { target = $TARGET$.culture value >= 25 }
 		}
 		add = -5
-		desc = INTERACTION_AI_REASON_CULTURAL_ACCEPTANCE
+		desc = AI_REASON_INDENTED_CULTURAL_ACCEPTANCE
 	}
 	modifier = {
 		$WHO$.culture = {
@@ -239,7 +239,7 @@ gm1_transfer_prisoner_interaction_culture_modifier = {
 			value = -5
 			multiply = 3
 		}
-		desc = INTERACTION_AI_REASON_CULTURAL_ACCEPTANCE
+		desc = AI_REASON_INDENTED_CULTURAL_ACCEPTANCE
 	}
 }
 
@@ -260,7 +260,7 @@ gm1_transfer_prisoner_interaction_faith_modifier = {
 			value = -5
 			multiply = 3
 		}
-		desc = INTERACTION_AI_REASON_FAITH_EVIL
+		desc = AI_REASON_INDENTED_FAITH_EVIL
 	}
 	modifier = {
 		$WHO$.faith = {
@@ -274,7 +274,7 @@ gm1_transfer_prisoner_interaction_faith_modifier = {
 			value = -5
 			multiply = 2
 		}
-		desc = INTERACTION_AI_REASON_FAITH_EVIL
+		desc = AI_REASON_INDENTED_FAITH_EVIL
 	}
 	modifier = {
 		$WHO$.faith = {
@@ -285,7 +285,7 @@ gm1_transfer_prisoner_interaction_faith_modifier = {
 			}
 		}
 		add = -5
-		desc = INTERACTION_AI_REASON_FAITH_ASTRAY
+		desc = AI_REASON_INDENTED_FAITH_ASTRAY
 	}
 }
 
@@ -297,39 +297,39 @@ gm1_transfer_prisoner_interaction_relation_modifier = {
 		$WHO$ = { has_relation_friend = $TARGET$ }
 		$WHO$ = { NOT = { has_relation_best_friend = $TARGET$ } }
 		add = 10
-		desc = INTERACTION_AI_REASON_RELATION_FRIEND
+		desc = AI_REASON_INDENTED_RELATION_FRIEND
 	}
 	modifier = {
 		$WHO$ = { has_relation_best_friend = $TARGET$ } 
 		add = 20
-		desc = INTERACTION_AI_REASON_RELATION_BEST_FRIEND
+		desc = AI_REASON_INDENTED_RELATION_BEST_FRIEND
 	}
 	modifier = {
 		$WHO$ = { has_relation_lover = $TARGET$ }
 		$WHO$ = { NOT = { has_relation_soulmate = $TARGET$ } }
 		add = 10
-		desc = INTERACTION_AI_REASON_RELATION_LOVER
+		desc = AI_REASON_INDENTED_RELATION_LOVER
 	}
 	modifier = {
 		$WHO$ = { has_relation_soulmate = $TARGET$ } 
 		add = 20
-		desc = INTERACTION_AI_REASON_RELATION_SOULMATE
+		desc = AI_REASON_INDENTED_RELATION_SOULMATE
 	}
 	modifier = {
 		$WHO$ = { has_relation_rival = $TARGET$ }
 		$WHO$ = { NOT = { has_relation_nemesis = $TARGET$ } }
 		add = -25
-		desc = INTERACTION_AI_REASON_RELATION_RIVAL
+		desc = AI_REASON_INDENTED_RELATION_RIVAL
 	}
 	modifier = {
 		$WHO$ = { has_relation_nemesis = $TARGET$ } 
 		add = -50
-		desc = INTERACTION_AI_REASON_RELATION_NEMESIS
+		desc = AI_REASON_INDENTED_RELATION_NEMESIS
 	}
 	modifier = {
 		$WHO$ = { dynasty = $TARGET$.dynasty } 
 		add = 5
-		desc = INTERACTION_AI_REASON_DYNASTY_SAME_DYNASTY
+		desc = AI_REASON_INDENTED_DYNASTY_SAME_DYNASTY
 	}
 }
 
@@ -786,13 +786,13 @@ gm1_transfer_prisoner_interaction_prisoner_faith_modifier = {
 		$PRISONER$ = { is_head_of_faith_of = { CHARACTER = $WHO$ } }
 		add = {
 			value = -500
+			if = {
+				limit = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
 				if = {
-					limit = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
-					if = {
-						limit = { $WHO$.ai_zeal >= very_low_positive_ai_value }
+					limit = { $WHO$.ai_zeal >= very_low_positive_ai_value }
 					divide = 5
-					}
-					else = {
+				}
+				else = {
 					divide = 10
 				}
 			}
@@ -1195,7 +1195,7 @@ gm1_demand_prisoner_interaction_personality_modifier = {
 				}
 			}
 		}
-		desc = INTERACTION_AI_REASON_REALM_LAW
+		desc = INTERACTION_REALM_LAW
 	}
 	## Characters that are rational characters are less willing to barter.
 	modifier = {

@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 character_interactions
 ##############################
 
@@ -11,8 +11,8 @@ offer_prisoner_interaction = {
 		scope:actor = {
 			any_prisoner = {
 				gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
-					SENDER = scope:actor
-					RECEIVER = scope:recipient
+					BENEFICIARY = scope:actor
+					BENEFACTOR = scope:recipient
 				}
 			}
 		}
@@ -102,7 +102,7 @@ offer_prisoner_interaction = {
 	can_send = {
 		exists = scope:secondary_actor
 		custom_description = {
-			text = "is_allies_with_target_trigger"
+			text = "is_allied_in_war_with_target_trigger"
 			subject = scope:actor
 			object = scope:recipient
 			NAND = {
@@ -128,7 +128,7 @@ offer_prisoner_interaction = {
 			scope:actor = { NOT = { is_at_war_with = scope:secondary_actor } }
 			scope:secondary_actor = {
 				gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
-					RECEIVER = scope:recipient
+					BENEFACTOR = scope:recipient
 				}
 			}
 		}
@@ -473,14 +473,12 @@ offer_prisoner_interaction = {
 		## This is where all the magic happens.
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_actor
-			SENDER = scope:actor
-			RECEIVER = scope:recipient
+			BENEFICIARY = scope:actor
+			BENEFACTOR = scope:recipient
 		}
 
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.0016
-		}
+		## NOTIFICATIONS
+		scope:actor = {	trigger_event = gm1_interaction.0016 }
 
 		## FLAGS
 		scope:actor = {
@@ -502,10 +500,8 @@ offer_prisoner_interaction = {
 			debug_log = "GM1 - Declined Offer Prisoner Interaction"
 		}
 		
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.0012 
-		}
+		## NOTIFICATIONS
+		scope:actor = {	trigger_event = gm1_interaction.0012 }
 
 		## FLAGS
 		## This enables queueing and disables concurrency issues.
@@ -989,8 +985,8 @@ demand_prisoner_interaction = {
 		scope:recipient = {
 			any_prisoner = {
 				gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
-					SENDER = scope:recipient
-					RECEIVER = scope:actor
+					BENEFICIARY = scope:recipient
+					BENEFACTOR = scope:actor
 				}
 			}
 		}
@@ -1122,7 +1118,7 @@ demand_prisoner_interaction = {
 	can_send = {
 		exists = scope:secondary_recipient
 		custom_description = {
-			text = "is_allies_with_target_trigger"
+			text = "is_allied_in_war_with_target_trigger"
 			subject = scope:actor
 			object = scope:recipient
 			NAND = {
@@ -1161,8 +1157,8 @@ demand_prisoner_interaction = {
 			}
 			always = no
 		}
-		## The hook from receiver can counteract, but only if 
-		## the sender is not forcing the action through a strong hook.
+		## The hook from Recipient can counteract, but only if 
+		## the Actor is not forcing the action through a strong hook.
 		trigger_if = {
 			limit = {
 				AND = {
@@ -1885,14 +1881,12 @@ demand_prisoner_interaction = {
 		## This is where all the magic happens.
 		transfer_prisoner_interaction_effect = {
 			PRISONER = scope:secondary_recipient
-			SENDER = scope:recipient
-			RECEIVER = scope:actor
+			BENEFICIARY = scope:recipient
+			BENEFACTOR = scope:actor
 		}
 
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.0026
-		}
+		## NOTIFICATIONS
+		scope:actor = {	trigger_event = gm1_interaction.0026 }
 
 		## FLAGS
 		scope:actor = {
@@ -1914,10 +1908,8 @@ demand_prisoner_interaction = {
 			debug_log = "GM1 - Declined Demand Prisoner Interaction"
 		}
 
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.0022 
-		}
+		## NOTIFICATIONS
+		scope:actor = {	trigger_event = gm1_interaction.0022 }
 
 		## FLAGS
 		## This enables queueing and disables concurrency issues.
@@ -2293,12 +2285,6 @@ ransom_prisoner_interaction = {
 	is_shown = {
 		# Cannot target oneself.
 		NOT = { scope:recipient = scope:actor }
-		## This is here to avoid intermixing with the vanilla pay_ransom_interaction.
-		scope:secondary_recipient ?= {
-			gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
-				PETITIONER = scope:actor
-			}
-		}
 	}
 
 	is_valid_showing_failures_only = {
@@ -2385,6 +2371,10 @@ ransom_prisoner_interaction = {
 					NOT = { scope:actor = this }
 					gm1_valid_prisoner_for_interaction_trigger = {
 						IMPRISONER = scope:recipient
+					}
+					## This is here to avoid intermixing with the vanilla pay_ransom_interaction.
+					gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
+						BENEFACTOR = scope:actor
 					}
 				}
 				add_to_list = characters
@@ -2533,10 +2523,8 @@ ransom_prisoner_interaction = {
 			BENEFACTOR = scope:actor
 		}
 
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.1016
-		}
+		## NOTIFICATIONS
+		scope:actor = {	trigger_event = gm1_interaction.1016 }
 
 		if = {
 			limit = { debug_only = yes }
@@ -2550,10 +2538,8 @@ ransom_prisoner_interaction = {
 			debug_log = "GM1 - Declined Ransom Prisoner Interaction"
 		}	
 
-		## NOTIFICATION
-		scope:actor = {
-			trigger_event = gm1_interaction.1012
-		}
+		## NOTIFICATIONS
+		scope:actor = { trigger_event = gm1_interaction.1012 }
 
 		## FLAGS
 		## If a player declines this ransom offer, wait 10 years before sending another one

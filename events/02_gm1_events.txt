@@ -27,8 +27,8 @@ scripted_effect take_prisoner = {
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## scopes:
 ## - prisoner
-## - sender
-## - receiver
+## - beneficiary
+## - benefactor
 ### This is the notification for the imprisoned prisoner.
 gm1_interaction.0001 = {
 	hidden = yes
@@ -37,12 +37,12 @@ gm1_interaction.0001 = {
 		send_interface_message = {
 			type = event_prison_bad
 			title = notification_transfer_prisoner_interaction_title
-			left_icon = scope:receiver
-			right_icon = scope:sender
+			left_icon = scope:benefactor
+			right_icon = scope:beneficiary
 			
 			show_as_tooltip = {
 				take_prisoner = {
-					IMPRISONER = scope:receiver
+					IMPRISONER = scope:benefactor
 					PRISONER = scope:prisoner
 				}
 			}
@@ -52,9 +52,9 @@ gm1_interaction.0001 = {
 
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## - prisoner
-## - sender
-## - receiver
-### This is the notification for the prisoner's sender.
+## - beneficiary
+## - benefactor
+### This is the notification for the prisoner's beneficiary.
 gm1_interaction.0002 = {
 	hidden = yes
 
@@ -63,19 +63,19 @@ gm1_interaction.0002 = {
 			type = event_prison_neutral
 			title = notification_transfer_prisoner_interaction_title
 			left_icon = scope:prisoner
-			right_icon = scope:receiver
+			right_icon = scope:benefactor
 			
 			show_as_tooltip = {
 				take_prisoner = {
-					IMPRISONER = scope:receiver
+					IMPRISONER = scope:benefactor
 					PRISONER = scope:prisoner
 				}
 
 				#opinion
 		
 				prisoner_interaction_payment_effect = {
-					PAYER = scope:receiver
-					PAYEE = scope:sender
+					PAYER = scope:benefactor
+					PAYEE = scope:beneficiary
 				}
 			}				
 		}
@@ -84,9 +84,9 @@ gm1_interaction.0002 = {
 
 # based on ./common/character_interactions/00_prison_interactions.txt/pay_ransom_interaction
 ## - prisoner
-## - sender
-## - receiver
-### This is the notification for the prisoner's receiver.
+## - beneficiary
+## - benefactor
+### This is the notification for the prisoner's benefactor.
 gm1_interaction.0003 = {
 	hidden = yes
 
@@ -95,19 +95,19 @@ gm1_interaction.0003 = {
 			type = event_prison_neutral
 			title = notification_transfer_prisoner_interaction_title
 			left_icon = scope:prisoner
-			right_icon = scope:sender
+			right_icon = scope:beneficiary
 			
 			show_as_tooltip = {
 				take_prisoner = {
-					IMPRISONER = scope:receiver
+					IMPRISONER = scope:benefactor
 					PRISONER = scope:prisoner
 				}
 
 				# opinion
 		
 				prisoner_interaction_payment_effect = {
-					PAYER = scope:receiver
-					PAYEE = scope:sender
+					PAYER = scope:benefactor
+					PAYEE = scope:beneficiary
 				}
 			}
 		}
@@ -146,8 +146,8 @@ gm1_interaction.0016 = {
 			}
 
 			prisoner_interaction_payment_effect = {
-				PAYER = scope:receiver
-				PAYEE = scope:sender
+				PAYER = scope:recipient
+				PAYEE = scope:actor
 			}
 		}
 	}
@@ -203,8 +203,8 @@ gm1_interaction.0026 = {
 			}
 
 			prisoner_interaction_payment_effect = {
-				PAYER = scope:receiver
-				PAYEE = scope:sender
+				PAYER = scope:actor
+				PAYEE = scope:recipient
 			}
 		}
 	}

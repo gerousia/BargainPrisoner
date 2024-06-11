@@ -3,10 +3,10 @@
 ##############################
 
 l_english:
-	CAN_ADD_RELEVANT_HOOK_TRIGGER: "Wants a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
-	CHARACTER_CAN_ADD_RELEVANT_HOOK_TRIGGER: "[CHARACTER.GetSheHe|U] wants a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
-	NOT_CAN_ADD_RELEVANT_HOOK_TRIGGER: "Does #Bold not#! need a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
-	NOT_CHARACTER_CAN_ADD_RELEVANT_HOOK_TRIGGER: "[CHARACTER.GetSheHe|U] does #Bold not#! need a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
+ CAN_ADD_RELEVANT_HOOK_TRIGGER: "Wants a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
+ CHARACTER_CAN_ADD_RELEVANT_HOOK_TRIGGER: "[CHARACTER.GetSheHe|U] wants a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
+ NOT_CAN_ADD_RELEVANT_HOOK_TRIGGER: "Does #Bold not#! need a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
+ NOT_CHARACTER_CAN_ADD_RELEVANT_HOOK_TRIGGER: "[CHARACTER.GetSheHe|U] does #Bold not#! need a [hook|E] from [TARGET_CHARACTER.GetShortUIName]"
 
 # PDX bug - remove when fixed
  HAS_PRISONERS_TRIGGER: "Has a [prisoner|E]"

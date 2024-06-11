@@ -20,4 +20,5 @@ l_english:
  CHANGE_IMPRISONER_WAR_PARTICIPANT: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] at [war|E] with [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
  CHANGE_IMPRISONER_WAR_LEADER: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] a [war_leader|E] against [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
 
+# LIST
  all_war_allies: "[THIS.GetCharacter.GetShortUINamePossessive|U] in [war|E]"

@@ -10,8 +10,8 @@ has_requested_excommunication = {
 # CHARACTER (character)
 is_head_of_faith_of = {
 	$CHARACTER$ = {
-		exists = faith.religious_head
-		faith.religious_head = prev
+		exists = faith
+		faith.religious_head ?= prev
 	}
 }
 

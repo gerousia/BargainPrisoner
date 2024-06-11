@@ -6,18 +6,18 @@
 #------------------------------
 
 # based on ./common/customizable_localization/00_interactions_custom_loc.txt/ImprisonCharacterDeclineSummary
-DemandPrisonerDeclineSummary = {
-	type = character
-
-	text = {
-		trigger = {
-			#rv_is_loaded = yes
-			#exists = scope:secondary_recipient
-			always = no
-		}
-		localization_key = DEMAND_PRISONER_INTERACTION_DECLINE_SUMMARY_RV
-	}
-}
+#PrisonerInteractionDeclineSummary = {
+#	type = character
+#
+#	text = {
+#		trigger = {
+#			#rv_is_loaded = yes
+#			#exists = scope:secondary_recipient
+#			always = no
+#		}
+#		localization_key = PRISONER_INTERACTION_DECLINE_SUMMARY_RV
+#	}
+#}
 
 #------------------------------
 # script-effects-related

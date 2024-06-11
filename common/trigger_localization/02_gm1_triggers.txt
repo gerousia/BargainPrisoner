@@ -2,12 +2,8 @@
 ## GM1 scripted_triggers
 ##############################
 
-is_at_imprisoner_capital_trigger = {
-	global_not = NOT_AT_IMPRISONER_CAPITAL_TRIGGER
-}
-
-is_allies_with_target_trigger = {
-	global_not = ALREADY_ALLIES_WITH_TARGET_TRIGGER
+is_allied_in_war_with_target_trigger = {
+	global_not = ALREADY_ALLIES_IN_WAR_WITH_TARGET_TRIGGER
 }
 
 is_under_ongoing_interaction_trigger = {

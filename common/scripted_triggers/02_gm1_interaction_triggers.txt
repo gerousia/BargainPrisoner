@@ -26,15 +26,15 @@ gm1_valid_prisoner_for_interaction_trigger_basic = {
 }
 
 # ROOT
-# SENDER
-# RECEIVER
+# BENEFICIARY
+# BENEFACTOR
 gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
 	gm1_valid_prisoner_for_interaction_trigger = {
-		IMPRISONER = $SENDER$
+		IMPRISONER = $BENEFICIARY$
 	}
 	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 
-	$RECEIVER$ = {
+	$BENEFACTOR$ = {
 		OR = {
 			is_at_war_with = prev
 			AND = {
@@ -48,23 +48,23 @@ gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
 }
 
 # ROOT
-# RECEIVER
+# BENEFACTOR
 gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
 	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 	has_recently_undergone_interaction = no
 	OR = {
-		$RECEIVER$ = {
+		$BENEFACTOR$ = {
 			NOT = { likes_character_trigger = { CHARACTER = prev } }
 		}
 		has_any_bad_relationship_with_character_trigger = {
-			CHARACTER = $RECEIVER$
+			CHARACTER = $BENEFACTOR$
 		}
 		has_any_worst_bad_relationship_with_character_trigger = {
-			CHARACTER = $RECEIVER$
+			CHARACTER = $BENEFACTOR$
 		}
 	}
 	is_of_major_or_minor_interest_trigger = {
-		CHARACTER = $RECEIVER$
+		CHARACTER = $BENEFACTOR$
 	}
 	## Don't bother with insignificant fucks.
 	has_no_real_status_trigger = no
@@ -72,7 +72,7 @@ gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
 }
 
 # ROOT
-# PETITIONER
+# BENEFACTOR
 gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
 	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 	#has_recently_undergone_interaction = no
@@ -82,40 +82,16 @@ gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
 	
 	## This is for the originally non-ransomable.
 	NOR = {
-		liege ?= $PETITIONER$
-		is_close_family_of = $PETITIONER$
-		dynasty ?= $PETITIONER$.dynasty
+		liege ?= $BENEFACTOR$
+		is_close_family_of = $BENEFACTOR$
+		dynasty ?= $BENEFACTOR$.dynasty
 		any_spouse = {
 			OR = {
-				is_close_family_of = $PETITIONER$
-				dynasty ?= $PETITIONER$.dynasty
+				is_close_family_of = $BENEFACTOR$
+				dynasty ?= $BENEFACTOR$.dynasty
 			}
 		}
-		has_relation_lover = $PETITIONER$
-		has_relation_friend = $PETITIONER$
+		has_relation_lover = $BENEFACTOR$
+		has_relation_friend = $BENEFACTOR$
 	}
 }
-
-#gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = {
-#	NOT = { is_allied_to = root }
-#}
-
-#gm1_valid_for_transfer_prisoner_interaction_offer_action_trigger = {
-#	gm1_valid_for_transfer_prisoner_interaction_action_shared_trigger = yes
-#
-#	root = {
-#		any_prisoner = {
-#			count >= 1
-#			gm1_valid_prisoner_for_interaction_trigger = { 
-#				SENDER = $SENDER$
-#				RECEIVER = $RECEIVER$
-#			}
-#			save_temporary_scope_as = prisoner
-#		}
-#		is_character_interaction_potentially_accepted = {
-#			interaction = offer_prisoner_interaction
-#			recipient = $RECEIVER$
-#			secondary_actor = scope:prisoner
-#		}
-#	}
-#}
