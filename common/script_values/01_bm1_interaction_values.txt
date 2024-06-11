@@ -90,7 +90,7 @@ interaction_tier_check_value = {
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost
 barter_cost = {
 	value = ransom_cost
-	multiply = 1.2
+	multiply = 1.5
 }
 
 # based on ./common/script_values/00_interaction_values.txt/ransom_cost_value

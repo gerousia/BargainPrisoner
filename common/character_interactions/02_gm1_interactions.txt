@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -550,6 +550,8 @@ offer_prisoner_interaction = {
 		## Disabled for AI with 'limited allowed' game rule on.
 		NOT = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
 		highest_held_title_tier >= tier_county
+
+		scope:recipient = { gold >= 25 }
 	}
 
 	ai_accept = {
@@ -655,8 +657,9 @@ offer_prisoner_interaction = {
 			WHO = scope:recipient
 			PRISONER = scope:secondary_actor
 		}
-		### Does the Recipient think this trade is worth it compared to a straight up ransom?
+		### Does the Recipient think this trade is worth it compared to a straight up ransom? (Modified for Player)
 		modifier = {
+			scope:actor = { is_ai = no }
 			exists = scope:secondary_actor
 			add = {
 				### GOLD OPTION
@@ -696,8 +699,8 @@ offer_prisoner_interaction = {
 					}
 					subtract = 1
 					multiply = -100
-					max = 100
-					min = -100
+					#max = 100
+					#min = -100
 				}
 				### HOOK OPTION
 				add = {
@@ -723,35 +726,83 @@ offer_prisoner_interaction = {
 			}
 			desc = PRISONER_REASON_APPROVAL
 		}
+		### Does the Recipient think this trade is worth it compared to a straight up ransom? (Modified for AI)
+		modifier = {
+			scope:actor = { is_ai = yes }
+			exists = scope:secondary_actor
+			add = {
+				### GOLD OPTION
+				add = {
+					value = 0
+					if = {
+						limit = { scope:very_high_gold ?= yes }
+						add = scope:secondary_actor.highly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:medium_gold ?= yes }
+						add = scope:secondary_actor.slightly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:high_gold ?= yes }
+						add = scope:secondary_actor.increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
+						add = scope:secondary_actor.barter_cost_value
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:very_high_current_gold ?= yes
+								scope:high_current_gold ?= yes
+								scope:medium_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
+						add = scope:recipient.current_gold_value
+					}
+					## -----
+					subtract = {
+						value = scope:secondary_actor.prisoner_barter_value
+						min = 1
+					}
+					multiply = -1
+				}
+				### HOOK OPTION
+				add = {
+					if = {
+						limit = { scope:loyalty ?= yes }
+						value = scope:recipient.golden_obligation_value
+						multiply = -2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
+						value = scope:recipient.golden_obligation_value
+						multiply = {
+							if = {
+								limit = { scope:recipient.top_liege ?= scope:actor.top_liege }
+								value = -1 
+							}
+							else = {
+								value = -0.5
+							}
+						}
+					}
+				}
+			}
+			desc = PRISONER_REASON_APPROVAL
+		}
+
+		## DEBUG
+		#modifier = {
+		#	debug_only = yes
+		#	add = scope:secondary_actor.prisoner_barter_value
+		#	desc = SCOPE_DEBUG_VALUE
+		#}
 	}
 
 	ai_will_do = {
-		base = 0
-
-		## On rare occasions, the cummulative opinion modifiers outweigh the
-		## prisoner's value - meaning the AI will give the prisoner for FREE.
-		## Force this idiot to have at least one minimum option selected.
-		modifier = {
-			AND = {
-				scope:very_high_gold ?= no
-				scope:high_gold ?= no
-				scope:medium_gold ?= no
-				scope:gold ?= no
-				scope:very_high_current_gold ?= no
-				scope:high_current_gold ?= no
-				scope:medium_current_gold ?= no
-				scope:current_gold ?= no
-				scope:loyalty ?= no
-				scope:favor ?= no
-			}
-			add = -1000
-		}
-
-		## AI will barter their prisoners more for if they are tribal
-		modifier = {
-			government_has_flag = government_is_tribal
-			add = 25
-		}
+		base = -100
 
 		### AI's Traits
 		gm1_transfer_prisoner_interaction_trait_modifier = {
@@ -843,7 +894,7 @@ offer_prisoner_interaction = {
 			WHO = scope:actor
 			PRISONER = scope:secondary_actor
 		}
-		### Does the AI think this trade is worth it compared to a straight up ransom?
+		### Does the AI think this trade is worth it compared to a straight up ransom? (Modified for AI)
 		modifier = {
 			exists = scope:secondary_actor
 			add = {
@@ -898,6 +949,32 @@ offer_prisoner_interaction = {
 				}
 			}
 			desc = PRISONER_REASON_APPROVAL
+		}
+
+		### EXTRA
+		## AI will barter their prisoners more for if they are tribal
+		modifier = {
+			government_has_flag = government_is_tribal
+			add = 100
+		}
+		
+		## On rare occasions, the cummulative opinion modifiers outweigh the
+		## prisoner's value - meaning the AI will give the prisoner for FREE.
+		## Force this idiot to have at least one minimum option selected.
+		modifier = {
+			AND = {
+				scope:very_high_gold ?= no
+				scope:high_gold ?= no
+				scope:medium_gold ?= no
+				scope:gold ?= no
+				scope:very_high_current_gold ?= no
+				scope:high_current_gold ?= no
+				scope:medium_current_gold ?= no
+				scope:current_gold ?= no
+				scope:loyalty ?= no
+				scope:favor ?= no
+			}
+			factor = 0
 		}
 	}
 }
@@ -1896,7 +1973,8 @@ demand_prisoner_interaction = {
 		## Disabled for AI with 'limited allowed' game rule on.
 		NOT = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
 		highest_held_title_tier >= tier_county 
-		gold >= 25
+		
+		scope:actor = { gold >= 25 }
 	}
 
 	ai_accept = {
@@ -2012,8 +2090,9 @@ demand_prisoner_interaction = {
 			WHO = scope:recipient
 			PRISONER = scope:secondary_recipient
 		}
-		### Does the Recipient think this trade is worth it compared to a straight up ransom?
+		### Does the Recipient think this trade is worth it compared to a straight up ransom? (Modified for Player)
 		modifier = {
+			scope:actor = { is_ai = no }
 			exists = scope:secondary_recipient
 			add = {
 				### GOLD OPTION
@@ -2053,8 +2132,65 @@ demand_prisoner_interaction = {
 					}
 					subtract = 1
 					multiply = 100
-					max = 100
-					min = -100
+					#max = 100
+					#min = -100
+				}
+				### HOOK OPTION
+				add = {
+					if = {
+						limit = { scope:loyalty ?= yes }
+						value = scope:actor.golden_obligation_value
+						multiply = 2
+					}
+					else_if = {
+						limit = { scope:favor ?= yes }
+						value = scope:actor.golden_obligation_value
+						multiply = 1
+					}
+				}
+			}
+			desc = PRISONER_REASON_APPROVAL
+		}
+		### Does the Recipient think this trade is worth it compared to a straight up ransom? (Modified for AI)
+		modifier = {
+			scope:actor = { is_ai = yes }
+			exists = scope:secondary_recipient
+			add = {
+				### GOLD OPTION
+				add = {
+					value = 0
+					if = {
+						limit = { scope:very_high_gold ?= yes }
+						add = scope:secondary_recipient.highly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:medium_gold ?= yes }
+						add = scope:secondary_recipient.slightly_increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:high_gold ?= yes }
+						add = scope:secondary_recipient.increased_barter_cost_value
+					}
+					else_if = {
+						limit = { scope:gold ?= yes }
+						add = scope:secondary_recipient.barter_cost_value
+					}
+					else_if = {
+						limit = {
+							OR = {
+								scope:very_high_current_gold ?= yes
+								scope:high_current_gold ?= yes
+								scope:medium_current_gold ?= yes
+								scope:current_gold ?= yes
+							}
+						} 
+						add = scope:actor.current_gold_value
+					}
+					## -----
+					subtract = {
+						value = scope:secondary_recipient.prisoner_barter_value
+						min = 1
+					}
 				}
 				### HOOK OPTION
 				add = {
@@ -2078,16 +2214,29 @@ demand_prisoner_interaction = {
 			add = 100
 			desc = SCHEME_WEAK_HOOK_USED
 		}
+
+		## DEBUG
+		#modifier = {
+		#	debug_only = yes
+		#	add = scope:secondary_recipient.prisoner_barter_value
+		#	desc = SCOPE_DEBUG_VALUE
+		#}
 	}
 
 	ai_will_do = {
-		base = 0
+		base = -100
 
 		## The AI is at war with the prisoner.
 		modifier = {
 			exists = scope:secondary_recipient
 			is_at_war_with = scope:secondary_recipient
-			add = 100
+			add = 1000
+		}
+
+		### AI demands more if they have claims against the Prisoner.
+		gm1_transfer_prisoner_interaction_claims_casus_bellis_modifier_gain = {
+			WHO = scope:actor
+			PRISONER = scope:secondary_recipient
 		}
 
 		## If you're wondering why this section is bare...

@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_memory_types
 ##############################
 #------------------------------
@@ -778,7 +778,7 @@ gm1_transfer_prisoner_interaction_prisoner_faith_modifier = {
 				value = faith_astray_level
 			}
 		}
-		add = -15
+		add = -5
 		desc = PRISONER_REASON_FAITH_ASTRAY
 	}
 
@@ -786,16 +786,14 @@ gm1_transfer_prisoner_interaction_prisoner_faith_modifier = {
 		$PRISONER$ = { is_head_of_faith_of = { CHARACTER = $WHO$ } }
 		add = {
 			value = -500
-			multiply = {
 				if = {
 					limit = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
 					if = {
 						limit = { $WHO$.ai_zeal >= very_low_positive_ai_value }
-						value = 50
+					divide = 5
 					}
 					else = {
-						value = 0
-					}
+					divide = 10
 				}
 			}
 		}
@@ -810,13 +808,14 @@ gm1_transfer_prisoner_interaction_prisoner_realm_modifier = {
 	### That ruler is a vassal of this ruler.
 	### This ruler, without any imprisonment claim, is less likely to accept.
 	modifier = {
-		$PRISONER$ = { is_vassal_of = $WHO$ }
-		NOT = { $WHO$ = { has_imprisonment_reason = $PRISONER$ } }
+		exists = $PRISONER$.liege
+		$WHO$ = $PRISONER$.liege
+		$WHO$ = { NOT = { has_imprisonment_reason = $PRISONER$ } }
 		add = {
 			value = -30
 			if = {
 				limit = { $WHO$ = { is_rightful_liege_of = $PRISONER$ } }
-				multiply = 2
+				multiply = 3
 			}
 		}
 		desc = PRISONER_REASON_VASSAL

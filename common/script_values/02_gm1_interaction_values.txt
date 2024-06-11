@@ -144,10 +144,10 @@ prisoner_barter_value = {
 	add = {
 		if = {
 			limit = { is_independent_ruler = yes }
-			value = 10
+			value = 20
 		}
 		else = {
-			value = -10
+			value = -20
 		}
 	}
 	
@@ -155,10 +155,31 @@ prisoner_barter_value = {
 	add = {
 		if = {
 			limit = { character_is_land_realm_neighbor = imprisoner }
-			value = 10
+			value = 20
 		}
 		else = {
-			value = -10
+			value = -20
+		}
+	}
+
+	### Prisoner Faith
+	### Prisoner is a Head of Faith.
+	if = {
+		limit = {
+			OR = {
+				exists = faith
+				imprisoner ?= { exists = faith }
+			}
+		}
+		add = {
+			if = {
+				limit = { is_head_of_faith_of = { CHARACTER = this } }
+				add = 100
+			}
+			if = {
+				limit = { imprisoner = { is_head_of_faith_of = { CHARACTER = prev } } }
+				multiply = 5
+			}
 		}
 	}
 
