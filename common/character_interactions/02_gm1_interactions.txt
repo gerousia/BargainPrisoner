@@ -4,8 +4,8 @@
 
 offer_prisoner_interaction = {
 	common_interaction = no
-	category = interaction_category_diplomacy
-	icon = prison # icon_gold
+	category = interaction_category_prison
+	icon = icon_gold # prison
 
 	is_highlighted = {
 		scope:actor = {
@@ -22,6 +22,7 @@ offer_prisoner_interaction = {
 	popup_on_receive = yes
 	pause_on_receive = yes
 	use_diplomatic_range = no
+	can_send_despite_rejection = yes
 
 	ai_maybe = yes
 	ai_min_reply_days = 4
@@ -981,8 +982,8 @@ offer_prisoner_interaction = {
 
 demand_prisoner_interaction = {
 	common_interaction = no
-	category = interaction_category_diplomacy
-	icon = prison
+	category = interaction_category_prison
+	icon = icon_gold
 
 	is_highlighted = {
 		scope:recipient = {
@@ -1015,6 +1016,7 @@ demand_prisoner_interaction = {
 	ai_maybe = yes
 	ai_min_reply_days = 4
 	ai_max_reply_days = 9
+	can_send_despite_rejection = yes
 
 	desc = demand_prisoner_interaction_desc
 	greeting = positive
@@ -2263,14 +2265,14 @@ demand_prisoner_interaction = {
 }
 
 ransom_prisoner_interaction = {
-	interface_priority = 50
-	common_interaction = yes
+	common_interaction = no
 	category = interaction_category_prison
 	icon = icon_gold
 
 	popup_on_receive = yes
 	pause_on_receive = yes
 	use_diplomatic_range = no
+	can_send_despite_rejection = yes
 
 	should_use_extra_icon = {
 		scope:actor = { has_usable_hook = scope:recipient }
