@@ -65,29 +65,6 @@ change_imprisoner_character_effect = {
 					new_imprisoner = scope:new_imprisoner
 				}
 			}
-
-			### PENALTIES
-			### Enabled with 'default penalties' game rule on. But disabled on `limited penalties`.
-			if = {
-				limit = {
-					OR = {
-						AND = {
-							scope:old_imprisoner = { is_ai = yes }
-							scope:new_imprisoner = { is_ai = yes }
-						}
-						has_game_rule = transfer_prisoner_default_interaction_penalties
-					}
-				}
-				change_imprisoner_consequences_family_effect = {
-					TARGET = this
-					OLD_IMPRISONER = scope:old_imprisoner
-					NEW_IMPRISONER = scope:new_imprisoner
-				}
-				change_imprisoner_consequences_clan_effect = {
-					CHARACTER = scope:old_imprisoner
-					TARGET = this
-				}
-			}
 		}
 
 		scope:old_imprisoner = {
@@ -299,6 +276,15 @@ change_imprisoner_character_effect = {
 					has_game_rule = transfer_prisoner_default_interaction_penalties
 				}
 			}
+			change_imprisoner_consequences_family_effect = {
+				OLD_IMPRISONER = scope:old_imprisoner
+				NEW_IMPRISONER = scope:new_imprisoner
+				TARGET = scope:imprisonment_target
+			}
+			change_imprisoner_consequences_clan_effect = {
+				CHARACTER = scope:old_imprisoner
+				TARGET = scope:imprisonment_target
+			}
 			change_imprisoner_consequences_war_effect = {
 				OLD_IMPRISONER = scope:old_imprisoner
 				NEW_IMPRISONER = scope:new_imprisoner
@@ -312,16 +298,13 @@ change_imprisoner_character_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 change_imprisoner_consequences_lover_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = {
-				has_relation_lover = scope:target_character
-				NOT = { has_relation_rival = scope:target_character }
+				has_relation_lover = $TARGET$
+				NOT = { has_relation_rival = $TARGET$ }
 			}
-			scope:target_character = {
+			$TARGET$ = {
 				trigger_event = {
 					id = lover.0101
 					days = { 14 30 }
@@ -336,24 +319,16 @@ change_imprisoner_consequences_lover_effect = {
 ## NEW_IMPRISONER (character)
 ## TARGET (character)
 change_imprisoner_consequences_family_effect = {
-	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
-	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
 	## Create a family list for the prisoner.
 	hidden_effect = {
-		scope:target_character = {
+		$TARGET$ = {
 			every_close_or_extended_family_member = {
-				limit = { 
-					NOT = { scope:old_imprisoner = this }
-					NOT = { scope:new_imprisoner = this }
-				}
 				add_to_temporary_list = prisoner_family_list
 			}
 		}
 	}
 
-	scope:target_character = {
+	$TARGET$ = {
 		if = {
 			limit = {
 				any_in_list = {
@@ -363,34 +338,30 @@ change_imprisoner_consequences_family_effect = {
 			}
 			every_in_list ={
 				list = prisoner_family_list
+				limit = { 
+					NOT = { $OLD_IMPRISONER$ = this }
+					NOT = { $NEW_IMPRISONER$ = this }
+				}
 				custom = all_close_family_and_spouses
 	
 				## The prisoner family opinion towards the old imprisoner.
 				add_opinion = {
-					target = scope:old_imprisoner
+					target = $OLD_IMPRISONER$
 					modifier = transferred_family_member
 				}
 	
 				## The prisoner family opinion towards the new imprisoner.
 				if = {
-					limit = { 
-						scope:target_character = { 
-							is_in_prison_type = house_arrest 
-						}
-					}
+					limit = { $TARGET$ = { is_in_prison_type = house_arrest } }
 					add_opinion = {
-						target = scope:new_imprisoner
+						target = $NEW_IMPRISONER$
 						modifier = imprisoned_family_member
 					}
 				}
 				else_if = {
-					limit = { 
-						scope:target_character = { 
-							is_in_prison_type = dungeon 
-						}
-					}
+					limit = { $TARGET$ = { is_in_prison_type = dungeon } }
 					add_opinion = {
-						target = scope:new_imprisoner
+						target = $NEW_IMPRISONER$
 						modifier = imprisoned_family_member_dungeon
 					}
 				}
@@ -403,25 +374,22 @@ change_imprisoner_consequences_family_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 change_imprisoner_consequences_clan_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = { 
 				government_has_flag = government_is_clan
-				house = scope:target_character.house
+				house = $TARGET$.house
 			}
 			## Target does not have an imprisonment reason, and the prisoner is landed.
 			## The clan loses more unity.
 			if = {
 				limit = {
-					NOT = { has_imprisonment_reason = scope:target_character }
-					scope:target_character = { is_landed = yes }
+					NOT = { has_imprisonment_reason = $TARGET$ }
+					$TARGET$ = { is_landed = yes }
 				}
 				add_clan_unity_interaction_effect = {
-					CHARACTER = scope:character
-					TARGET = scope:target_character
+					CHARACTER = $CHARACTER$
+					TARGET = $TARGET$
 					VALUE = major_unity_loss
 					DESC = clan_unity_transfer_prisoner.desc
 					REVERSE_NON_HOUSE_TARGET = no
@@ -431,12 +399,12 @@ change_imprisoner_consequences_clan_effect = {
 			## The clan loses slightly less unity.
 			else_if = {
 				limit = {
-					NOT = { has_imprisonment_reason = scope:target_character }
-					scope:target_character = { is_landed = no }
+					NOT = { has_imprisonment_reason = $TARGET$ }
+					$TARGET$ = { is_landed = no }
 				}
 				add_clan_unity_interaction_effect = {
-					CHARACTER = scope:character
-					TARGET = scope:target_character
+					CHARACTER = $CHARACTER$
+					TARGET = $TARGET$
 					VALUE = medium_unity_loss
 					DESC = clan_unity_transfer_prisoner.desc
 					REVERSE_NON_HOUSE_TARGET = no
@@ -446,8 +414,8 @@ change_imprisoner_consequences_clan_effect = {
 			## The clan loses a tiny bit of unity.
 			else = {
 				add_clan_unity_interaction_effect = {
-					CHARACTER = scope:character
-					TARGET = scope:target_character
+					CHARACTER = $CHARACTER$
+					TARGET = $TARGET$
 					VALUE = minor_unity_loss
 					DESC = clan_unity_transfer_prisoner.desc
 					REVERSE_NON_HOUSE_TARGET = no
@@ -462,13 +430,10 @@ change_imprisoner_consequences_clan_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 change_imprisoner_consequences_court_chaplain_effect = {	
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = {
-				scope:target_character = { 
+				$TARGET$ = { 
 					has_council_position = councillor_court_chaplain
 					can_be_fired_from_council_trigger = { 
 						COURT_OWNER = prev
@@ -478,13 +443,13 @@ change_imprisoner_consequences_court_chaplain_effect = {
 			custom_description = {
 				text = "change_imprisoner_court_chaplain_tooltip"
 				subject = this
-				object = scope:target_character
+				object = $TARGET$
 			}
 			if = {
-				limit = { has_imprisonment_reason = scope:target_character }
+				limit = { has_imprisonment_reason = $TARGET$ }
 				custom_description = { 
 					text = "add_opinion_imprison_reason_unusable"
-					object = scope:target_character
+					object = $TARGET$
 				}
 			}
 			else = {
@@ -509,32 +474,29 @@ change_imprisoner_consequences_court_chaplain_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 change_imprisoner_consequences_head_of_faith_effect = {	
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = {
 				exists = faith.religious_head
-				faith.religious_head ?= scope:target_character
+				faith.religious_head ?= $TARGET$
 			}
 			custom_description = {
 				text = "change_imprisoner_head_of_faith_tooltip"
 				subject = this
-				object = scope:target_character
+				object = $TARGET$
 			}
 			if = {
-				limit = { is_at_war_with = scope:target_character }
+				limit = { is_at_war_with = $TARGET$ }
 				custom_description = { 
 					text = "add_opinion_imprison_reason_unusable"
-					object = scope:target_character
+					object = $TARGET$
 				}
 			}
 			else_if = {
-				limit = { has_imprisonment_reason = scope:target_character }
+				limit = { has_imprisonment_reason = $TARGET$ }
 				custom_description = { 
 					text = "add_opinion_imprison_reason_unusable"
-					object = scope:target_character
+					object = $TARGET$
 				}
 			}
 			else = {
@@ -549,45 +511,42 @@ change_imprisoner_consequences_head_of_faith_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 change_imprisoner_consequences_vassal_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = {
-				exists = scope:target_character.liege
-				scope:target_character.liege ?= this
+				exists = $TARGET$.liege
+				$TARGET$.liege ?= this
 			}
 			custom_description = {
 				text = "change_imprisoner_vassal_tooltip"
 				subject = this
-				object = scope:target_character
+				object = $TARGET$
 			}
 			if = {
-				limit = { is_at_war_with = scope:target_character }
+				limit = { is_at_war_with = $TARGET$ }
 				custom_description = { 
 					text = "add_opinion_imprison_reason_unusable"
-					object = scope:target_character
+					object = $TARGET$
 				}
 			}
 			else_if = {
-				limit = { has_imprisonment_reason = scope:target_character }
+				limit = { has_imprisonment_reason = $TARGET$ }
 				custom_description = { 
 					text = "add_opinion_imprison_reason_unusable"
-					object = scope:target_character
+					object = $TARGET$
 				}
 				if = {
 					limit = { exists = scope:use_strife_not_tyranny }
 					change_strife_opinion = medium_strife_gain
 				}
 				else = {
-					consume_imprisonment_reasons = scope:target_character
+					consume_imprisonment_reasons = $TARGET$
 				}
 			}
 			else = {
 				add_tyranny = imprisonment_tyranny_gain
 				if = {
-					limit = { is_rightful_liege_of = scope:target_character }
+					limit = { is_rightful_liege_of = $TARGET$ }
 					add_legitimacy = miniscule_legitimacy_loss
 
 					save_scope_value_as = {
@@ -604,27 +563,18 @@ change_imprisoner_consequences_vassal_effect = {
 # NEW_IMPRISONER (character)
 # TARGET (character)
 change_imprisoner_consequences_war_effect = {
-	$OLD_IMPRISONER$ = { save_temporary_scope_as = old_imprisoner }
-	$NEW_IMPRISONER$ = { save_temporary_scope_as = new_imprisoner }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
 	## Create a war participant list for wars including both the prisoner and new_imprisoner
 	hidden_effect = {
-		scope:target_character = {
+		$TARGET$ = {
 			if = {
-				limit = { is_at_war_with = scope:new_imprisoner }
+				limit = { is_at_war_with = $NEW_IMPRISONER$ }
 				every_character_war = {
-					limit = { is_participant = scope:new_imprisoner }
+					limit = { is_participant = $NEW_IMPRISONER$ }
 					every_war_participant = {
-						limit = {
-							NOT = { scope:target_character = this }
-							NOT = { scope:old_imprisoner = this } 
-							NOT = { scope:new_imprisoner = this } 
-						}
 						if = {
 							limit = {
-								is_at_war_with = scope:new_imprisoner
-								NOT = { is_allied_in_war = scope:new_imprisoner } 
+								is_at_war_with = $NEW_IMPRISONER$
+								NOT = { is_allied_in_war = $NEW_IMPRISONER$ } 
 							}
 							add_to_temporary_list = prisoner_war_ally_list
 						}
@@ -637,25 +587,25 @@ change_imprisoner_consequences_war_effect = {
 		}
 	}
 
-	scope:target_character = {
+	$TARGET$ = {
 		if = {
-			limit = { is_at_war_with = scope:new_imprisoner }
+			limit = { is_at_war_with = $NEW_IMPRISONER$ }
 			custom_description = {
 				text = "change_imprisoner_war_tooltip"
 				subject = this
-				object = scope:new_imprisoner
+				object = $NEW_IMPRISONER$
 			}
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
 				add_opinion = {
-					target = scope:old_imprisoner
+					target = $OLD_IMPRISONER$
 					modifier = supported_my_enemy_opinion
 					opinion = -50
 				}
 			}
 			else = {
 				add_opinion = {
-					target = scope:old_imprisoner
+					target = $OLD_IMPRISONER$
 					modifier = supported_my_enemy_opinion
 				}
 			}
@@ -668,22 +618,27 @@ change_imprisoner_consequences_war_effect = {
 				}
 				every_in_list ={
 					list = prisoner_war_ally_list
+					limit = {
+						NOT = { $TARGET$ = this }
+						NOT = { $OLD_IMPRISONER$ = this } 
+						NOT = { $NEW_IMPRISONER$ = this } 
+					}
 					custom = all_war_allies
 					if = {
 						limit = {
 							any_character_war = {
-								is_war_leader = scope:target_character
+								is_war_leader = $TARGET$
 							}
 						}
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_enemy_opinion
 							opinion = -50
 						}
 					}
 					else = {
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_enemy_opinion
 						}
 					}
@@ -692,13 +647,13 @@ change_imprisoner_consequences_war_effect = {
 		}
 	}
 
-	scope:new_imprisoner = {
+	$NEW_IMPRISONER$ = {
 		if = {
-			limit = { is_at_war_with = scope:target_character }
+			limit = { is_at_war_with = $TARGET$ }
 			custom_description = {
 				text = "change_imprisoner_war_tooltip"
 				subject = this
-				object = scope:target_character
+				object = $TARGET$
 			}
 			if = {
 				limit = { any_character_war = { is_war_leader = prev } }
@@ -706,7 +661,7 @@ change_imprisoner_consequences_war_effect = {
 					limit = { is_ai = no }
 					hidden_effect = {
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_war_opinion
 							opinion = 40
 						}
@@ -714,7 +669,7 @@ change_imprisoner_consequences_war_effect = {
 				}
 				else = {
 					add_opinion = {
-						target = scope:old_imprisoner
+						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
 						opinion = 40
 					}
@@ -725,14 +680,14 @@ change_imprisoner_consequences_war_effect = {
 					limit = { is_ai = no }
 					hidden_effect = {
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_war_opinion
 						}
 					}
 				}
 				else = {
 					add_opinion = {
-						target = scope:old_imprisoner
+						target = $OLD_IMPRISONER$
 						modifier = supported_my_war_opinion
 					}
 				}
@@ -746,22 +701,27 @@ change_imprisoner_consequences_war_effect = {
 				}
 				every_in_list ={
 					list = prisoner_war_enemy_list
+					limit = {
+						NOT = { $TARGET$ = this }
+						NOT = { $OLD_IMPRISONER$ = this } 
+						NOT = { $NEW_IMPRISONER$ = this } 
+					}
 					custom = all_war_allies
 					if = {
 						limit = {
 							any_character_war = {
-								is_war_leader = scope:target_character
+								is_war_leader = $TARGET$
 							}
 						}
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_war_opinion
 							opinion = 40
 						}
 					}
 					else = {
 						add_opinion = {
-							target = scope:old_imprisoner
+							target = $OLD_IMPRISONER$
 							modifier = supported_my_war_opinion
 						}
 					}
@@ -770,13 +730,13 @@ change_imprisoner_consequences_war_effect = {
 		}
 	}
 
-	scope:old_imprisoner = {
+	$OLD_IMPRISONER$ = {
 		if = {
-			limit = { is_at_war_with = scope:target_character }
+			limit = { is_at_war_with = $TARGET$ }
 			custom_description = {
 				text = "change_imprisoner_war_tooltip"
 				subject = this
-				object = scope:target_character
+				object = $TARGET$
 			}
 		}
 	}
@@ -792,68 +752,77 @@ release_imprisoned_character_effect = {
 	$IMPRISONER$ = { save_temporary_scope_as = imprisoner }
 	$PETITIONER$ = { save_temporary_scope_as = petitioner }
 
-	scope:release_target = {
-		custom_description = { 
-			text = "release_prisoner_tooltip_effect"
-			subject = scope:imprisoner
-			object = this
-
-			add_character_flag = {
-				flag = block_for_prison_release_notification
-				days = 1
+	if = {
+		limit = {
+			scope:release_target = {
+				is_imprisoned = yes
+				is_imprisoned_by = scope:imprisoner
 			}
 		}
-		release_from_prison = yes
-	}
 
-	scope:imprisoner = {
-		## REWARDS
-		release_imprisoned_consequences_struggle_effect = {
-			CHARACTER = this
-			TARGET = scope:release_target
-		}
-	}
-
-	scope:petitioner = {
-		### OPINIONS
-		reverse_add_opinion = {
-			target = scope:release_target
-			modifier = ransomed_from_prison
-			years = 1
-		}
-
-		## REWARDS
-		if = {
-			limit = {
-				scope:release_target = {
-					is_ai = yes
-					ai_honor >= 25
-					ai_greed <= 0
+		scope:release_target = {
+			custom_description = { 
+				text = "release_prisoner_tooltip_effect"
+				subject = scope:imprisoner
+				object = this
+	
+				add_character_flag = {
+					flag = block_for_prison_release_notification
+					days = 1
 				}
 			}
+			release_from_prison = yes
+		}
+	
+		scope:imprisoner = {
+			## REWARDS
+			release_imprisoned_consequences_struggle_effect = {
+				CHARACTER = this
+				TARGET = scope:release_target
+			}
+		}
+	
+		scope:petitioner = {
+			### OPINIONS
+			reverse_add_opinion = {
+				target = scope:release_target
+				modifier = ransomed_from_prison
+				years = 1
+			}
+	
+			## REWARDS
 			if = {
 				limit = {
-					can_add_hook = {
-						target = scope:release_target
-						type = favor_hook
+					scope:release_target = {
+						is_ai = yes
+						ai_honor >= 25
+						ai_greed <= 0
 					}
 				}
-				add_hook = {
-					target = scope:release_target
-					type = indebted_hook
+				if = {
+					limit = {
+						can_add_hook = {
+							target = scope:release_target
+							type = favor_hook
+						}
+					}
+					add_hook = {
+						target = scope:release_target
+						type = indebted_hook
+					}
 				}
 			}
-		}
-		else = {
-			progress_towards_hook_effect = {
-				CHARACTER = scope:release_target
-				HOOK_TYPE = indebted_hook
+			else = {
+				progress_towards_hook_effect = {
+					CHARACTER = scope:release_target
+					HOOK_TYPE = indebted_hook
+				}
 			}
-		}
-
-		release_imprisoned_consequences_clan_effect = {
-			CHARACTER = this
-			TARGET = scope:release_target
+	
+			release_imprisoned_consequences_clan_effect = {
+				CHARACTER = this
+				TARGET = scope:release_target
+			}
 		}
 	}
 }
@@ -862,17 +831,14 @@ release_imprisoned_character_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 release_imprisoned_consequences_struggle_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = {
 				any_character_struggle = {
 					involvement = involved
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_important
-						CHAR = scope:target_character
+						CHAR = $TARGET$
 					}
 				}
 			}
@@ -881,12 +847,12 @@ release_imprisoned_consequences_struggle_effect = {
 				limit = {
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_important
-						CHAR = scope:target_character
+						CHAR = $TARGET$
 					}
 				}
 				activate_struggle_catalyst = {
 					catalyst = catalyst_ransom_important
-					character = scope:character
+					character = $CHARACTER$
 				}
 			}
 		}
@@ -894,13 +860,13 @@ release_imprisoned_consequences_struggle_effect = {
 			limit = {
 				fp3_struggle_involves_one_supporter_and_one_detractor = {
 					FIRST = this
-					SECOND = scope:target_character
+					SECOND = $TARGET$
 				}
 				any_character_struggle = {
 					involvement = involved
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_supporter_detractor
-						CHAR = scope:target_character
+						CHAR = $TARGET$
 					}
 				}
 			}
@@ -909,12 +875,12 @@ release_imprisoned_consequences_struggle_effect = {
 				limit = {
 					activate_struggle_catalyst_secondary_character_involvement_involved_trigger = {
 						CATALYST = catalyst_ransom_supporter_detractor
-						CHAR = scope:target_character
+						CHAR = $TARGET$
 					}
 				}
 				activate_struggle_catalyst = {
 					catalyst = catalyst_ransom_supporter_detractor
-					character = scope:character
+					character = $CHARACTER$
 				}
 				log_debug_variable_for_persian_struggle_effect = { 
 					VAR = concession_catalyst_ransom_supporter_detractor
@@ -928,18 +894,15 @@ release_imprisoned_consequences_struggle_effect = {
 ## CHARACTER (character)
 ## TARGET (character)
 release_imprisoned_consequences_clan_effect = {
-	$CHARACTER$ = { save_temporary_scope_as = character }
-	$TARGET$ = { save_temporary_scope_as = target_character }
-
-	scope:character = {
+	$CHARACTER$ = {
 		if = {
 			limit = { 
 				government_has_flag = government_is_clan
-				house = scope:target_character.house
+				house = $TARGET$.house
 			}
 			add_clan_unity_interaction_effect = {
-				CHARACTER = scope:character
-				TARGET = scope:target_character
+				CHARACTER = $CHARACTER$
+				TARGET = $TARGET$
 				VALUE = medium_unity_gain
 				DESC = clan_unity_ransom.desc
 				REVERSE_NON_HOUSE_TARGET = no
