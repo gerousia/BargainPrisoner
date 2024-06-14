@@ -1,4 +1,4 @@
-##############################
+﻿##############################
 ## GM1 scripted_triggers
 ##############################
 #------------------------------
@@ -88,5 +88,57 @@ gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
 		}
 		has_relation_lover = $BENEFACTOR$
 		has_relation_friend = $BENEFACTOR$
+	}
+}
+
+# based on ./common/scripted_triggers/05_bp2_hostage_triggers.txt/bp2_valid_hostage_action_shared_trigger
+gm1_valid_prisoner_recipient_for_transfer_interaction_action_trigger = {
+	# Don't inform of unimportant cases
+	NOR = {
+		is_at_war_with = root
+		is_consort_of = root
+	}
+}
+
+# based on ./common/scripted_triggers/05_bp2_hostage_triggers.txt/bp2_valid_hostage_offer_action_trigger
+gm1_valid_prisoner_recipient_for_offer_interaction_action_trigger = {
+	gm1_valid_prisoner_recipient_for_transfer_interaction_action_trigger = yes
+	# Only care about actual threats
+	#has_any_cb_on = root
+	#save_temporary_scope_as = warden
+
+	## Ensure that the target is not a brokeass or at least have something to give.
+	OR = {
+		current_gold_value >= 25
+		root = { NOT = { has_hook = prev } }
+	}
+	## Ensure that you have at least one prisoner that's a brokeass and can be traded.
+	root = {
+		any_prisoner = {
+			count >= 1
+			gm1_valid_prisoner_for_interaction_trigger = yes
+			gm1_valid_prisoner_for_interaction_trigger_basic = yes
+			NOT = { is_at_war_with = root }
+			OR = {
+				AND = {
+					OR = {
+						is_ruler = yes
+						is_pool_guest = yes
+					}
+					current_gold_value > prisoner_barter_value
+				}
+				AND = {
+					is_ruler = no
+					exists = liege
+					liege = { current_gold_value > prisoner_barter_value }
+				}
+			}
+			save_temporary_scope_as = secondary_actor
+		}
+		is_character_interaction_potentially_accepted = {
+			interaction = offer_prisoner_interaction
+			recipient = prev
+			secondary_actor = scope:secondary_actor
+		}
 	}
 }
