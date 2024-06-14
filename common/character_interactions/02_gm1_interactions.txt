@@ -443,8 +443,6 @@ offer_prisoner_interaction = {
 		## Disabled for AI with 'limited allowed' game rule on.
 		NOT = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
 		highest_held_title_tier >= tier_county
-
-		#scope:recipient ?= { current_gold_value >= 25 }
 	}
 
 	ai_accept = {
@@ -836,6 +834,12 @@ offer_prisoner_interaction = {
 			#factor = 0
 			add = -1000
 		}
+
+		## Don't be a brokeass.
+		modifier = {
+			scope:recipient.current_gold_value < minor_gold_value_check
+			add = -1000
+		}
 	}
 }
 
@@ -949,11 +953,11 @@ demand_prisoner_interaction = {
 		trigger_else_if = {
 			limit = {
 				scope:actor = { is_ai = no }
-				has_game_rule = transfer_prisoner_default_interaction_acceptance 
+				has_game_rule = transfer_prisoner_default_interaction_acceptance
 				scope:recipient = { is_vassal_of = scope:actor } # FUCKING STUPID TOOLTIP LOCALIZATION
 			}
-				## AI Ruler has no choice against their liege.
-				scope:recipient = { is_vassal_of = scope:actor }
+			## AI Ruler has no choice against their liege.
+			scope:recipient = { is_vassal_of = scope:actor }
 		}
 		## -----
 		trigger_else = {
@@ -1587,7 +1591,7 @@ demand_prisoner_interaction = {
 		NOT = { has_game_rule = transfer_prisoner_limited_interaction_allowed }
 		highest_held_title_tier >= tier_county 
 		
-		#scope:actor ?= { current_gold_value >= 25 }
+		current_gold_value >= minor_gold_value_check
 	}
 
 	ai_accept = {
