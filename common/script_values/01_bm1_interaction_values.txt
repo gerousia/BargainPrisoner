@@ -97,25 +97,25 @@ barter_cost = {
 barter_cost_value = {
 	value = barter_cost
 
-	# FP2 DLC - Some cultures are better at ransoming than others.
 	if = {
-		limit = {
-			is_imprisoned = yes
-			imprisoner.culture = { has_cultural_parameter = can_demand_higher_ransoms_from_lower_tiers }
-			# Kings and emperors are already worth more, so we just boost landless and ducal-tier or below.
-			OR = {
-				NOT = { exists = liege }
-				highest_held_title_tier <= tier_duchy
+		limit = { is_imprisoned = yes }
+		# FP2 DLC - Some cultures are better at ransoming than others.
+		if = {
+			limit = {
+				imprisoner ?= { culture ?= { has_cultural_parameter = can_demand_higher_ransoms_from_lower_tiers } }
+				# Kings and emperors are already worth more, so we just boost landless and ducal-tier or below.
+				OR = {
+					NOT = { exists = liege }
+					highest_held_title_tier <= tier_duchy
+				}
 			}
+			multiply = 1.5
 		}
-		multiply = 1.5
-	}
-}
-
-slightly_increased_barter_cost_value = {
-	value = {
-		add = barter_cost_value
-		multiply = 1.2
+		# FP1 DLC - Some dynasty are better at ransoming than others.
+		if = {
+			limit = { imprisoner ?= { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } } }
+			multiply = 1.5
+		}
 	}
 }
 
@@ -124,13 +124,6 @@ increased_barter_cost_value = {
 	value = {
 		add = barter_cost_value
 		multiply = 1.5
-	}
-}
-
-highly_increased_barter_cost_value = {
-	value = {
-		add = barter_cost_value
-		multiply = 2
 	}
 }
 

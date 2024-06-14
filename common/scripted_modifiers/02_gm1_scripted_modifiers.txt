@@ -1053,9 +1053,7 @@ gm1_offer_prisoner_interaction_personality_modifier = {
 				if = {
 					limit = {
 						OR = {
-							scope:very_high_gold ?= yes
-							scope:high_gold ?= yes					
-							scope:medium_gold ?= yes
+							scope:extortionate_gold ?= yes
 							scope:gold ?= yes
 						}
 					}
@@ -1151,9 +1149,7 @@ gm1_demand_prisoner_interaction_personality_modifier = {
 				if = {
 					limit = {
 						OR = {
-							scope:very_high_gold ?= yes
-							scope:high_gold ?= yes					
-							scope:medium_gold ?= yes
+							scope:extortionate_gold ?= yes
 							scope:gold ?= yes
 						}
 					}

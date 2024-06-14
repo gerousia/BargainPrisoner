@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_effects
 ##############################
 #------------------------------
@@ -32,22 +32,10 @@ transfer_prisoner_interaction_effect = {
 
 	switch = {
 		trigger = always
-		scope:very_high_gold = {
-			save_scope_value_as = {
-				name = saved_gold_value
-				value = scope:prisoner.highly_increased_barter_cost_value
-			}
-		}
-		scope:high_gold = {
+		scope:extortionate_gold = {
 			save_scope_value_as = {
 				name = saved_gold_value
 				value = scope:prisoner.increased_barter_cost_value
-			}
-		}
-		scope:medium_gold = {
-			save_scope_value_as = {
-				name = saved_gold_value
-				value = scope:prisoner.slightly_increased_barter_cost_value
 			}
 		}
 		scope:gold = {
@@ -56,19 +44,7 @@ transfer_prisoner_interaction_effect = {
 				value = scope:prisoner.barter_cost_value
 			}
 		}
-		scope:very_high_current_gold = {
-			save_scope_value_as = {
-				name = saved_gold_value
-				value = scope:benefactor.current_gold_value
-			}
-		}
-		scope:high_current_gold = {
-			save_scope_value_as = {
-				name = saved_gold_value
-				value = scope:benefactor.current_gold_value
-			}
-		}
-		scope:medium_current_gold = {
+		scope:extortionate_current_gold = {
 			save_scope_value_as = {
 				name = saved_gold_value
 				value = scope:benefactor.current_gold_value
@@ -80,6 +56,11 @@ transfer_prisoner_interaction_effect = {
 				value = scope:benefactor.current_gold_value
 			}
 		}
+	}
+
+	if = {
+		limit = { debug_only = yes }
+		debug_log_scopes = yes
 	}
 
 	## Notifications should ALWAYS go first- to avoid tooltips from spazzing out.
@@ -372,6 +353,11 @@ ransom_prisoner_interaction_effect = {
 				value = scope:benefactor.current_gold_value
 			}
 		}
+	}
+
+	if = {
+		limit = { debug_only = yes }
+		debug_log_scopes = yes
 	}
 
 	## Notifications should ALWAYS go first- to avoid tooltips from spazzing out.

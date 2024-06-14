@@ -5,50 +5,54 @@
 # based on ./common/script_values/05/bp2_hostage_values.txt/hostage_value
 prisoner_ransom_value = {
 	value = 0
+
 	if = {
 		limit = {
-			imprisoner ?= { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } }
-			OR = {
-				AND = {
-					is_landed = no
-					exists = liege
-					liege ?= { gold >= increased_ransom_cost_value }
-				}
-				AND = {
-					is_landed = yes
-					gold >= increased_ransom_cost_value
-				}
-			}
-		}
-		add = increased_ransom_cost_value
-	}
-	else_if = {
-		limit = {
-			OR = {
-				imprisoner ?= { NOT = { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } } }
-				AND = {
-					is_landed = no
-					exists = liege
-					liege ?= { gold >= ransom_cost_value }
-				}
-				AND = {
-					is_landed = yes
-					gold >= ransom_cost_value
-				}
-			}
-		}
-		add = ransom_cost_value
-	}
-	else_if = {
-		limit = {
-			is_landed = no
+			is_ruler = no
 			exists = liege
-			liege ?= { gold >= 1 }
 		}
-		add = liege.current_gold_value
+		if = {
+			limit = { 
+				imprisoner ?= { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } }
+				liege.current_gold_value >= increased_ransom_cost_value
+			}
+			add = increased_ransom_cost_value
+		}
+		else_if = {
+			limit = { 
+				imprisoner ?= { NOT = { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } } } 
+				liege.current_gold_value >= ransom_cost_value
+			}
+			add = ransom_cost_value
+		}
+		else = {
+			add = liege.current_gold_value
+		}
 	}
-	else = {
-		add = current_gold_value
+	else_if = {
+		limit = {
+			OR = {
+				is_ruler = yes
+				is_pool_guest = yes
+			}
+		}
+		if = {
+			limit = { 
+				imprisoner ?= { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } }
+				current_gold_value >= increased_ransom_cost_value
+			}
+			add = increased_ransom_cost_value
+		}
+		else_if = {
+			limit = { 
+				imprisoner ?= { NOT = { dynasty ?= { has_dynasty_perk = fp1_pillage_legacy_3 } } } 
+				current_gold_value >= ransom_cost_value
+			}
+			add = ransom_cost_value
+		}
+		else = {
+			add = gold
+		}
 	}
 }
 
@@ -57,12 +61,12 @@ prisoner_barter_value = {
 	value = prisoner_ransom_value
 
 	### Dynasty Level Difference
-	if = {
-		limit = {
-			exists = dynasty
-			imprisoner ?= { exists = dynasty }
-		}
-		add = {
+	add = {
+		if = {
+			limit = {
+				exists = dynasty
+				imprisoner ?= { exists = dynasty }
+			}
 			if = {
 				limit = { dynasty.dynasty_prestige_level > imprisoner.dynasty.dynasty_prestige_level }
 				value = 20
@@ -85,12 +89,12 @@ prisoner_barter_value = {
 	}
 
 	### Tier Level Difference
-	if = {
-		limit = {
-			exists = primary_title
-			imprisoner ?= { exists = primary_title }
-		}
-		add = {
+	add = {
+		if = {
+			limit = {
+				exists = primary_title
+				imprisoner ?= { exists = primary_title }
+			}
 			if = {
 				limit = { highest_held_title_tier > imprisoner.highest_held_title_tier }
 				value = 20
@@ -109,34 +113,28 @@ prisoner_barter_value = {
 					min = 1
 				}
 			}
-		}
+		}	
 	}
 
 	### Prestige Level Difference
 	add = {
 		if = {
 			limit = { prestige_level > imprisoner.prestige_level }
-			add = {
-				value = 20
-				multiply = {
-					value = prestige_level
-					subtract = imprisoner.prestige_level
-					min = 1
-				}
+			value = 20
+			multiply = {
+				value = prestige_level
+				subtract = imprisoner.prestige_level
+				min = 1
 			}
 		}
 		else_if = {
-			if = {
-				limit = { prestige_level < imprisoner.prestige_level }
-				add = {
-					value = 20
-					multiply = {
-						value = imprisoner.prestige_level
-						subtract = prestige_level
-						min = 1
-					}
+			limit = { prestige_level < imprisoner.prestige_level }
+			value = 20
+				multiply = {
+					value = imprisoner.prestige_level
+					subtract = prestige_level
+					min = 1
 				}
-			}
 		}
 	}
 
@@ -146,7 +144,8 @@ prisoner_barter_value = {
 			limit = { is_independent_ruler = yes }
 			value = 20
 		}
-		else = {
+		else_if = {
+			limit = { is_independent_ruler = no }
 			value = -20
 		}
 	}
@@ -157,24 +156,25 @@ prisoner_barter_value = {
 			limit = { character_is_land_realm_neighbor = imprisoner }
 			value = 20
 		}
-		else = {
+		else_if = {
+			limit = { NOT = { character_is_land_realm_neighbor = imprisoner } }
 			value = -20
 		}
 	}
 
 	### Prisoner Faith
 	### Prisoner is a Head of Faith.
-	if = {
-		limit = {
-			OR = {
-				exists = faith
-				imprisoner ?= { exists = faith }
+	add = {
+		if = {
+			limit = {
+				OR = {
+					exists = faith
+					imprisoner ?= { exists = faith }
+				}
 			}
-		}
-		add = {
 			if = {
 				limit = { is_head_of_faith_of = { CHARACTER = this } }
-				add = 100
+				value = 100
 			}
 			if = {
 				limit = { imprisoner = { is_head_of_faith_of = { CHARACTER = prev } } }
@@ -185,34 +185,35 @@ prisoner_barter_value = {
 
 	### Prisoner Realm
 	### Prisoner is their Liege.
-	if = {
-		limit = { imprisoner ?= { exists = liege } }
-		add = {
+	add = {
+		if = {
+			limit = { imprisoner ?= { exists = liege } }
 			if = {
 				limit = { is_liege_or_above_of = imprisoner }
 				value = -50
 			}
 		}
 	}
+
 	### Prisoner is their Direct Vassal.
-	if = {
-		limit = { exists = liege }
-		add = {
+	add = {
+		if = {
+			limit = { exists = liege }
 			if = {
 				limit = { is_vassal_of = imprisoner }
 				value = -20
-				if = {
-					limit = { is_powerful_vassal_of = imprisoner }
-					multiply = 2
-				}
-				if = {
-					limit = { imprisoner ?= { is_rightful_liege_of = prev } }
-					multiply = 2
-				}
-				if = {
-					limit = { imprisoner ?= { has_imprisonment_reason = prev } }
-					multiply = -1
-				}
+			}
+			if = {
+				limit = { is_powerful_vassal_of = imprisoner }
+				multiply = 2
+			}
+			if = {
+				limit = { imprisoner ?= { is_rightful_liege_of = prev } }
+				multiply = 2
+			}
+			if = {
+				limit = { imprisoner ?= { has_imprisonment_reason = prev } }
+				multiply = -1
 			}
 		}
 	}
@@ -286,8 +287,8 @@ prisoner_barter_value = {
 					min = 1
 				}																# 1828 / 1382 = 1.32
 				subtract = 1 													# 1.32 - 1 = 0.32
-				multiply = -100													# 0.32 * 100 = -32
-				divide = 2 														# -32 / 2 = -16
+				multiply = -100													# 0.32 * -100 = 32
+				divide = 2 														# 32 / 2 = -16
 				max = 25
 				min = -25
 			}
@@ -295,9 +296,9 @@ prisoner_barter_value = {
 	}
 	
 	### Imprisoner Line of Succession
-	if = {
-		limit = { imprisoner ?= { exists = primary_title } }
-		add = {
+	add = {
+		if = {
+			limit = { imprisoner ?= { exists = primary_title } }
 			value = 0
 			if = {
 				limit = {
@@ -336,11 +337,10 @@ prisoner_barter_value = {
 		}
 	}
 	
-	### Imprisoner have casus belli against the prisoner.
-	#### They can't wage war against their own prisoner
-	if = {
-		limit = { imprisoner ?= { has_any_cb_on = prev } }
-		add = {
+	### Imprisoner have casus belli against the prisoner. They can't wage war against their own prisoner.
+	add = {
+		if = {
+			limit = { imprisoner ?= { has_any_cb_on = prev } }
 			value = -15
 			if = {
 				limit = { imprisoner ?= { is_at_war_with = prev } }
@@ -348,16 +348,11 @@ prisoner_barter_value = {
 			}
 		}
 	}
+
 	### They have claims against the prisoner
-	if = {
-		limit = {
-			imprisoner ?= {
-				has_claim_on_held_title_trigger = {
-					CHARACTER = prev
-				}
-			}
-		}
-		add = {
+	add = {
+		if = {
+			limit = { imprisoner ?= { has_claim_on_held_title_trigger = { CHARACTER = prev } } }
 			value = 0
 			every_held_title = {
 				limit = { prev.imprisoner = { has_claim_on = prev } }

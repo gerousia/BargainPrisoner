@@ -48,14 +48,15 @@ l_english:
  AI_REASON_INDENTED_DYNASTY_NOBLE: "$BULLET_WITH_TAB$ You are a [noble|E]: $VALUE|=+0$"
  AI_REASON_INDENTED_DYNASTY_LOWBORN: "BULLET_WITH_TAB$ You are a [lowborn|E]: $VALUE|=+0$"
 
- BARTER_OPTION_GOLD: "For [gold_i]$BARTER_COST|0$"
- BARTER_OPTION_GOLD_CURRENT: "For [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full amount of [gold_i]$BARTER_COST|0$)#!"
- BARTER_OPTION_MEDIUM_GOLD: "For [gold_i]$MEDIUM_BARTER_COST|0$ and [prestige_i]$MEDIUM_BARTER_COST|0$"
- BARTER_OPTION_MEDIUM_GOLD_CURRENT: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$CURRENT_GOLD|0$ #weak (cannot afford full ransom of [gold_i]$MEDIUM_BARTER_COST|0$)#!"
- BARTER_OPTION_HIGH_GOLD: "For [gold_i]$HIGH_BARTER_COST|0$"
- BARTER_OPTION_HIGH_GOLD_CURRENT: "For [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full amount of [gold_i]$HIGH_BARTER_COST|0$)#!"
- BARTER_OPTION_VERY_HIGH_GOLD: "For [gold_i]$VERY_HIGH_BARTER_COST|0$ and [prestige_i]$VERY_HIGH_BARTER_COST|0$"
- BARTER_OPTION_VERY_HIGH_GOLD_CURRENT: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$CURRENT_GOLD|0$ #weak (cannot afford full ransom of [gold_i]$VERY_HIGH_BARTER_COST|0$)#!"
+ BARTER_OPTION_GOLD_DEFAULT: "For [gold_i]$BARTER_COST|0$"
+ BARTER_OPTION_GOLD_PRESTIGE: "For [gold_i]$BARTER_COST|0$ and [prestige_i]$BARTER_COST|0$"
+ BARTER_OPTION_GOLD_CURRENT_DEFAULT: "For [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full amount of [gold_i]$BARTER_COST|0$)#!"
+ BARTER_OPTION_GOLD_CURRENT_PRESTIGE: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$BARTER_COST|0$ #weak (cannot afford full amount of [gold_i]$BARTER_COST|0$)#!"
+ BARTER_OPTION_EXTORTIONATE_GOLD_DEFAULT: "For [gold_i]$EXTORTIONATE_BARTER_COST|0$"
+ BARTER_OPTION_EXTORTIONATE_GOLD_PRESTIGE: "For [gold_i]$EXTORTIONATE_BARTER_COST|0$ and [prestige_i]$EXTORTIONATE_BARTER_COST|0$"
+ BARTER_OPTION_EXTORTIONATE_GOLD_CURRENT_DEFAULT: "For [gold_i]$CURRENT_GOLD|0$ #weak (cannot afford full amount of [gold_i]$EXTORTIONATE_BARTER_COST|0$)#!"
+ BARTER_OPTION_EXTORTIONATE_GOLD_CURRENT_PRESTIGE: "For [gold_i]$CURRENT_GOLD|0$ and [prestige_i]$BARTER_COST|0$ #weak (cannot afford full amount of [gold_i]$EXTORTIONATE_BARTER_COST|0$)#!"
+
  BARTER_OPTION_FAVOR: "For a [hook_i][hook|E]"
  BARTER_OPTION_OWE_FAVOR: "$RANSOM_OWE_FAVOR_OPTION$"
  BARTER_OPTION_OWE_LOYALTY: "Owe a [hook_i][strong_hook|E]"
@@ -64,7 +65,7 @@ l_english:
  #GAIN_STRONG_HOOK_REASON: "Gains a [strong_hook|E]: $VALUE|=+0$"
  #GIVE_HOOK_REASON: "Gives a [hook|E]: $VALUE|=+0$"
  #GAIN_GOLD_REASON: "Receives [gold|E]: $VALUE|=+0$"
- #LOSE_GOLD_REASON: "Pays [gold|E]: $VALUE|=+0$"
+ #LOSE_GOLD_REASON: "Pays [gold|E]: $VALUE|=+0$" 
 
 # TOOLTIP
  #option_maximum_reached: "Maximum attainable [opinion|E] already reached."
