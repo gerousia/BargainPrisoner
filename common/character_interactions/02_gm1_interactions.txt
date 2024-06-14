@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -11,7 +11,6 @@ offer_prisoner_interaction = {
 		scope:actor = {
 			any_prisoner = {
 				gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
-					BENEFICIARY = scope:actor
 					BENEFACTOR = scope:recipient
 				}
 			}
@@ -139,9 +138,7 @@ offer_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:recipient = this }
-					gm1_valid_prisoner_for_interaction_trigger = {
-						IMPRISONER = prev
-					}
+					gm1_valid_prisoner_for_interaction_trigger = yes
 				}
 				add_to_list = characters
 			}
@@ -1190,9 +1187,7 @@ demand_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:actor = this }
-					gm1_valid_prisoner_for_interaction_trigger = {
-						IMPRISONER = scope:recipient
-					}
+					gm1_valid_prisoner_for_interaction_trigger = yes
 				}
 				add_to_list = characters
 			}
@@ -2369,10 +2364,9 @@ ransom_prisoner_interaction = {
 			every_prisoner = {
 				limit = { 
 					NOT = { scope:actor = this }
-					gm1_valid_prisoner_for_interaction_trigger = {
-						IMPRISONER = scope:recipient
-					}
+					gm1_valid_prisoner_for_interaction_trigger = yes
 					## This is here to avoid intermixing with the vanilla pay_ransom_interaction.
+					## Only remove if this intends to replace the default ransom interactions.
 					gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
 						BENEFACTOR = scope:actor
 					}

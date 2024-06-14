@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 scripted_triggers
 ##############################
 #------------------------------
@@ -6,13 +6,12 @@
 #------------------------------
 
 # ROOT (character)
-# IMPRISONER (character)
 gm1_valid_prisoner_for_interaction_trigger = {
 	is_imprisoned = yes
-	is_imprisoned_by = $IMPRISONER$
+	#is_imprisoned_by = $IMPRISONER$
 	cannot_release_former_regent_whilst_old_regent_holds_power_trigger = {
 		PRISONER = this
-		REGENT = this.var:imprisoned_by_diarch
+		REGENT = var:imprisoned_by_diarch
 	}
 }
 
@@ -25,13 +24,10 @@ gm1_valid_prisoner_for_interaction_trigger_basic = {
 	health > dying_health
 }
 
-# ROOT
-# BENEFICIARY
-# BENEFACTOR
+# ROOT (character)
+# BENEFACTOR (character)
 gm1_valid_prisoner_for_transfer_interaction_trigger_highlighted = {
-	gm1_valid_prisoner_for_interaction_trigger = {
-		IMPRISONER = $BENEFICIARY$
-	}
+	gm1_valid_prisoner_for_interaction_trigger = yes
 	gm1_valid_prisoner_for_interaction_trigger_basic = yes
 
 	$BENEFACTOR$ = {
@@ -75,7 +71,6 @@ gm1_valid_prisoner_for_transfer_interaction_trigger_strict = {
 # BENEFACTOR
 gm1_valid_prisoner_for_ransom_interaction_trigger_strict = {
 	gm1_valid_prisoner_for_interaction_trigger_basic = yes
-	#has_recently_undergone_interaction = no
 
 	## We block out the original ransomables to avoid- 
 	## conflict with the vanilla ransom_interaction.
