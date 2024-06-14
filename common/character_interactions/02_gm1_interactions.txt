@@ -1,4 +1,4 @@
-﻿##############################
+##############################
 ## GM1 character_interactions
 ##############################
 
@@ -950,19 +950,10 @@ demand_prisoner_interaction = {
 			limit = {
 				scope:actor = { is_ai = no }
 				has_game_rule = transfer_prisoner_default_interaction_acceptance 
+				scope:recipient = { is_vassal_of = scope:actor } # FUCKING STUPID TOOLTIP LOCALIZATION
 			}
-			OR = {
 				## AI Ruler has no choice against their liege.
 				scope:recipient = { is_vassal_of = scope:actor }
-				## AI Ruler has no choice against a strong hook.
-				custom_description = {
-					text = "spending_hook"
-					subject = scope:actor
-					object = scope:recipient
-
-					scope:strong_hook ?= yes
-				}
-			}
 		}
 		## -----
 		trigger_else = {
@@ -1032,6 +1023,7 @@ demand_prisoner_interaction = {
 				text = "spending_hook"
 				subject = scope:recipient
 				object = scope:actor
+				
 				scope:recipient = { has_usable_hook = scope:actor }
 			} 
 		}
@@ -1947,6 +1939,7 @@ ransom_prisoner_interaction = {
 			text = "spending_hook"
 			subject = scope:actor
 			object = scope:recipient
+
 			scope:strong_hook ?= yes
 		}
 	}
