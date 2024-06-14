@@ -51,7 +51,7 @@ prisoner_ransom_value = {
 			add = ransom_cost_value
 		}
 		else = {
-			add = gold
+			add = current_gold_value
 		}
 	}
 }
