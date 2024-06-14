@@ -1427,19 +1427,7 @@ demand_prisoner_interaction = {
 		}
 
 		is_valid = {
-			scope:actor = { has_strong_hook = scope:recipient }
-			## No other option can be selected against a strong hook.
-			custom_tooltip = {
-				text = "option_cannot_be_selected"
-				NOR = {
-					scope:extortionate_gold ?= no
-					scope:extortionate_current_gold ?= no
-					scope:gold ?= no
-					scope:current_gold ?= no
-					scope:loyalty ?= no
-					scope:favor ?= no
-				}
-			}
+			scope:actor = { has_usable_hook = scope:recipient }
 		}
 
 		flag = strong_hook
@@ -1904,6 +1892,13 @@ ransom_prisoner_interaction = {
 	is_shown = {
 		# Cannot target oneself.
 		NOT = { scope:recipient = scope:actor }
+		## Must have prisoners. (This is here to tidy things up.)
+		scope:recipient = {
+			trigger_if = {
+				limit = { is_imprisoned = no }
+				has_prisoners = yes
+			}
+		}
 	}
 
 	is_valid_showing_failures_only = {
@@ -1948,17 +1943,11 @@ ransom_prisoner_interaction = {
 	}
 
 	auto_accept = {
-		trigger_if = {
-			limit = { scope:hook ?= yes }
-			custom_description = {
-				text = "spending_hook"
-				subject = scope:actor
-				object = scope:recipient
-				scope:actor = { has_strong_hook = scope:recipient }
-			}
-		}
-		trigger_else = {
-			always = no
+		custom_description = {
+			text = "spending_hook"
+			subject = scope:actor
+			object = scope:recipient
+			scope:strong_hook ?= yes
 		}
 	}
 
@@ -2015,6 +2004,14 @@ ransom_prisoner_interaction = {
 			scope:actor.current_gold_value >= scope:secondary_recipient.increased_ransom_cost_value
 		}
 
+		is_valid = {
+			## No other option can be selected against a strong hook.
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:strong_hook ?= no
+			}
+		}
+
 		starts_enabled = { always = yes }
 
 		flag = extortionate_gold
@@ -2031,6 +2028,14 @@ ransom_prisoner_interaction = {
 			scope:actor.current_gold_value > 0
 		}
 
+		is_valid = {
+			## No other option can be selected against a strong hook.
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:strong_hook ?= no
+			}
+		}
+
 		starts_enabled = { always = yes }
 
 		flag = extortionate_current_gold
@@ -2044,6 +2049,14 @@ ransom_prisoner_interaction = {
 			scope:recipient.dynasty ?= { NOT = { has_dynasty_perk = fp1_pillage_legacy_3 } }
 			## -----
 			scope:actor.current_gold_value >= scope:secondary_recipient.ransom_cost_value
+		}
+
+		is_valid = {
+			## No other option can be selected against a strong hook.
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:strong_hook ?= no
+			}
 		}
 
 		starts_enabled = { always = yes }
@@ -2064,6 +2077,11 @@ ransom_prisoner_interaction = {
 
 		is_valid = {
 			scope:actor.current_gold_value > 0
+			## No other option can be selected against a strong hook.
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:strong_hook ?= no
+			}
 		}
 
 		starts_enabled = { always = yes }
@@ -2087,6 +2105,11 @@ ransom_prisoner_interaction = {
 					CHARACTER = scope:actor
 				}
 			}
+			## No other option can be selected against a strong hook.
+			custom_tooltip = {
+				text = "option_cannot_be_selected"
+				scope:strong_hook ?= no
+			}
 		}
 
 		flag = favor
@@ -2096,12 +2119,25 @@ ransom_prisoner_interaction = {
 	send_option = {
 		is_shown = {
 			exists = scope:secondary_recipient
+			scope:actor = { has_strong_hook = scope:recipient }
 		}
 
 		is_valid = {
-			scope:actor = {
-				has_usable_hook = scope:recipient
-			}
+			scope:actor = {	has_usable_hook = scope:recipient }
+		}
+
+		flag = strong_hook
+		localization = "GENERIC_SPEND_A_HOOK"
+	}
+
+	send_option = {
+		is_shown = {
+			exists = scope:secondary_recipient
+			scope:actor = { NOT = { has_strong_hook = scope:recipient } }
+		}
+
+		is_valid = {
+			scope:actor = {	has_usable_hook = scope:recipient }
 		}
 
 		flag = hook
