@@ -32,7 +32,7 @@ l_english:
  DEMAND_PRISONER_INTERACTION_HIGHLIGHTED_REASON: "#EMP [recipient.GetShortUIName|U] [CharHaveHas(recipient)] a [prisoner|E] of interest for you"
 
 ## ransom_prisoner_interaction
- ransom_prisoner_interaction: "Ransom Prisoner"
+ ransom_prisoner_interaction: "Petition Ransom"
  ransom_prisoner_interaction_desc: "Offer to pay the ransom for an [imprisoned|E] noble or commoner"
  ransom_prisoner_interaction_notification: "Ransomed Prisoner"
  ransom_prisoner_interaction_extra_icon: "$arrange_marriage_interaction_extra_icon$"
@@ -76,6 +76,13 @@ l_english:
  ALREADY_ALLIES_IN_WAR_WITH_TARGET_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] already [allies|E] in [war|E] with [TARGET_CHARACTER.GetShortUIName|U]"
  ALREADY_UNDER_ONGOING_INTERACTION_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharAreIs(CHARACTER)] already under an ongoing interaction"
  RECENTLY_UNDERGONE_INTERACTION_TRIGGER: "[CHARACTER.GetShortUINameNoFormat|U] [CharHaveHas(CHARACTER)] recently undergone this interaction"
+
+# CUSTOMIZABLE_LOCALIZATION
+ CHANGE_IMPRISONER_INVOLVEMENT_WAR_PARTICIPANT: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] at [war|E] with [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
+ CHANGE_IMPRISONER_INVOLVEMENT_WAR_LEADER: "[Select_CString( ROOT.Char.IsLocalPlayer, '@warning_icon! #X', '@alert_icon!' )] [ROOT.Char.GetShortUINameNoFormat|U] [CharAreIs(ROOT.Char)] a [war_leader|E] against [second.GetShortUIName|U][Select_CString( ROOT.Char.IsLocalPlayer, '#!', '' )]"
+ TRANSFER_PRISONER_CURRENT_SITUATION_EXTORTIONATE_GOLD: "[second.MakeScope.ScriptValue('increased_barter_cost_value')|0]"
+ TRANSFER_PRISONER_CURRENT_SITUATION_GOLD: "[second.MakeScope.ScriptValue('barter_cost_value')|0]"
+ TRANSFER_PRISONER_CURRENT_SITUATION_CURRENT_GOLD: "[ROOT.Char.MakeScope.ScriptValue('current_gold_value')|0]"
 
 # CLAN UNITY
  clan_unity_transfer_prisoner.desc: "transferred [unity_target.GetName] to another prison"

@@ -241,7 +241,8 @@ transfer_prisoner_interaction_escalates_rivalry_effect = {
 					remove_relation_potential_rival = scope:old_imprisoner
 				}
 			}
-			set_relation_rival = scope:target_character
+			## This is simply for tooltip shennanigans
+			scope:target_character = { set_relation_rival = prev } 
 		}
 		else = {
 			hidden_effect = {
