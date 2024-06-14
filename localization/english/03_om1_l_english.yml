@@ -5,8 +5,9 @@
 l_english:
 # rescue_and_vengeance
  ## INTERACTION
- #prisoner_interaction_decline_summary: "[secondary_recipient.Custom('PrisonerInteractionDeclineSummary')]"
- #PRISONER_INTERACTION_DECLINE_SUMMARY_RV: "@warning_icon! #X If you fail to demand [secondary_recipient.GetShortUINameNoTooltip] you can cb rescue and revenge blah blah placeholder#!"
+ DEMAND_PRISONER_DECLINED_SUMMARY: "[actor.Custom2('DemandPrisonerInteractionDeclineSummary', recipient)]"
+ DEMAND_PRISONER_DECLINED_DEFAULT: ""
+ DEMAND_PRISONER_DECLINED_SUMMARY_RV: "@warning_icon! #X [prisoner|E] can be rescued if [second.GetShortUINameNoTooltip] declines.#!"
 
  ## TRIGGER
  GAIN_A_RESCUE_CB: "Gains a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
