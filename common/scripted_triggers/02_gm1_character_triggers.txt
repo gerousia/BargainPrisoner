@@ -15,14 +15,3 @@ has_recently_undergone_interaction = {
 		has_character_flag = recently_prison_transferred
 	}
 }
-
-is_at_imprisoner_capital = {
-	trigger_if = {
-		limit = { exists = imprisoner }
-		custom_description = {
-			text = "is_at_imprisoner_capital_trigger"
-			object = imprisoner
-			is_at_location = imprisoner.capital_province
-		}
-	}	
-}

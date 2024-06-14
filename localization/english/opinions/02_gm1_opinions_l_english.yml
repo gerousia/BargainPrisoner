@@ -3,10 +3,6 @@
 ##############################
 
 l_english:
-
- # ignored_demands_opinion
- # supported_my_war_opinion
- # supported_my_enemy_opinion
  demanded_transfer_prisoner: "Forcibly Demanded [prisoner|E]"
  refused_transfer_prisoner: "Refused to Give [prisoner|E]"
  transferred_me_attempt: "Attempted to Give Away"

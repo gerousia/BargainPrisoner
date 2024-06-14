@@ -7,11 +7,11 @@ has_requested_excommunication = {
 	var:requested_my_excommunication = $CHARACTER$
 }
 
-# WHO (character)
+# CHARACTER (character)
 is_head_of_faith_of = {
 	$CHARACTER$ = {
-		exists = faith.religious_head
-		faith.religious_head = prev
+		exists = faith
+		faith.religious_head ?= prev
 	}
 }
 
@@ -33,5 +33,20 @@ has_claim_on_held_title_trigger = {
 has_strong_claim_on_held_title_trigger = {
 	any_held_title = {
 		$CHARACTER$ = { has_strong_claim_on = prev }
+	}
+}
+
+# CHARACTER (character)
+can_add_relevant_hook = {
+	custom_description = {
+		text = "can_add_relevant_hook_trigger"
+		subject = this
+		object = $CHARACTER$
+
+		top_liege = $CHARACTER$.top_liege
+		can_add_hook = {
+			target = $CHARACTER$
+			type = favor_hook
+		}
 	}
 }

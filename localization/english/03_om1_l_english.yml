@@ -1,12 +1,14 @@
 ﻿##############################
-## GM1 interactions
+## OM1 interactions
 ##############################
 
-#------------------------------
-# rescue_and_vengeance
-#------------------------------
-
 l_english:
+# rescue_and_vengeance
+ ## INTERACTION
+ #prisoner_interaction_decline_summary: "[secondary_recipient.Custom('PrisonerInteractionDeclineSummary')]"
+ #PRISONER_INTERACTION_DECLINE_SUMMARY_RV: "@warning_icon! #X If you fail to demand [secondary_recipient.GetShortUINameNoTooltip] you can cb rescue and revenge blah blah placeholder#!"
+
+ ## TRIGGER
  GAIN_A_RESCUE_CB: "Gains a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
  GAINED_A_RESCUE_CB: "Gained a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
  I_GAIN_A_RESCUE_CB: "You gain a rescue [casus_belli|E] on [TARGET_CHARACTER.GetShortUIName]"
