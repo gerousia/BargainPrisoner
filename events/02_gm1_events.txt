@@ -19,6 +19,51 @@ scripted_effect take_prisoner = {
 	}
 }
 
+# based on ./common/scripted_effects/05_dlc_bp2_effects.txt/take_hostage
+## PETITIONER (character)
+## PRISONER (character)
+scripted_effect ransom_prisoner = {
+	show_as_tooltip = {
+		$PRISONER$ = { release_from_prison = yes }
+		
+		$PETITIONER$ = {
+			reverse_add_opinion = {
+				target = $PRISONER$
+				modifier = ransomed_from_prison
+				years = 1
+			}
+
+			if = {
+				limit = {
+					$PRISONER$ = {
+						is_ai = yes
+						ai_honor >= 25
+						ai_greed <= 0
+					}
+				}
+				if = {
+					limit = {
+						can_add_hook = {
+							target = $PRISONER$
+							type = favor_hook
+						}
+					}
+					add_hook = {
+						target = $PRISONER$
+						type = indebted_hook
+					}
+				}
+			}
+			else = {
+				progress_towards_hook_effect = {
+					CHARACTER = $PRISONER$
+					HOOK_TYPE = indebted_hook
+				}
+			}
+		}
+	}
+}
+
 #------------------------------
 # Transfer Prisoner Notifications
 # 0001 - 0009
@@ -283,7 +328,7 @@ gm1_interaction.0031 = {
 	immediate = {
 		show_as_tooltip = {
 			if = {
-				limit = { exists = scope:illegal_imprisonment }
+				limit = { scope:illegal_imprisonment ?= yes }
 				add_legitimacy = miniscule_legitimacy_loss
 			}
 		}
@@ -315,12 +360,9 @@ gm1_interaction.1001 = {
 			left_icon = scope:benefactor
 			right_icon = scope:beneficiary
 
-			show_as_tooltip = {
-				release_imprisoned_character_effect = {
-					PRISONER = this
-					IMPRISONER = scope:beneficiary
-					PETITIONER = scope:benefactor
-				}
+			ransom_prisoner = {
+				PETITIONER = scope:benefactor
+				PRISONER = this
 			}
 		}
 
@@ -365,12 +407,12 @@ gm1_interaction.1002 = {
 			right_icon = scope:prisoner
 			left_icon = scope:benefactor
 
+			ransom_prisoner = {
+				PETITIONER = scope:benefactor
+				PRISONER = scope:prisoner
+			}
+
 			show_as_tooltip = {
-				release_imprisoned_character_effect = {
-					PRISONER = scope:prisoner
-					IMPRISONER = this
-					PETITIONER = scope:benefactor
-				}
 				prisoner_interaction_payment_effect = {
 					PAYER = scope:benefactor
 					PAYEE = this
@@ -396,12 +438,12 @@ gm1_interaction.1003 = {
 			right_icon = scope:prisoner
 			left_icon = scope:beneficiary
 
+			ransom_prisoner = {
+				PETITIONER = this
+				PRISONER = scope:prisoner
+			}
+
 			show_as_tooltip = {
-				release_imprisoned_character_effect = {
-					PRISONER = scope:prisoner
-					IMPRISONER = scope:beneficiary
-					PETITIONER = this
-				}
 				prisoner_interaction_payment_effect = {
 					PAYER = scope:benefactor
 					PAYEE = this
