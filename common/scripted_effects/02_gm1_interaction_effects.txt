@@ -5,23 +5,6 @@
 # interaction-related
 #------------------------------
 
-# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
-## CHARACTER (character)
-## TARGET (character)
-disband_all_schemes_effect = {
-	hidden_effect = {
-		$CHARACTER$ = {
-			if = {
-				limit = { any_scheme = { scheme_target = $TARGET$ } }
-				every_scheme = {
-					limit = { scheme_target = $TARGET$ }
-					end_scheme = yes
-				}
-			}
-		}
-	}
-}
-
 # PRISONER (character)
 # BENEFICIARY (character)
 # BENEFACTOR (character)
@@ -71,11 +54,6 @@ transfer_prisoner_interaction_effect = {
 	}
 
 	scope:prisoner = {
-		disband_all_schemes_effect = {
-			CHARACTER = this
-			TARGET = scope:beneficiary
-		}
-
 		## PENALTIES
 		## Disabled with 'none penalties' game rule on. Player Only.
 		if = {
@@ -96,12 +74,7 @@ transfer_prisoner_interaction_effect = {
 		}
 	}
 	
-	scope:beneficiary = {
-		disband_all_schemes_effect = {
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
-		
+	scope:beneficiary = {		
 		## PENALTIES
 		## Disabled with 'none penalties' game rule on.
 		if = {
@@ -158,11 +131,6 @@ transfer_prisoner_interaction_effect = {
 	}
 
 	scope:benefactor = {
-		disband_all_schemes_effect = {
-			CHARACTER = this
-			TARGET = scope:prisoner
-		}
-
 		## PENALTIES
 		## Disabled with 'none penalties' game rule on. Player Only.
 		if = {

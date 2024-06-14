@@ -68,20 +68,16 @@ change_imprisoner_character_effect = {
 		}
 
 		scope:old_imprisoner = {
+			disband_all_schemes_effect = {
+				CHARACTER = this
+				TARGET = scope:imprisonment_target
+			}
+			
 			custom_description = { 
 				text = "release_prisoner_tooltip_effect"
 				subject = this
 				object = scope:imprisonment_target
 				
-			}
-
-			### MEMORY
-			create_character_memory = {
-				type = change_imprisoner_old_imprisoner_memory
-				participants = {
-					prisoner = scope:imprisonment_target
-					new_imprisoner = scope:new_imprisoner
-				}
 			}
 
 			### OPINIONS
@@ -154,6 +150,15 @@ change_imprisoner_character_effect = {
 				}
 			}
 
+			### MEMORY
+			create_character_memory = {
+				type = change_imprisoner_old_imprisoner_memory
+				participants = {
+					prisoner = scope:imprisonment_target
+					new_imprisoner = scope:new_imprisoner
+				}
+			}
+
 			## BP2 WARDS AND WARDENS
 			imprison_remove_ward_guardian_effect = { 
 				IMPRISONER = this
@@ -162,6 +167,11 @@ change_imprisoner_character_effect = {
 		}
 
 		scope:new_imprisoner = {
+			disband_all_schemes_effect = {
+				CHARACTER = this
+				TARGET = scope:imprisonment_target
+			}
+
 			if = {
 				limit = {
 					scope:imprisonment_target = {
@@ -182,15 +192,6 @@ change_imprisoner_character_effect = {
 				imprison = {
 					target = scope:imprisonment_target
 					type = dungeon
-				}
-			}
-
-			### MEMORY
-			create_character_memory = {
-				type = change_imprisoner_new_imprisoner_memory
-				participants = {
-					prisoner = scope:imprisonment_target
-					old_imprisoner = scope:old_imprisoner
 				}
 			}
 
@@ -254,6 +255,15 @@ change_imprisoner_character_effect = {
 				change_imprisoner_consequences_vassal_effect = {
 					CHARACTER = this
 					TARGET = scope:imprisonment_target
+				}
+			}
+
+			### MEMORY
+			create_character_memory = {
+				type = change_imprisoner_new_imprisoner_memory
+				participants = {
+					prisoner = scope:imprisonment_target
+					old_imprisoner = scope:old_imprisoner
 				}
 			}
 
@@ -906,6 +916,23 @@ release_imprisoned_consequences_clan_effect = {
 				VALUE = medium_unity_gain
 				DESC = clan_unity_ransom.desc
 				REVERSE_NON_HOUSE_TARGET = no
+			}
+		}
+	}
+}
+
+# based on ./common/character_interactions/00_prison_interactions.txt/imprison_interaction
+## CHARACTER (character)
+## TARGET (character)
+disband_all_schemes_effect = {
+	hidden_effect = {
+		$CHARACTER$ = {
+			if = {
+				limit = { any_scheme = { scheme_target = $TARGET$ } }
+				every_scheme = {
+					limit = { scheme_target = $TARGET$ }
+					end_scheme = yes
+				}
 			}
 		}
 	}
