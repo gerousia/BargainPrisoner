@@ -1,4 +1,4 @@
-![sample_actions](https://github.com/gerousia/BargainPrisoner/assets/111046706/5b4572b7-c56e-4f74-96ed-92cccf39ad91)<div align="center">
+<div align="center">
   <img src="https://github.com/gerousia/BargainPrisoner/blob/main/thumbnail.png" alt="banner" width="40%" height="40%">
 </div>
 
